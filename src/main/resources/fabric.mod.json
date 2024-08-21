@@ -1,0 +1,40 @@
+{
+	"schemaVersion": 1,
+	"id": "lotaslight",
+	"version": "${version}",
+	"name": "LoTAS-Light",
+	"description": "Very basic Tool-Assisted Speedrun Tools",
+	"authors": [
+		"Scribble",
+		"Pancake"
+	],
+	"contact": {
+		"homepage": "https://minecrafttas.com/",
+		"sources": "https://github.com/MinecraftTAS/LoTAS-Light"
+	},
+	"license": "GPLv3",
+	"icon": "assets/modid/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.minecrafttas.lotas_light.LoTASLight"
+		],
+		"client": [
+			"com.minecrafttas.lotas_light.LoTASLightClient"
+		]
+	},
+	"mixins": [
+		"lotaslight.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.11",
+		"minecraft": "~1.21",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"breaks": {
+		"lotas": "*",
+		"tasmod": "*"
+	}
+	
+}

@@ -1,0 +1,10 @@
+{
+	"required": true,
+	"package": "com.minecrafttas.lotas_light.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

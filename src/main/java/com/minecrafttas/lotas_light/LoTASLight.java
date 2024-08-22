@@ -10,8 +10,6 @@ public class LoTASLight implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		// TODO Auto-generated method stub
-
 	}
 
 }

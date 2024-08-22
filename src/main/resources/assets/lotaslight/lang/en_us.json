@@ -6,5 +6,7 @@
 	"key.lotaslight.savestate":"Savestate",
 	"key.lotaslight.loadstate":"Loadstate",
 	
+	"msg.lotaslight.setTickrate":"Set the tickrate to %s",
+	
 	"keycategory.lotaslight.lotaslight":"LoTAS-Light"
 }

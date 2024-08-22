@@ -3,6 +3,8 @@
 	"package": "com.minecrafttas.lotas_light.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
+		"MixinTickRateManager",
+		"MixinMinecraft"
 	],
 	"injectors": {
 		"defaultRequire": 1

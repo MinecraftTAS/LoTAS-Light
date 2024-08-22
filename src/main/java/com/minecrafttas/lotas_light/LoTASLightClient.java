@@ -3,7 +3,6 @@ package com.minecrafttas.lotas_light;
 import org.lwjgl.glfw.GLFW;
 
 import com.minecrafttas.lotas_light.event.EventClientGameLoop;
-import com.minecrafttas.lotas_light.tickratechanger.TickrateChangerClient;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -16,8 +15,6 @@ import net.minecraft.server.ServerTickRateManager;
 import net.minecraft.world.TickRateManager;
 
 public class LoTASLightClient implements ClientModInitializer {
-
-	public static TickrateChangerClient tickratechangerClient = new TickrateChangerClient();
 
 	private KeyMapping increaseTickrate = new KeyMapping("key.lotaslight.increaseTickrate", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_PERIOD, "keycategory.lotaslight.lotaslight");
 	private KeyMapping decreaseTickrate = new KeyMapping("key.lotaslight.decreaseTickrate", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_COMMA, "keycategory.lotaslight.lotaslight");
@@ -72,6 +69,7 @@ public class LoTASLightClient implements ClientModInitializer {
 			return;
 		}
 		ServerTickRateManager serverTickrateChanger = server.tickRateManager();
+
 		rateIndex++;
 		rateIndex = (short) Math.clamp(rateIndex, 0, rates.length - 1);
 		float tickrate = rates[rateIndex];
@@ -87,6 +85,7 @@ public class LoTASLightClient implements ClientModInitializer {
 			return;
 		}
 		ServerTickRateManager serverTickrateChanger = server.tickRateManager();
+
 		rateIndex--;
 		rateIndex = (short) Math.clamp(rateIndex, 0, rates.length - 1);
 		float tickrate = rates[rateIndex];
@@ -96,11 +95,28 @@ public class LoTASLightClient implements ClientModInitializer {
 	}
 
 	private void freezeTickrate(Minecraft client) {
+		TickRateManager clientTickrateChanger = client.level.tickRateManager();
+		IntegratedServer server = client.getSingleplayerServer();
+		if (server == null) {
+			return;
+		}
+		ServerTickRateManager serverTickrateChanger = server.tickRateManager();
 
+		boolean isFrozen = clientTickrateChanger.isFrozen() && serverTickrateChanger.isFrozen();
+		clientTickrateChanger.setFrozen(!isFrozen);
+		serverTickrateChanger.setFrozen(!isFrozen);
 	}
 
 	private void advanceTickrate(Minecraft client) {
+		TickRateManager clientTickrateChanger = client.level.tickRateManager();
+		IntegratedServer server = client.getSingleplayerServer();
+		if (server == null) {
+			return;
+		}
+		ServerTickRateManager serverTickrateChanger = server.tickRateManager();
 
+		clientTickrateChanger.setFrozenTicksToRun(1);
+		serverTickrateChanger.setFrozenTicksToRun(1);
 	}
 
 	private void savestate() {

@@ -4,8 +4,13 @@
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
 		"MixinTickRateManager",
+		"MixinTickCommand",
+		"MixinMinecraftServer",
+	],
+	"client":[
 		"MixinMinecraft",
-		"MixinTickCommand"
+		"AccessorSoundEngine",
+		"MixinTickrateChangerAudioPitch"
 	],
 	"injectors": {
 		"defaultRequire": 1

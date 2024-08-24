@@ -12,6 +12,6 @@ public class MixinTickCommand {
 
 	@ModifyExpressionValue(method = "register", at = @At(value = "CONSTANT", args = "floatValue=1.0F"))
 	private static float modifyArg_FloatArg(float original) {
-		return .1f;
+		return 0f;
 	}
 }

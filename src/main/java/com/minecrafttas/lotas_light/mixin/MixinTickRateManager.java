@@ -14,6 +14,7 @@ import com.minecrafttas.lotas_light.duck.SoundPitchDuck;
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.TimeUtil;
 import net.minecraft.world.TickRateManager;
 
 @Mixin(TickRateManager.class)
@@ -23,8 +24,18 @@ public abstract class MixinTickRateManager implements Tickratechanger {
 	@Unique
 	private boolean advanceTickrate;
 
+	private static float tickrateMirror = 20f;
+
 	@Shadow
 	private float tickrate;
+	@Shadow
+	private long nanosecondsPerTick;
+
+	@Inject(method = "<init>", at = @At(value = "RETURN"))
+	public void inject_trcConstructor(CallbackInfo ci) {
+		this.tickrate = tickrateMirror;
+		this.nanosecondsPerTick = (long) ((double) TimeUtil.NANOSECONDS_PER_SECOND / (double) tickrateMirror);
+	}
 
 	@ModifyExpressionValue(method = "setTickRate", at = @At(value = "INVOKE", target = "Ljava/lang/Math;max(FF)F"))
 	public float modifyExpressionValue_SetTickRate(float original, float f) {
@@ -32,11 +43,9 @@ public abstract class MixinTickRateManager implements Tickratechanger {
 		if (this.tickrate != 0) {
 			tickrateSaved = tickrate;
 		}
+		tickrateMirror = f;
 		return f;
 	}
-
-	@Shadow
-	private long nanosecondsPerTick;
 
 	@Redirect(method = "setTickRate", at = @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/world/TickRateManager;nanosecondsPerTick:J"))
 	private void redirect_setTickRate(TickRateManager manager, long original, float tickrate) {

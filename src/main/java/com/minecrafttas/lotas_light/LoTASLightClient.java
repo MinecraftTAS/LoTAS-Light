@@ -61,6 +61,7 @@ public class LoTASLightClient implements ClientModInitializer {
 			}
 
 		});
+
 	}
 
 	private void increaseTickrate(Minecraft client) {

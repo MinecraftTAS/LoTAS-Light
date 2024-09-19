@@ -1,13 +1,18 @@
 package com.minecrafttas.lotas_light;
 
+import java.nio.file.Path;
+
 import org.lwjgl.glfw.GLFW;
 
+import com.minecrafttas.lotas_light.config.Configuration;
+import com.minecrafttas.lotas_light.config.Configuration.ConfigOptions;
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 import com.minecrafttas.lotas_light.event.EventClientGameLoop;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
@@ -27,8 +32,16 @@ public class LoTASLightClient implements ClientModInitializer {
 	private float[] rates = new float[] { .1f, .2f, .5f, 1f, 2f, 5f, 10f, 20f, 40f, 100f };
 	private short rateIndex = 7;
 
+	private Path configpath;
+	public static Configuration config;
+	private boolean showHint = true;
+
 	@Override
 	public void onInitializeClient() {
+		Minecraft mc = Minecraft.getInstance();
+		configpath = mc.gameDirectory.toPath().resolve("configs/lotas-light.cfg");
+		config = new Configuration("LoTAS-Light config", configpath);
+		config.loadFromXML();
 		registerKeybindings();
 	}
 
@@ -75,7 +88,13 @@ public class LoTASLightClient implements ClientModInitializer {
 		rateIndex++;
 		rateIndex = (short) Math.clamp(rateIndex, 0, rates.length - 1);
 		float tickrate = rates[rateIndex];
-		client.gui.getChat().addMessage(Component.translatable("msg.lotaslight.setTickrate", tickrate));
+		if (config.getBoolean(ConfigOptions.SHOW_MESSAGES)) {
+			if (showHint) {
+				showHint = false;
+				client.gui.getChat().addMessage(Component.translatable("msg.lotaslight.turnOff", tickrate).withStyle(ChatFormatting.YELLOW));
+			}
+			client.gui.getChat().addMessage(Component.translatable("msg.lotaslight.setTickrate", tickrate));
+		}
 		serverTickrateChanger.setTickRate(tickrate);
 		clientTickrateChanger.setTickRate(tickrate);
 	}
@@ -91,7 +110,13 @@ public class LoTASLightClient implements ClientModInitializer {
 		rateIndex--;
 		rateIndex = (short) Math.clamp(rateIndex, 0, rates.length - 1);
 		float tickrate = rates[rateIndex];
-		client.gui.getChat().addMessage(Component.translatable("msg.lotaslight.setTickrate", tickrate));
+		if (config.getBoolean(ConfigOptions.SHOW_MESSAGES)) {
+			if (showHint) {
+				showHint = false;
+				client.gui.getChat().addMessage(Component.translatable("msg.lotaslight.turnOff", tickrate).withStyle(ChatFormatting.YELLOW));
+			}
+			client.gui.getChat().addMessage(Component.translatable("msg.lotaslight.setTickrate", tickrate));
+		}
 		serverTickrateChanger.setTickRate(tickrate);
 		clientTickrateChanger.setTickRate(tickrate);
 	}

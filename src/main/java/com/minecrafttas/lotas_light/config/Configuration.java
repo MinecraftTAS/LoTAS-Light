@@ -12,7 +12,7 @@ import java.util.Properties;
 
 public class Configuration extends AbstractDataFile {
 
-	private enum ConfigOptions {
+	public enum ConfigOptions {
 
 		DEFAULT_TICKRATE("defaultTickrate", "20.0"),
 		SHOW_MESSAGES("showMessages", "true");

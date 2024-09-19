@@ -10,6 +10,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.minecrafttas.lotas_light.LoTASLightClient;
+import com.minecrafttas.lotas_light.config.Configuration.ConfigOptions;
 import com.minecrafttas.lotas_light.duck.SoundPitchDuck;
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 
@@ -24,7 +26,7 @@ public abstract class MixinTickRateManager implements Tickratechanger {
 	@Unique
 	private boolean advanceTickrate;
 
-	private static float tickrateMirror = 20f;
+	private static float tickrateMirror = Float.parseFloat(LoTASLightClient.config.get(ConfigOptions.DEFAULT_TICKRATE));
 
 	@Shadow
 	private float tickrate;

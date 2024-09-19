@@ -8,15 +8,20 @@ import com.minecrafttas.lotas_light.config.Configuration;
 import com.minecrafttas.lotas_light.config.Configuration.ConfigOptions;
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 import com.minecrafttas.lotas_light.event.EventClientGameLoop;
+import com.minecrafttas.lotas_light.event.HudRenderExperienceCallback;
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ServerTickRateManager;
 import net.minecraft.world.TickRateManager;
 
@@ -43,6 +48,7 @@ public class LoTASLightClient implements ClientModInitializer {
 		config = new Configuration("LoTAS-Light config", configpath);
 		config.loadFromXML();
 		registerKeybindings();
+		HudRenderExperienceCallback.EVENT.register(this::drawHud);
 	}
 
 	private void registerKeybindings() {
@@ -149,6 +155,15 @@ public class LoTASLightClient implements ClientModInitializer {
 
 		serverTickrateChanger.advanceTick();
 		clientTickrateChanger.advanceTick();
+	}
+
+	private void drawHud(GuiGraphics context, DeltaTracker deltaTicks) {
+		RenderSystem.enableBlend();
+		RenderSystem.setShaderColor(1, 1, 1, .5f);
+		context.blit(ResourceLocation.fromNamespaceAndPath("lotaslight", "textures/gui/iblk9xrq3z.png"), Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2 - 10, Minecraft.getInstance().getWindow().getGuiScaledHeight()
+				- 50, 0, 0, 20, 20, 20, 20);
+		RenderSystem.setShaderColor(1, 1, 1, 1);
+		RenderSystem.disableBlend();
 	}
 
 	private void savestate() {

@@ -10,7 +10,8 @@
 	"client":[
 		"MixinMinecraft",
 		"AccessorSoundEngine",
-		"MixinTickrateChangerAudioPitch"
+		"MixinTickrateChangerAudioPitch",
+		"MixinGui"
 	],
 	"injectors": {
 		"defaultRequire": 1

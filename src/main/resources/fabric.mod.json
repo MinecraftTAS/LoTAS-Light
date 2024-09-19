@@ -13,7 +13,7 @@
 		"sources": "https://github.com/MinecraftTAS/LoTAS-Light"
 	},
 	"license": "GPLv3",
-	"icon": "assets/modid/icon.png",
+	"icon": "assets/lotaslight/potion.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [

@@ -1,0 +1,9 @@
+{
+	"key.lotaslight.increaseTickrate": "Tickrate erhöhen",
+	"key.lotaslight.decreaseTickrate": "Tickrate verringern",
+	"key.lotaslight.freezeTickrate": "Tickrate stoppen",
+	"key.lotaslight.advanceTickrate": "Advance einen Tick",
+	"key.lotaslight.savestate": "Sicherungspunkt erstellen",
+	"key.lotaslight.loadstate": "Sicherungspunkt laden",
+	"keycategory.lotaslight.lotaslight": "LoTAS-Light"
+}

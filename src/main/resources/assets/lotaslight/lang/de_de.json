@@ -2,7 +2,7 @@
 	"key.lotaslight.increaseTickrate": "Tickrate erhöhen",
 	"key.lotaslight.decreaseTickrate": "Tickrate verringern",
 	"key.lotaslight.freezeTickrate": "Tickrate stoppen",
-	"key.lotaslight.advanceTickrate": "Einen Tick voranschreiten",
+	"key.lotaslight.advanceTickrate": "Advance Tickrate",
 	"key.lotaslight.savestate": "Savestate erstellen",
 	"key.lotaslight.loadstate": "Savestate laden",
 	"keycategory.lotaslight.lotaslight": "LoTAS-Light"

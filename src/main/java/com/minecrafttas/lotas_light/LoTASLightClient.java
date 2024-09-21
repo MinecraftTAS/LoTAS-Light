@@ -160,7 +160,7 @@ public class LoTASLightClient implements ClientModInitializer {
 	private void drawHud(GuiGraphics context, DeltaTracker deltaTicks) {
 		RenderSystem.enableBlend();
 		RenderSystem.setShaderColor(1, 1, 1, .5f);
-		context.blit(ResourceLocation.fromNamespaceAndPath("lotaslight", "textures/gui/iblk9xrq3z.png"), Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2 - 10, Minecraft.getInstance().getWindow().getGuiScaledHeight()
+		context.blit(ResourceLocation.fromNamespaceAndPath("lotaslight", "potion.png"), Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2 - 10, Minecraft.getInstance().getWindow().getGuiScaledHeight()
 				- 50, 0, 0, 20, 20, 20, 20);
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.disableBlend();

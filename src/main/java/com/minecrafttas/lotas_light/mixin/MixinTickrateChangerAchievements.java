@@ -2,7 +2,9 @@ package com.minecrafttas.lotas_light.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.minecrafttas.lotas_light.duck.Tickratechanger;
 
 import net.minecraft.client.Minecraft;
 
@@ -10,13 +12,13 @@ import net.minecraft.client.Minecraft;
 @Mixin(targets = "net/minecraft/client/gui/components/toasts/ToastComponent$ToastInstance")
 public class MixinTickrateChangerAchievements {
 
-	@ModifyVariable(method = "Lnet/minecraft/client/gui/components/toasts/ToastComponent$ToastInstance;render(II)Z", at = @At(value = "STORE"), ordinal = 0, index = 3)
-	public long modifyAnimationTime(long animationTimer) {
+	@ModifyExpressionValue(method = "Lnet/minecraft/client/gui/components/toasts/ToastComponent$ToastInstance;render(II)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/Util;getMillis()J"))
+	public long modifyAnimationTimeAdvancements(long millis) {
 		Minecraft mc = Minecraft.getInstance();
 		if (mc.level != null)
-			return (long) mc.level.tickRateManager().millisecondsPerTick();
+			return ((Tickratechanger) mc.level.tickRateManager()).getAdjustedMilliseconds();
 		else
-			return animationTimer;
+			return millis;
 	}
 
 }

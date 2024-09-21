@@ -7,22 +7,17 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.LevelRenderer;
 
-/**
- * Slows down the Enchantment *foil*
- * @author Scribble
- */
-@Mixin(RenderStateShard.class)
-public abstract class MixinTickrateChangerEnchantmentGlimm {
+@Mixin(LevelRenderer.class)
+public class MixinTickrateChangerWorldborder {
 
-	@ModifyExpressionValue(method = "setupGlintTexturing", at = @At(value = "INVOKE", target = "Lnet/minecraft/Util;getMillis()J"))
-	private static long modifyrenderEffect(long f) {
+	@ModifyExpressionValue(method = "renderWorldBorder", at = @At(value = "INVOKE", target = "Lnet/minecraft/Util;getMillis()J"))
+	public long modifyAnimationTimeWorldBorder(long millis) {
 		Minecraft mc = Minecraft.getInstance();
 		if (mc.level != null)
 			return ((Tickratechanger) mc.level.tickRateManager()).getAdjustedMilliseconds();
 		else
-			return f;
+			return millis;
 	}
-
 }

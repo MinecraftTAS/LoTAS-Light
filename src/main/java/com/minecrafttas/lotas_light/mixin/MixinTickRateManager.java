@@ -28,6 +28,10 @@ public abstract class MixinTickRateManager implements Tickratechanger {
 
 	private static float tickrateMirror = Float.parseFloat(LoTASLightClient.config.get(ConfigOptions.DEFAULT_TICKRATE));
 
+	private static long timeOffset = 0L;
+	private static long timeSinceTC = System.currentTimeMillis();
+	private static long fakeTimeSinceTC = System.currentTimeMillis();
+
 	@Shadow
 	private float tickrate;
 	@Shadow
@@ -45,6 +49,9 @@ public abstract class MixinTickRateManager implements Tickratechanger {
 		if (this.tickrate != 0) {
 			tickrateSaved = tickrate;
 		}
+		long time = System.currentTimeMillis() - timeSinceTC - timeOffset;
+		fakeTimeSinceTC += (long) (time * (tickrate / 20F));
+		timeSinceTC = System.currentTimeMillis() - timeOffset;
 		tickrateMirror = f;
 		return f;
 	}
@@ -107,6 +114,13 @@ public abstract class MixinTickRateManager implements Tickratechanger {
 			return;
 
 		soundManager.updatePitch();
+	}
+
+	@Override
+	public long getAdjustedMilliseconds() {
+		long time = System.currentTimeMillis() - timeSinceTC - timeOffset;
+		time *= (tickrate / 20F);
+		return (long) (fakeTimeSinceTC + time);
 	}
 
 	@Shadow

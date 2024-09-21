@@ -11,7 +11,11 @@
 		"MixinMinecraft",
 		"AccessorSoundEngine",
 		"MixinTickrateChangerAudioPitch",
-		"MixinGui"
+		"MixinGui",
+		"MixinTickrateChangerEnchantmentGlimm",
+		"MixinTickrateChangerAchievements",
+		"MixinTickrateChangerWorldborder",
+		"MixinTickrateChangerSubtitleOverlay"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -12,7 +12,7 @@ import net.minecraft.world.TickRateManager;
 
 /**
  * Slows down the Subtitles
- * @author Scribble
+ * @author Scribble, Pancake
  */
 @Mixin(SubtitleOverlay.class)
 public class MixinTickrateChangerSubtitleOverlay {

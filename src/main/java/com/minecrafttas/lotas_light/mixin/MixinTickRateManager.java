@@ -19,6 +19,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.world.TickRateManager;
 
+/**
+ * Changes the vanilla tickrate manager to allow for lower tickrates,
+ * better freeze and stepping funcitonality.
+ * 
+ * @author Scribble
+ */
 @Mixin(TickRateManager.class)
 public abstract class MixinTickRateManager implements Tickratechanger {
 	@Unique

@@ -7,6 +7,11 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 
 import net.minecraft.server.commands.TickCommand;
 
+/**
+ * Changes the lower bound of the tick command to 0
+ * 
+ * @author Scribble
+ */
 @Mixin(TickCommand.class)
 public class MixinTickCommand {
 

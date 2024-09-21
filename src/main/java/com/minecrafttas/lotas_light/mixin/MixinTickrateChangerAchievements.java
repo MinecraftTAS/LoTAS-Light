@@ -8,7 +8,11 @@ import com.minecrafttas.lotas_light.duck.Tickratechanger;
 
 import net.minecraft.client.Minecraft;
 
-// TODO Currently broken! Not registered in mixin.json
+/**
+ * Slows down advancement toasts
+ * 
+ * @author Scribble, Pancake
+ */
 @Mixin(targets = "net/minecraft/client/gui/components/toasts/ToastComponent$ToastInstance")
 public class MixinTickrateChangerAchievements {
 

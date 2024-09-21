@@ -18,7 +18,7 @@ import net.minecraft.util.Mth;
 
 /**
  * Slows down Audio
- * @author Scribble
+ * @author Scribble, Pancake
  */
 @Mixin(SoundEngine.class)
 public abstract class MixinTickrateChangerAudioPitch implements SoundPitchDuck {

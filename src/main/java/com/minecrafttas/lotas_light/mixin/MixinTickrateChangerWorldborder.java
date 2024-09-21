@@ -9,6 +9,10 @@ import com.minecrafttas.lotas_light.duck.Tickratechanger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 
+/**
+ * Slows down the worldborder animation speed
+ * @author Scribble, Pancake
+ */
 @Mixin(LevelRenderer.class)
 public class MixinTickrateChangerWorldborder {
 

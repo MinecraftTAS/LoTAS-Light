@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.RenderStateShard;
 
 /**
  * Slows down the Enchantment *foil*
- * @author Scribble
+ * @author Scribble, Pancake
  */
 @Mixin(RenderStateShard.class)
 public abstract class MixinTickrateChangerEnchantmentGlimm {

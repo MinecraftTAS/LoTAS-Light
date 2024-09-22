@@ -1,13 +1,13 @@
 {
-	"key.lotaslight.increaseTickrate": "Increase Tickrate",
-	"key.lotaslight.decreaseTickrate": "Decrease Tickrate",
-	"key.lotaslight.freezeTickrate": "Freeze Tickrate",
-	"key.lotaslight.advanceTickrate": "Advance Tick",
-	"key.lotaslight.savestate": "Savestate",
-	"key.lotaslight.loadstate": "Loadstate",
-	"msg.lotaslight.setTickrate": "Set the tickrate to %s",
-	"msg.lotaslight.turnOff": "To turn off these messages, use /lotaslight showMessage false",
-	"msg.lotaslight.showmsg.true": "Tickrate messages enabled",
-	"msg.lotaslight.showmsg.false": "Tickrate messages disabled",
+	"key.lotaslight.increaseTickrate": "Augmenter le Tickrate",
+	"key.lotaslight.decreaseTickrate": "Diminuer le Tickrate",
+	"key.lotaslight.freezeTickrate": "Geler",
+	"key.lotaslight.advanceTickrate": "Passer au prochain Tick",
+	"key.lotaslight.savestate": "Sauvegarder",
+	"key.lotaslight.loadstate": "Charger",
+	"msg.lotaslight.setTickrate": "Fixer le Tickrate à %s",
+	"msg.lotaslight.turnOff": "Pour ne plus recevoir ces messages, faites /lotaslight showMessage false",
+	"msg.lotaslight.showmsg.true": "Messages de Tickrate activés",
+	"msg.lotaslight.showmsg.false": "Messages de Tickrate désactivés",
 	"keycategory.lotaslight.lotaslight": "LoTAS-Light"
 }

@@ -24,3 +24,5 @@ Help translate this mod with [Crowdin](https://crowdin.com/project/lotas-light)
   - ScribbleTAS
 - LOLCAT
   - ScribbleTAS
+- Polish
+  - 4NTJ

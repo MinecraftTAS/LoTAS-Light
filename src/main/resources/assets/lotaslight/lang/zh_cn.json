@@ -1,9 +1,13 @@
 {
-	"key.lotaslight.increaseTickrate": "Increase Tickrate",
-	"key.lotaslight.decreaseTickrate": "Decrease Tickrate",
-	"key.lotaslight.freezeTickrate": "Freeze Tickrate",
-	"key.lotaslight.advanceTickrate": "Advance Tick",
-	"key.lotaslight.savestate": "Savestate",
-	"key.lotaslight.loadstate": "Loadstate",
+	"key.lotaslight.increaseTickrate": "增加刻率",
+	"key.lotaslight.decreaseTickrate": "减小刻率",
+	"key.lotaslight.freezeTickrate": "高级暂停",
+	"key.lotaslight.advanceTickrate": "步进刻",
+	"key.lotaslight.savestate": "存档",
+	"key.lotaslight.loadstate": "读档",
+	"msg.lotaslight.setTickrate": "已将刻率设置为%s",
+	"msg.lotaslight.turnOff": "想要关闭这些消息，请使用/lotaslight showMessage false",
+	"msg.lotaslight.showmsg.true": "刻率消息已启用",
+	"msg.lotaslight.showmsg.false": "刻率消息已禁用",
 	"keycategory.lotaslight.lotaslight": "LoTAS-Light"
 }

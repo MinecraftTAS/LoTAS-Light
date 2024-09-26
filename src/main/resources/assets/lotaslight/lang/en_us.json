@@ -1,15 +1,19 @@
 {
+	"keycategory.lotaslight.lotaslight":"LoTAS-Light",
 	"key.lotaslight.increaseTickrate":"Increase Tickrate",
 	"key.lotaslight.decreaseTickrate":"Decrease Tickrate",
 	"key.lotaslight.freezeTickrate":"Freeze Tickrate",
 	"key.lotaslight.advanceTickrate":"Advance Tick",
 	"key.lotaslight.savestate":"Savestate",
 	"key.lotaslight.loadstate":"Loadstate",
-	
 	"msg.lotaslight.setTickrate":"Set the tickrate to %s",
 	"msg.lotaslight.turnOff":"To turn off these messages, use /lotaslight showMessage false",
 	"msg.lotaslight.showmsg.true":"Tickrate messages enabled",
 	"msg.lotaslight.showmsg.false":"Tickrate messages disabled",
-	
-	"keycategory.lotaslight.lotaslight":"LoTAS-Light"
+	"msg.lotaslight.savestate.save":"Creating a new savestate at index %s",
+	"msg.lotaslight.savestate.load":"Load savestate from index %s",
+	"msg.lotaslight.savestate.delete":"Trying to delete savestate at index %s",
+	"msg.lotaslight.savestate.deleteMore.singular":"You are about to delete %d savestate! Do you want to continue? %s[YES]",
+	"msg.lotaslight.savestate.deleteMore.plural":"You are about to delete %d savestates! Do you want to continue? %s[YES]",
+	"msg.lotaslight.savestate.reload":"Reloading savestate index. Necessary when you edit the savestates outside of Minecraft."
 }

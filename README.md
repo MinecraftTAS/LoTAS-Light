@@ -18,6 +18,8 @@ Needs Fabric API
 Help translate this mod with [Crowdin](https://crowdin.com/project/lotas-light)
 
 ### Contributions
+- Chinese Simplified
+  - Normal Zombie
 - French
   - Elvee
 - German

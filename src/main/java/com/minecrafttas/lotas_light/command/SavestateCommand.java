@@ -4,10 +4,13 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.chat.HoverEvent;
 
 public class SavestateCommand {
 	public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
@@ -44,31 +47,31 @@ public class SavestateCommand {
 
 	private static int saveNew(CommandContext<CommandSourceStack> context) {
 		int index = -1;
-		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.save"), true);
+		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.save", index).withStyle(ChatFormatting.GREEN), true);
 		return 0;
 	}
 
 	private static int saveIndex(CommandContext<CommandSourceStack> context) {
 		int index = context.getArgument("index", Integer.class);
-		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.save"), true);
+		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.save", index).withStyle(ChatFormatting.GREEN), true);
 		return index;
 	}
 
 	private static int loadRecent(CommandContext<CommandSourceStack> context) {
 		int index = -1;
-		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.load"), true);
+		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.load", index).withStyle(ChatFormatting.GREEN), true);
 		return 0;
 	}
 
 	private static int loadIndex(CommandContext<CommandSourceStack> context) {
 		int index = context.getArgument("index", Integer.class);
-		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.load"), true);
+		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.load", index).withStyle(ChatFormatting.GREEN), true);
 		return index;
 	}
 
 	private static int delete(CommandContext<CommandSourceStack> context) {
 		int index = context.getArgument("index", Integer.class);
-		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.delete"), true);
+		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.delete", index).withStyle(ChatFormatting.GREEN), true);
 		return index;
 	}
 
@@ -77,17 +80,23 @@ public class SavestateCommand {
 		int indexTo = context.getArgument("indexTo", Integer.class);
 		int count = (index + 1) - indexTo;
 
-		String translationKey = "msg.lotaslight.savestate.deleteMore";
+		String translationKey = "msg.lotaslight.savestate.deleteMore" + (count == 1 ? ".singular" : ".plural");
 
-		String key2 = translationKey += count == 1 ? ".singular" : ".plural";
 		//@formatter:off
-		context.getSource().sendSuccess(
-			() -> Component.translatable(key2, count, "e")
+		Component countComponent = Component.literal(Integer.toString(count)).withStyle(ChatFormatting.RED);
+		
+		Component confirmationComponent = ComponentUtils.wrapInSquareBrackets(Component.translatable("msg.lotaslight.savestate.deleteMore.confirm", true)
 				.withStyle(
-					style -> style.withClickEvent(
-								new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/savestate delete %s %s force", index, indexTo))
-					)
-				),
+						style -> style
+							.withClickEvent(
+										new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/savestate delete %s %s force", index, indexTo))
+							)
+							.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("msg.lotaslight.savestate.deleteMore.hover").withStyle(ChatFormatting.DARK_RED)))
+				)).withStyle(ChatFormatting.GREEN);
+		
+		
+		context.getSource().sendSuccess(
+			() -> Component.translatable(translationKey, countComponent, confirmationComponent).withStyle(ChatFormatting.YELLOW),
 		true);
 		//@formatter:on
 		return index;

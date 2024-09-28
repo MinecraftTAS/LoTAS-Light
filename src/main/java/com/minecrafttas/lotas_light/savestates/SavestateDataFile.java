@@ -7,7 +7,7 @@ import com.minecrafttas.lotas_light.config.AbstractDataFile;
 public class SavestateDataFile extends AbstractDataFile {
 
 	public SavestateDataFile(Path file) {
-		super(file, "savestatedata", "Data for this savestate from LoTAS");
+		super(file, "savestatedata", "Data for this savestate from LoTAS-Light");
 	}
 
 	public enum DataValues {
@@ -31,5 +31,9 @@ public class SavestateDataFile extends AbstractDataFile {
 
 	public String get(DataValues key) {
 		return properties.getProperty(key.getConfigName());
+	}
+
+	public Path getPath() {
+		return this.file;
 	}
 }

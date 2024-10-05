@@ -7,7 +7,7 @@
 	"key.lotaslight.loadstate": "상태 불러오기",
 	"msg.lotaslight.setTickrate": "틱레이트를 %s로 설정함",
 	"msg.lotaslight.turnOff": "이런 메시지를 끄시고 싶다면, /lotaslight showMessage false를 사용하세요",
-	"msg.lotaslight.showmsg.true": "틱레이트 메시지 비활성화",
+	"msg.lotaslight.showmsg.true": "틱레이트 메시지 활성화",
 	"msg.lotaslight.showmsg.false": "틱레이트 메시지 비활성화",
 	"keycategory.lotaslight.lotaslight": "LoTAS-Light"
 }

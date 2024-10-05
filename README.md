@@ -19,11 +19,13 @@ Help translate this mod with [Crowdin](https://crowdin.com/project/lotas-light)
 
 ### Contributions
 - Chinese Simplified
-  - Normal Zombie
+  - Blom
 - French
   - Elvee
 - German
   - ScribbleTAS
+- Korean
+  - swwgdxed
 - LOLCAT
   - ScribbleTAS
 - Polish

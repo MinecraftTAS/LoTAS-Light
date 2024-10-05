@@ -19,7 +19,7 @@ repositories {
 }
 
 loom {
-
+	log4jConfigs.from(file('src/main/resources/log4j.xml'))
 }
 
 dependencies {

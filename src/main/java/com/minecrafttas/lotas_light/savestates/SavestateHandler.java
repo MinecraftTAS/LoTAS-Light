@@ -4,6 +4,8 @@ import java.nio.file.Path;
 
 import org.apache.logging.log4j.Logger;
 
+import com.minecrafttas.lotas_light.savestates.SavestateIndexer.SavestatePaths;
+
 public class SavestateHandler {
 
 	private final Logger logger;
@@ -23,6 +25,10 @@ public class SavestateHandler {
 		this.indexer = new SavestateIndexer(logger, savesDir, savestateBaseDir, worldname);
 	}
 
+	public void saveState(int index) {
+		saveState(index, null);
+	}
+
 	public void saveState(int index, SavestateCallback cb) {
 		saveState(index, true, cb);
 	}
@@ -32,10 +38,22 @@ public class SavestateHandler {
 	}
 
 	public void saveState(int index, boolean pauseTickrate, boolean changeIndex, SavestateCallback cb) {
-
+		SavestatePaths paths = indexer.createSavestate(index);
+		logger.debug("Source: {}, Target: {}", paths.getSourceFolder(), paths.getTargetFolder());
+		if (cb != null) {
+			cb.invoke(paths.getIndex(), paths.getSourceFolder(), paths.getTargetFolder());
+		}
 	}
 
-	public void loadState(Path sourcePath, Path targetPath) {
+	public void loadState(int index, SavestateCallback cb) {
+		loadState(index, true, cb);
+	}
+
+	public void loadState(int index, boolean pauseTickrate, SavestateCallback cb) {
+		loadState(index, pauseTickrate, true, cb);
+	}
+
+	private void loadState(int index, boolean pauseTickrate, boolean changeIndex, SavestateCallback cb) {
 
 	}
 

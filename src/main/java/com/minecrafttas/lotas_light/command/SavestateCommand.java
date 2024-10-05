@@ -1,5 +1,6 @@
 package com.minecrafttas.lotas_light.command;
 
+import com.minecrafttas.lotas_light.LoTASLight;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -47,13 +48,17 @@ public class SavestateCommand {
 
 	private static int saveNew(CommandContext<CommandSourceStack> context) {
 		int index = -1;
-		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.save", index).withStyle(ChatFormatting.GREEN), true);
+		LoTASLight.savestateHandler.saveState(index, (newindex, targetPath, sourcePath) -> {
+			context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.save", newindex).withStyle(ChatFormatting.GREEN), true);
+		});
 		return 0;
 	}
 
 	private static int saveIndex(CommandContext<CommandSourceStack> context) {
 		int index = context.getArgument("index", Integer.class);
-		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.save", index).withStyle(ChatFormatting.GREEN), true);
+		LoTASLight.savestateHandler.saveState(index, (newindex, targetPath, sourcePath) -> {
+			context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.save", newindex).withStyle(ChatFormatting.GREEN), true);
+		});
 		return index;
 	}
 

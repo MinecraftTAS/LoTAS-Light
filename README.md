@@ -18,10 +18,14 @@ Needs Fabric API
 Help translate this mod with [Crowdin](https://crowdin.com/project/lotas-light)
 
 ### Contributions
+- Chinese Simplified
+  - Blom
 - French
   - Elvee
 - German
   - ScribbleTAS
+- Korean
+  - swwgdxed
 - LOLCAT
   - ScribbleTAS
 - Polish

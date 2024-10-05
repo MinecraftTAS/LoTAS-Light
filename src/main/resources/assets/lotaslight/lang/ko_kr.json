@@ -1,13 +1,13 @@
 {
-	"key.lotaslight.increaseTickrate": "Increase Tickrate",
-	"key.lotaslight.decreaseTickrate": "Decrease Tickrate",
-	"key.lotaslight.freezeTickrate": "Freeze Tickrate",
-	"key.lotaslight.advanceTickrate": "Advance Tick",
-	"key.lotaslight.savestate": "Savestate",
-	"key.lotaslight.loadstate": "Loadstate",
-	"msg.lotaslight.setTickrate": "Set the tickrate to %s",
-	"msg.lotaslight.turnOff": "To turn off these messages, use /lotaslight showMessage false",
-	"msg.lotaslight.showmsg.true": "Tickrate messages enabled",
-	"msg.lotaslight.showmsg.false": "Tickrate messages disabled",
+	"key.lotaslight.increaseTickrate": "틱레이트 늘리기",
+	"key.lotaslight.decreaseTickrate": "틱레이트 줄이기",
+	"key.lotaslight.freezeTickrate": "멈추기",
+	"key.lotaslight.advanceTickrate": "1틱 전진",
+	"key.lotaslight.savestate": "상태 저장",
+	"key.lotaslight.loadstate": "상태 불러오기",
+	"msg.lotaslight.setTickrate": "틱레이트를 %s로 설정함",
+	"msg.lotaslight.turnOff": "이런 메시지를 끄시고 싶다면, /lotaslight showMessage false를 사용하세요",
+	"msg.lotaslight.showmsg.true": "틱레이트 메시지 활성화",
+	"msg.lotaslight.showmsg.false": "틱레이트 메시지 비활성화",
 	"keycategory.lotaslight.lotaslight": "LoTAS-Light"
 }

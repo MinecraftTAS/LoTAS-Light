@@ -22,7 +22,7 @@ public class LoTASLight implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-
+		LOGGER.debug("Initializing LoTAS-Light");
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			LoTASLightCommand.register(dispatcher);
 			SavestateCommand.register(dispatcher);

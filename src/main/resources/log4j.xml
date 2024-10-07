@@ -18,10 +18,8 @@
 	</Appenders>
 	<Loggers>
 		<Logger level="${sys:lotaslight.log.level:-info}" name="LoTAS-Light" additivity="false">
-		<Root level="all">
 			<AppenderRef ref="SysOut2" level="${sys:lotaslight.log.level:-info}"/>
 			<AppenderRef ref="ServerGuiConsole" level="${sys:lotaslight.log.level:-info}"/>
-		</Root>
 		</Logger>
 	</Loggers>
 </Configuration>

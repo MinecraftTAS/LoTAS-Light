@@ -7,6 +7,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -80,7 +82,7 @@ public class SavestateIndexer {
 		Path sourceDir = savesDir.resolve(worldname);
 		Path targetDir = currentSavestateDir.resolve(worldname + index);
 
-		return SavestatePaths.of(index, sourceDir, targetDir);
+		return SavestatePaths.of(index, name, sourceDir, targetDir);
 	}
 
 	private void sortSavestateList() {
@@ -130,10 +132,10 @@ public class SavestateIndexer {
 		return savestateList.keySet();
 	}
 
-	public LinkedHashMap<Integer, String> getSavestateList(int amount) {
-		LinkedHashMap<Integer, String> out = new LinkedHashMap<>();
+	public List<Savestate> getSavestateList(int amount) {
+		List<Savestate> out = new LinkedList<>();
 		if (amount <= 0) {
-			savestateList.forEach((key, value) -> out.put(key, value.getName()));
+			savestateList.forEach((key, value) -> out.add(value));
 			return out;
 		}
 
@@ -142,9 +144,9 @@ public class SavestateIndexer {
 			Entry<Integer, Savestate> entry = copy.pollLastEntry();
 			if (entry == null)
 				break;
-			out.put(entry.getKey(), entry.getValue().getName());
+			out.addFirst(entry.getValue());
 		}
-		return new LinkedHashMap<>(out.reversed());
+		return out;
 	}
 
 	public class Savestate extends AbstractDataFile {
@@ -227,17 +229,23 @@ public class SavestateIndexer {
 
 	public static class SavestatePaths {
 		private final int index;
+		private final String name;
 		private final Path sourceFolder;
 		private final Path targetFolder;
 
-		private SavestatePaths(int index, Path sourceFolder, Path targetFolder) {
+		private SavestatePaths(int index, String name, Path sourceFolder, Path targetFolder) {
 			this.index = index;
+			this.name = name;
 			this.sourceFolder = sourceFolder;
 			this.targetFolder = targetFolder;
 		}
 
 		public int getIndex() {
 			return index;
+		}
+
+		public String getName() {
+			return name;
 		}
 
 		public Path getSourceFolder() {
@@ -248,8 +256,8 @@ public class SavestateIndexer {
 			return targetFolder;
 		}
 
-		public static SavestatePaths of(int index, Path sourceFolder, Path targetFolder) {
-			return new SavestatePaths(index, sourceFolder, targetFolder);
+		public static SavestatePaths of(int index, String name, Path sourceFolder, Path targetFolder) {
+			return new SavestatePaths(index, name, sourceFolder, targetFolder);
 		}
 	}
 }

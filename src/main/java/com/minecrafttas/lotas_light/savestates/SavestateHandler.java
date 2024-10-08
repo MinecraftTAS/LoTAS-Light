@@ -1,6 +1,7 @@
 package com.minecrafttas.lotas_light.savestates;
 
 import java.nio.file.Path;
+import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 
@@ -25,40 +26,66 @@ public class SavestateHandler {
 		this.indexer = new SavestateIndexer(logger, savesDir, savestateBaseDir, worldname);
 	}
 
-	public void saveState(int index) {
-		saveState(index, null);
+	public void saveState(SavestateCallback cb, SavestateFlags... options) {
+		saveState(-1, null, cb, options);
 	}
 
-	public void saveState(int index, SavestateCallback cb) {
-		saveState(index, true, cb);
+	public void saveState(int index, SavestateCallback cb, SavestateFlags... options) {
+		saveState(index, null, cb, options);
 	}
 
-	public void saveState(int index, boolean pauseTickrate, SavestateCallback cb) {
-		saveState(index, pauseTickrate, true, cb);
+	public void saveState(String name, SavestateCallback cb, SavestateFlags... options) {
+		saveState(-1, name, cb, options);
 	}
 
-	public void saveState(int index, boolean pauseTickrate, boolean changeIndex, SavestateCallback cb) {
-		SavestatePaths paths = indexer.createSavestate(index);
+	public void saveState(int index, String name, SavestateCallback cb, SavestateFlags... options) {
+		SavestatePaths paths = indexer.createSavestate(index, name);
 		logger.debug("Source: {}, Target: {}", paths.getSourceFolder(), paths.getTargetFolder());
 		if (cb != null) {
-			cb.invoke(paths.getIndex(), paths.getSourceFolder(), paths.getTargetFolder());
+			cb.invoke(paths);
 		}
 	}
 
-	public void loadState(int index, SavestateCallback cb) {
-		loadState(index, true, cb);
+	public void loadState(SavestateCallback cb, SavestateFlags... options) {
+		loadState(-1, null, cb, options);
 	}
 
-	public void loadState(int index, boolean pauseTickrate, SavestateCallback cb) {
-		loadState(index, pauseTickrate, true, cb);
+	public void loadState(int index, SavestateCallback cb, SavestateFlags... options) {
+		loadState(index, null, cb, options);
 	}
 
-	private void loadState(int index, boolean pauseTickrate, boolean changeIndex, SavestateCallback cb) {
+	public void loadState(String name, SavestateCallback cb, SavestateFlags... options) {
+		loadState(-1, name, cb, options);
+	}
+
+	public void loadState(int index, String name, SavestateCallback cb, SavestateFlags... options) {
 
 	}
 
 	@FunctionalInterface
 	public interface SavestateCallback {
-		public void invoke(int index, Path targetPath, Path sourcePath);
+		public void invoke(SavestatePaths path);
+	}
+
+	public List<SavestateIndexer.Savestate> getSavestateInfo(int tail) {
+		return indexer.getSavestateList(tail);
+	}
+
+	/**
+	 * Acts as flags for savestates and loadstates
+	 * 
+	 * Add these to the parameters to block certain savestate behaviour
+	 * 
+	 * @author Scribble
+	 */
+	public static enum SavestateFlags {
+		/**
+		 * Stops changing updating the current index when savestating.
+		 */
+		BLOCK_CHANGE_INDEX,
+		/**
+		 * Stops setting the tickrate to 0 after a savestate/loadstate
+		 */
+		BLOCK_PAUSE_TICKRATE;
 	}
 }

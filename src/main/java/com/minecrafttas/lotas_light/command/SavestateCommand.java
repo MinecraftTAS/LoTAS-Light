@@ -1,11 +1,17 @@
 package com.minecrafttas.lotas_light.command;
 
+import java.text.SimpleDateFormat;
+import java.util.List;
+
 import com.minecrafttas.lotas_light.LoTASLight;
+import com.minecrafttas.lotas_light.savestates.SavestateIndexer.Savestate;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.ClickEvent;
@@ -22,7 +28,10 @@ public class SavestateCommand {
 						.executes(SavestateCommand::saveNew)
 						.then(Commands.argument("index", IntegerArgumentType.integer(1))
 								.executes(SavestateCommand::saveIndex)
-						)
+								.then(Commands.argument("name", StringArgumentType.greedyString())
+										.executes(SavestateCommand::saveNameIndex)))
+						.then(Commands.argument("name", StringArgumentType.greedyString())
+								.executes(SavestateCommand::saveName))
 				)
 				.then(Commands.literal("load")
 						.executes(SavestateCommand::loadRecent)
@@ -42,24 +51,69 @@ public class SavestateCommand {
 				.then(Commands.literal("reload")
 						.executes(SavestateCommand::reload)
 				)
+				.then(Commands.literal("info")
+						.executes(SavestateCommand::info)
+				)
+				
 		);
 		//@formatter:on
 	}
 
 	private static int saveNew(CommandContext<CommandSourceStack> context) {
 		int index = -1;
-		LoTASLight.savestateHandler.saveState(index, (newindex, targetPath, sourcePath) -> {
-			context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.save", newindex).withStyle(ChatFormatting.GREEN), true);
+		LoTASLight.savestateHandler.saveState(index, (paths) -> {
+			//@formatter:off
+			context.getSource().sendSuccess(() -> 
+				Component.translatable("msg.lotaslight.savestate.save", 
+						Component.literal(paths.getName()).withStyle(ChatFormatting.YELLOW),
+						Component.literal(Integer.toString(paths.getIndex())).withStyle(ChatFormatting.AQUA)
+				).withStyle(ChatFormatting.GREEN), true);
+			//@formatter:on
 		});
 		return 0;
 	}
 
 	private static int saveIndex(CommandContext<CommandSourceStack> context) {
 		int index = context.getArgument("index", Integer.class);
-		LoTASLight.savestateHandler.saveState(index, (newindex, targetPath, sourcePath) -> {
-			context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.save", newindex).withStyle(ChatFormatting.GREEN), true);
+		LoTASLight.savestateHandler.saveState(index, (paths) -> {
+			//@formatter:off
+			context.getSource().sendSuccess(() -> 
+				Component.translatable("msg.lotaslight.savestate.save", 
+						Component.literal(paths.getName()).withStyle(ChatFormatting.YELLOW),
+						Component.literal(Integer.toString(paths.getIndex())).withStyle(ChatFormatting.AQUA)
+				).withStyle(ChatFormatting.GREEN), true);
+			//@formatter:on
 		});
 		return index;
+	}
+
+	private static int saveName(CommandContext<CommandSourceStack> context) {
+		String name = context.getArgument("name", String.class);
+		LoTASLight.savestateHandler.saveState(name, (paths) -> {
+			//@formatter:off
+			context.getSource().sendSuccess(() -> 
+				Component.translatable("msg.lotaslight.savestate.save", 
+						Component.literal(paths.getName()).withStyle(ChatFormatting.YELLOW),
+						Component.literal(Integer.toString(paths.getIndex())).withStyle(ChatFormatting.AQUA)
+				).withStyle(ChatFormatting.GREEN), true);
+			//@formatter:on
+		});
+		return 0;
+	}
+
+	private static int saveNameIndex(CommandContext<CommandSourceStack> context) {
+		int index = context.getArgument("index", Integer.class);
+		String name = context.getArgument("name", String.class);
+		LoTASLight.savestateHandler.saveState(index, name, (paths) -> {
+			//@formatter:off
+			context.getSource().sendSuccess(() -> 
+				Component.translatable("msg.lotaslight.savestate.save", 
+						Component.literal(paths.getName()).withStyle(ChatFormatting.YELLOW),
+						Component.literal(Integer.toString(paths.getIndex())).withStyle(ChatFormatting.AQUA)
+				).withStyle(ChatFormatting.GREEN), true);
+			//@formatter:on
+		});
+		return 0;
 	}
 
 	private static int loadRecent(CommandContext<CommandSourceStack> context) {
@@ -116,6 +170,33 @@ public class SavestateCommand {
 
 	private static int reload(CommandContext<CommandSourceStack> context) {
 		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.reload"), true);
+		return 0;
+	}
+
+	private static int info(CommandContext<CommandSourceStack> context) {
+		List<Savestate> savestateList = LoTASLight.savestateHandler.getSavestateInfo(5);
+		String format = I18n.get("msg.lotaslight.savestate.dateformat");
+		context.getSource().sendSystemMessage(Component.literal(" "));
+		SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+		for (Savestate savestate : savestateList) {
+			String index = Integer.toString(savestate.getIndex());
+			//@formatter:off
+			context.getSource().sendSystemMessage(
+					Component.translatable("%s: %s",
+						Component.literal(index).withStyle(ChatFormatting.AQUA), 
+						Component.literal(savestate.getName()).withStyle(ChatFormatting.YELLOW)
+					).withStyle(t->
+						t.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/savestate load %s", savestate.getIndex())))
+					).withStyle(t -> 
+						t.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+							Component.translatable("msg.lotaslight.savestate.info.hover", 
+								Component.literal(dateFormat.format(savestate.getDate())).withStyle(ChatFormatting.GOLD),
+								index
+							).withStyle(ChatFormatting.GREEN)))
+					)
+				);
+			//@formatter:on
+		}
 		return 0;
 	}
 }

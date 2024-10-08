@@ -10,12 +10,14 @@
 	"msg.lotaslight.turnOff":"To turn off these messages, use /lotaslight showMessage false",
 	"msg.lotaslight.showmsg.true":"Tickrate messages enabled",
 	"msg.lotaslight.showmsg.false":"Tickrate messages disabled",
-	"msg.lotaslight.savestate.save":"Creating a new savestate at index %s",
-	"msg.lotaslight.savestate.load":"Load savestate from index %s",
+	"msg.lotaslight.savestate.save":"Creating a new savestate %s at index %s",
+	"msg.lotaslight.savestate.load":"Load savestate %s from index %s",
 	"msg.lotaslight.savestate.delete":"Trying to delete savestate at index %s",
 	"msg.lotaslight.savestate.deleteMore.singular":"You are about to delete %s savestate! Do you want to continue? %s",
 	"msg.lotaslight.savestate.deleteMore.plural":"You are about to delete %s savestates! Do you want to continue? %s",
 	"msg.lotaslight.savestate.deleteMore.confirm":"YES",
 	"msg.lotaslight.savestate.deleteMore.hover":"This can not be undone or stopped!",
-	"msg.lotaslight.savestate.reload":"Reloading savestate index. Necessary when you edit the savestates outside of Minecraft."
+	"msg.lotaslight.savestate.reload":"Reloading savestate index. Necessary when you edit the savestates outside of Minecraft.",
+	"msg.lotaslight.savestate.dateformat":"MM/dd/yyyy hh:mm:ss a",
+	"msg.lotaslight.savestate.info.hover":"%s\nClick to load savestate #%s"
 }

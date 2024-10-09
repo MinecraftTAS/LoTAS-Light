@@ -62,6 +62,10 @@ public class SavestateHandler {
 
 	}
 
+	public void reload() {
+		indexer.reload();
+	}
+
 	@FunctionalInterface
 	public interface SavestateCallback {
 		public void invoke(SavestatePaths path);

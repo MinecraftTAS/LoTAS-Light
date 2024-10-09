@@ -2,8 +2,10 @@ package com.minecrafttas.lotas_light.command;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.function.UnaryOperator;
 
 import com.minecrafttas.lotas_light.LoTASLight;
+import com.minecrafttas.lotas_light.savestates.SavestateIndexer.FailedSavestate;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.Savestate;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -18,6 +20,7 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
 
 public class SavestateCommand {
 	public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
@@ -170,6 +173,7 @@ public class SavestateCommand {
 
 	private static int reload(CommandContext<CommandSourceStack> context) {
 		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.reload"), true);
+		LoTASLight.savestateHandler.reload();
 		return 0;
 	}
 
@@ -179,23 +183,46 @@ public class SavestateCommand {
 		context.getSource().sendSystemMessage(Component.literal(" "));
 		SimpleDateFormat dateFormat = new SimpleDateFormat(format);
 		for (Savestate savestate : savestateList) {
-			String index = Integer.toString(savestate.getIndex());
+
+			String index = savestate.getIndex() == null ? "" : Integer.toString(savestate.getIndex());
+			String name = savestate.getName() == null ? "" : savestate.getName();
+			String date = savestate.getDate() == null ? "" : dateFormat.format(savestate.getDate());
+
 			//@formatter:off
-			context.getSource().sendSystemMessage(
-					Component.translatable("%s: %s",
-						Component.literal(index).withStyle(ChatFormatting.AQUA), 
-						Component.literal(savestate.getName()).withStyle(ChatFormatting.YELLOW)
-					).withStyle(t->
-						t.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/savestate load %s", savestate.getIndex())))
-					).withStyle(t -> 
-						t.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-							Component.translatable("msg.lotaslight.savestate.info.hover", 
-								Component.literal(dateFormat.format(savestate.getDate())).withStyle(ChatFormatting.GOLD),
+			UnaryOperator<Style> click = t -> 
+							t.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,
+								String.format("/savestate load %s", index)));
+			
+			UnaryOperator<Style> hover = t -> 
+							t.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+								Component.translatable("msg.lotaslight.savestate.info.hover", 
+								Component.literal(date).withStyle(ChatFormatting.GOLD),
 								index
-							).withStyle(ChatFormatting.GREEN)))
-					)
-				);
+							).withStyle(ChatFormatting.GREEN)));
+			
+			Component msg = null;
+					
+			if(savestate instanceof FailedSavestate) {
+				FailedSavestate failedSavestate = (FailedSavestate) savestate;
+				msg = Component.translatable("%s: %s %s",
+						Component.literal(index).withStyle(ChatFormatting.AQUA), 
+						Component.literal(name).withStyle(ChatFormatting.YELLOW),
+						Component.translatable("msg.lotaslight.savestates.info.error", failedSavestate.getError().getMessage())
+					.withStyle(ChatFormatting.RED))
+					.withStyle(t -> 
+						t.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+							Component.literal(date).withStyle(ChatFormatting.GOLD)
+						)));
+			} else {
+				msg = Component.translatable("%s: %s",
+						Component.literal(index).withStyle(ChatFormatting.AQUA), 
+						Component.literal(name).withStyle(ChatFormatting.YELLOW))
+					.withStyle(click)
+					.withStyle(hover);
+			}
+		
 			//@formatter:on
+			context.getSource().sendSystemMessage(msg);
 		}
 		return 0;
 	}

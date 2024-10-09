@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -20,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.minecrafttas.lotas_light.LoTASLight;
 import com.minecrafttas.lotas_light.config.AbstractDataFile;
+import com.minecrafttas.lotas_light.savestates.exceptions.SavestateException;
 
 /**
  * Manages the savestates on the filesystem and assignes new indizes
@@ -96,16 +99,16 @@ public class SavestateIndexer {
 		savestateList.putAll(copy);
 	}
 
-	public void refresh() {
-		logger.trace("Refreshing savestate indexes");
-		Path savestateDir = savestateBaseDirectory.resolve(worldname);
+	public void reload() {
+		logger.trace("Reloading savestate indexes");
+		savestateList.clear();
 		Thread t = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				Stream<Path> stream = null;
 				try {
-					stream = Files.list(savestateDir); // Get a list of paths in the specified directory
+					stream = Files.list(currentSavestateDir); // Get a list of paths in the specified directory
 				} catch (IOException e) {
 					logger.catching(e);
 					return;
@@ -114,17 +117,38 @@ public class SavestateIndexer {
 				//@formatter:off
 				Set<Path> pathSet = stream
 						.filter(file -> Files.isDirectory(file))
-						.filter(file -> file.getFileName().startsWith(String.format("%s-Savestate", worldname)))
+						.filter(file -> file.getFileName().toString().startsWith(worldname))
 						.collect(Collectors.toSet());
 				//@formatter:on
 
 				stream.close();
 
-				pathSet.forEach(path -> {
+				Pattern pattern = Pattern.compile(worldname + "(\\d)$");
 
+				pathSet.forEach(path -> {
+					Path savestateDat = path.resolve(savestateDatPath);
+
+					Savestate savestate = null;
+					if (!Files.exists(savestateDat)) {
+
+						Matcher matcher = pattern.matcher(path.getFileName().toString());
+						int backupIndex = -1;
+						if (matcher.find()) {
+							backupIndex = Integer.parseInt(matcher.group(1));
+						}
+
+						logger.warn("Savestate {} does not contain a valid savestate.xml, skipping", backupIndex);
+						Throwable error = new SavestateException("Savestate.xml data file not found in " + savestateBaseDirectory.relativize(savestateDat));
+						savestate = new FailedSavestate(path, backupIndex, null, null, error);
+					} else {
+						savestate = new Savestate(savestateDat);
+						savestate.loadFromXML();
+					}
+					savestateList.put(savestate.getIndex(), savestate.clone());
+					sortSavestateList();
 				});
 			}
-		});
+		}, "Savestate Reload");
 		t.run();
 	}
 
@@ -151,19 +175,23 @@ public class SavestateIndexer {
 
 	public class Savestate extends AbstractDataFile {
 
-		private int index;
-		private String name;
-		private Date date;
+		protected Integer index;
+		protected String name;
+		protected Date date;
 
 		private Savestate(Path file) {
-			super(LoTASLight.LOGGER, file, "Savestate", "Stores savestate related data");
+			this(file, -1, null, null);
 		}
 
-		private Savestate(Path file, Properties properties, int index, String name, Date date) {
+		private Savestate(Path file, Integer index, String name, Date date) {
 			super(LoTASLight.LOGGER, file, "Savestate", "Stores savestate related data");
 			this.index = index;
 			this.name = name;
 			this.date = date;
+		}
+
+		private Savestate(Path file, Properties properties, Integer index, String name, Date date) {
+			this(file, index, name, date);
 			this.properties = properties;
 		}
 
@@ -178,7 +206,7 @@ public class SavestateIndexer {
 			}
 		}
 
-		public int getIndex() {
+		public Integer getIndex() {
 			return index;
 		}
 
@@ -227,20 +255,64 @@ public class SavestateIndexer {
 		}
 	}
 
+	public class FailedSavestate extends Savestate {
+
+		private final Throwable t;
+
+		public FailedSavestate(Path file, Throwable t) {
+			this(file, null, null, null, t);
+		}
+
+		public FailedSavestate(Path file, Integer index, String name, Date date, Throwable t) {
+			super(file, index, name, date);
+			this.t = t;
+		}
+
+		public FailedSavestate(Path file, Properties properties, Integer index, String name, Date date, Throwable t) {
+			super(file, index, name, date);
+			this.t = t;
+		}
+
+		public Throwable getError() {
+			return t;
+		}
+
+		@Override
+		public void saveToXML() {
+		}
+
+		@Override
+		public void save() {
+		}
+
+		@Override
+		public void loadFromXML() {
+		}
+
+		@Override
+		public void load() {
+		}
+
+		@Override
+		protected FailedSavestate clone() {
+			return new FailedSavestate(file, properties, index, name, date, t);
+		}
+	}
+
 	public static class SavestatePaths {
-		private final int index;
+		private final Integer index;
 		private final String name;
 		private final Path sourceFolder;
 		private final Path targetFolder;
 
-		private SavestatePaths(int index, String name, Path sourceFolder, Path targetFolder) {
+		private SavestatePaths(Integer index, String name, Path sourceFolder, Path targetFolder) {
 			this.index = index;
 			this.name = name;
 			this.sourceFolder = sourceFolder;
 			this.targetFolder = targetFolder;
 		}
 
-		public int getIndex() {
+		public Integer getIndex() {
 			return index;
 		}
 

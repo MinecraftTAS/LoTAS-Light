@@ -19,6 +19,9 @@ repositories {
 }
 
 loom {
+	// set access widener
+	accessWidenerPath = file('src/main/resources/lotaslight.accesswidener')
+	// set custom log4jconfig
 	log4jConfigs.from(file('src/main/resources/log4j.xml'))
 }
 

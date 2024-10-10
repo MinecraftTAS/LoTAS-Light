@@ -50,6 +50,7 @@ public class SavestateIndexer {
 		savestateList = new LinkedHashMap<>();
 		createSavestateDir();
 		currentSavestate = new Savestate(savesDir.resolve(worldname).resolve(savestateDatPath));
+		reload();
 	}
 
 	private void createSavestateDir() {
@@ -61,10 +62,10 @@ public class SavestateIndexer {
 	}
 
 	public SavestatePaths createSavestate(int index) {
-		return createSavestate(index, null);
+		return createSavestate(index, null, true);
 	}
 
-	public SavestatePaths createSavestate(int index, String name) {
+	public SavestatePaths createSavestate(int index, String name, boolean changeIndex) {
 		if (index < 0) {
 			index = currentSavestate.getIndex() + 1;
 		}
@@ -73,11 +74,16 @@ public class SavestateIndexer {
 			name = "Savestate #" + index;
 		}
 
+		int savedIndex = index;
+
 		currentSavestate.index = index;
 		currentSavestate.name = name;
 		currentSavestate.date = new Date();
 
 		currentSavestate.saveToXML();
+
+		if (!changeIndex)
+			currentSavestate.index = savedIndex;
 
 		savestateList.put(index, currentSavestate.clone());
 		sortSavestateList();

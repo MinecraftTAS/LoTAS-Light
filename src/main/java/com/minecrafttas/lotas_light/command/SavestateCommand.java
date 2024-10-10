@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 
 import com.minecrafttas.lotas_light.LoTASLight;
+import com.minecrafttas.lotas_light.savestates.SavestateHandler.SavestateCallback;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.FailedSavestate;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.Savestate;
 import com.mojang.brigadier.CommandDispatcher;
@@ -64,7 +65,8 @@ public class SavestateCommand {
 
 	private static int saveNew(CommandContext<CommandSourceStack> context) {
 		int index = -1;
-		LoTASLight.savestateHandler.saveState(index, (paths) -> {
+
+		SavestateCallback cb = (paths) -> {
 			//@formatter:off
 			context.getSource().sendSuccess(() -> 
 				Component.translatable("msg.lotaslight.savestate.save", 
@@ -72,13 +74,20 @@ public class SavestateCommand {
 						Component.literal(Integer.toString(paths.getIndex())).withStyle(ChatFormatting.AQUA)
 				).withStyle(ChatFormatting.GREEN), true);
 			//@formatter:on
-		});
+		};
+
+		try {
+			LoTASLight.savestateHandler.saveState(index, cb);
+		} catch (Exception e) {
+			sendFailure(context, e);
+		}
 		return 0;
 	}
 
 	private static int saveIndex(CommandContext<CommandSourceStack> context) {
 		int index = context.getArgument("index", Integer.class);
-		LoTASLight.savestateHandler.saveState(index, (paths) -> {
+
+		SavestateCallback cb = (paths) -> {
 			//@formatter:off
 			context.getSource().sendSuccess(() -> 
 				Component.translatable("msg.lotaslight.savestate.save", 
@@ -86,13 +95,20 @@ public class SavestateCommand {
 						Component.literal(Integer.toString(paths.getIndex())).withStyle(ChatFormatting.AQUA)
 				).withStyle(ChatFormatting.GREEN), true);
 			//@formatter:on
-		});
+		};
+
+		try {
+			LoTASLight.savestateHandler.saveState(index, cb);
+		} catch (Exception e) {
+			sendFailure(context, e);
+		}
 		return index;
 	}
 
 	private static int saveName(CommandContext<CommandSourceStack> context) {
 		String name = context.getArgument("name", String.class);
-		LoTASLight.savestateHandler.saveState(name, (paths) -> {
+
+		SavestateCallback cb = (paths) -> {
 			//@formatter:off
 			context.getSource().sendSuccess(() -> 
 				Component.translatable("msg.lotaslight.savestate.save", 
@@ -100,14 +116,21 @@ public class SavestateCommand {
 						Component.literal(Integer.toString(paths.getIndex())).withStyle(ChatFormatting.AQUA)
 				).withStyle(ChatFormatting.GREEN), true);
 			//@formatter:on
-		});
+		};
+
+		try {
+			LoTASLight.savestateHandler.saveState(name, cb);
+		} catch (Exception e) {
+			sendFailure(context, e);
+		}
 		return 0;
 	}
 
 	private static int saveNameIndex(CommandContext<CommandSourceStack> context) {
 		int index = context.getArgument("index", Integer.class);
 		String name = context.getArgument("name", String.class);
-		LoTASLight.savestateHandler.saveState(index, name, (paths) -> {
+
+		SavestateCallback cb = (paths) -> {
 			//@formatter:off
 			context.getSource().sendSuccess(() -> 
 				Component.translatable("msg.lotaslight.savestate.save", 
@@ -115,7 +138,13 @@ public class SavestateCommand {
 						Component.literal(Integer.toString(paths.getIndex())).withStyle(ChatFormatting.AQUA)
 				).withStyle(ChatFormatting.GREEN), true);
 			//@formatter:on
-		});
+		};
+
+		try {
+			LoTASLight.savestateHandler.saveState(index, name, cb);
+		} catch (Exception e) {
+			sendFailure(context, e);
+		}
 		return 0;
 	}
 
@@ -225,5 +254,10 @@ public class SavestateCommand {
 			context.getSource().sendSystemMessage(msg);
 		}
 		return 0;
+	}
+
+	private static void sendFailure(CommandContext<CommandSourceStack> context, Throwable e) {
+		context.getSource().sendFailure(Component.literal(e.getMessage()));
+		LoTASLight.LOGGER.catching(e);
 	}
 }

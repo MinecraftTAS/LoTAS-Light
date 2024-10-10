@@ -88,6 +88,19 @@ public abstract class MixinTickRateManager implements Tickratechanger {
 	}
 
 	@Override
+	public void enableTickrate0(boolean enable) {
+		advanceTickrate = false;
+		if (enable) {
+			if (tickrate != 0)
+				setTickRate(0f);
+		} else {
+			if (tickrate == 0)
+				setTickRate(tickrateSaved);
+		}
+
+	}
+
+	@Override
 	public void advanceTick() {
 		if (tickrate == 0) {
 			setTickRate(tickrateSaved);

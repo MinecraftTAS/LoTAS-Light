@@ -14,10 +14,10 @@ import com.minecrafttas.lotas_light.mixin.AccessorLevelStorage;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.SavestatePaths;
 import com.minecrafttas.lotas_light.savestates.exceptions.SavestateException;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DirectoryLock;
-import net.minecraft.world.TickRateManager;
 import net.minecraft.world.level.storage.LevelStorageSource.LevelStorageAccess;
 
 public class SavestateHandler {
@@ -78,9 +78,10 @@ public class SavestateHandler {
 		List<SavestateFlags> flagList = Arrays.asList(flags);
 
 		logger.trace("Enable tickrate 0");
-		TickRateManager tickrateManager = server.tickRateManager();
-		Tickratechanger tickratechanger = (Tickratechanger) tickrateManager;
-		tickratechanger.enableTickrate0(true);
+		Tickratechanger tickratechangerServer = (Tickratechanger) server.tickRateManager();
+		Tickratechanger tickratechangerClient = (Tickratechanger) Minecraft.getInstance().level.tickRateManager();
+		tickratechangerServer.enableTickrate0(true);
+		tickratechangerClient.enableTickrate0(true);
 
 		logger.trace("Save world & players");
 		server.saveEverything(true, true, false);
@@ -99,8 +100,10 @@ public class SavestateHandler {
 
 		levelStorage.lock = DirectoryLock.create(paths.getSourceFolder());
 
-		if (shouldBlock(flagList, SavestateFlags.BLOCK_PAUSE_TICKRATE))
-			tickratechanger.enableTickrate0(false);
+		if (shouldBlock(flagList, SavestateFlags.BLOCK_PAUSE_TICKRATE)) {
+			tickratechangerServer.enableTickrate0(false);
+			tickratechangerClient.enableTickrate0(true);
+		}
 
 		state = State.NONE;
 

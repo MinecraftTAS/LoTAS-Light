@@ -50,6 +50,7 @@ public class SavestateIndexer {
 		savestateList = new LinkedHashMap<>();
 		createSavestateDir();
 		currentSavestate = new Savestate(savesDir.resolve(worldname).resolve(savestateDatPath));
+		currentSavestate.loadFromXML();
 		reload();
 	}
 

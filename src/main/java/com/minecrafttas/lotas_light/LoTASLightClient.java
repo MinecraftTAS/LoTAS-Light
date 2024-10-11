@@ -167,7 +167,22 @@ public class LoTASLightClient implements ClientModInitializer {
 	}
 
 	private void savestate() {
+		Minecraft mc = Minecraft.getInstance();
+		try {
+			LoTASLight.savestateHandler.saveState((paths) -> {
+				//@formatter:off
+				Component component = Component.translatable("msg.lotaslight.savestate.save", 
+						Component.literal(paths.getName()).withStyle(ChatFormatting.YELLOW),
+						Component.literal(Integer.toString(paths.getIndex())).withStyle(ChatFormatting.AQUA)
+				).withStyle(ChatFormatting.GREEN);
+				//@formatter:on
 
+				mc.gui.getChat().addMessage(component);
+			});
+		} catch (Exception e) {
+			mc.gui.getChat().addMessage(Component.literal(e.getMessage()));
+			LoTASLight.LOGGER.catching(e);
+		}
 	}
 
 	private void loadstate() {

@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.minecrafttas.lotas_light.LoTASLight;
 import com.minecrafttas.lotas_light.config.AbstractDataFile;
+import com.minecrafttas.lotas_light.savestates.exceptions.LoadstateException;
 import com.minecrafttas.lotas_light.savestates.exceptions.SavestateException;
 
 /**
@@ -67,6 +68,7 @@ public class SavestateIndexer {
 	}
 
 	public SavestatePaths createSavestate(int index, String name, boolean changeIndex) {
+		logger.trace("Creating savestate in indexer");
 		if (index < 0) {
 			index = currentSavestate.getIndex() + 1;
 		}
@@ -93,6 +95,32 @@ public class SavestateIndexer {
 		Path targetDir = currentSavestateDir.resolve(worldname + index);
 
 		return SavestatePaths.of(index, name, sourceDir, targetDir);
+	}
+
+	public SavestatePaths loadSavestate(int index, boolean changeIndex) throws LoadstateException {
+		logger.trace("Loading savestate in indexer");
+		if (index < 0) {
+			index = currentSavestate.getIndex();
+		}
+
+		Savestate savestateToLoad = savestateList.get(index);
+
+		if (savestateToLoad == null) {
+			throw new LoadstateException("Savestate %s does not exist", index);
+		}
+
+		int savedIndex = currentSavestate.index;
+		this.currentSavestate = savestateToLoad.clone();
+
+		Path sourceDir = currentSavestateDir.resolve(worldname + currentSavestate.index);
+		Path targetDir = savesDir.resolve(worldname);
+
+		SavestatePaths out = SavestatePaths.of(currentSavestate.index, currentSavestate.name, sourceDir, targetDir);
+
+		if (!changeIndex)
+			currentSavestate.index = savedIndex;
+
+		return out;
 	}
 
 	private void sortSavestateList() {
@@ -178,6 +206,10 @@ public class SavestateIndexer {
 			out.addFirst(entry.getValue());
 		}
 		return out;
+	}
+
+	public Savestate getCurrentSavestate() {
+		return currentSavestate;
 	}
 
 	public class Savestate extends AbstractDataFile {

@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 import com.minecrafttas.lotas_light.mixin.AccessorLevelStorage;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.SavestatePaths;
+import com.minecrafttas.lotas_light.savestates.exceptions.LoadstateException;
 import com.minecrafttas.lotas_light.savestates.exceptions.SavestateException;
 
 import net.minecraft.client.Minecraft;
@@ -78,8 +79,9 @@ public class SavestateHandler {
 		List<SavestateFlags> flagList = Arrays.asList(flags);
 
 		logger.trace("Enable tickrate 0");
+		Minecraft mc = Minecraft.getInstance();
 		Tickratechanger tickratechangerServer = (Tickratechanger) server.tickRateManager();
-		Tickratechanger tickratechangerClient = (Tickratechanger) Minecraft.getInstance().level.tickRateManager();
+		Tickratechanger tickratechangerClient = (Tickratechanger) mc.level.tickRateManager();
 		tickratechangerServer.enableTickrate0(true);
 		tickratechangerClient.enableTickrate0(true);
 
@@ -91,7 +93,7 @@ public class SavestateHandler {
 		LevelStorageAccess levelStorage = ((AccessorLevelStorage) server).getStorageSource();
 		levelStorage.lock.close();
 
-		logger.trace("Create new savestate index");
+		logger.trace("Create new savestate index via indexer");
 		SavestatePaths paths = indexer.createSavestate(index, name, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX));
 		logger.debug("Source: {}, Target: {}", paths.getSourceFolder(), paths.getTargetFolder());
 
@@ -112,33 +114,49 @@ public class SavestateHandler {
 		}
 	}
 
-	public void loadState(SavestateCallback cb, SavestateFlags... options) {
-		loadState(-1, null, cb, options);
+	public void loadState(SavestateCallback cb, SavestateFlags... flags) throws Exception {
+		loadState(-1, null, cb, flags);
 	}
 
-	public void loadState(int index, SavestateCallback cb, SavestateFlags... options) {
-		loadState(index, null, cb, options);
+	public void loadState(int index, SavestateCallback cb, SavestateFlags... flags) throws Exception {
+		loadState(index, null, cb, flags);
 	}
 
-	public void loadState(String name, SavestateCallback cb, SavestateFlags... options) {
-		loadState(-1, name, cb, options);
+	public void loadState(String name, SavestateCallback cb, SavestateFlags... flags) throws Exception {
+		loadState(-1, name, cb, flags);
 	}
 
-	public void loadState(int index, String name, SavestateCallback cb, SavestateFlags... options) {
+	public void loadState(int index, String name, SavestateCallback cb, SavestateFlags... flags) throws Exception {
+		// Check if a loadstating operation is being carried out
+		if (state != State.NONE) {
+			throw new LoadstateException(I18n.get(String.format("msg.lotaslight.loadstate.%s.error", state == State.SAVESTATING ? "save" : "load")));
+		}
+		List<SavestateFlags> flagList = Arrays.asList(flags);
 
+		logger.trace("Load savestate index via indexer");
+		SavestatePaths paths = indexer.loadSavestate(index, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX));
+		logger.debug("Source: {}, Target: {}", paths.getSourceFolder(), paths.getTargetFolder());
+
+		if (cb != null) {
+			cb.invoke(paths);
+		}
 	}
 
 	public void reload() {
 		indexer.reload();
 	}
 
-	@FunctionalInterface
-	public interface SavestateCallback {
-		public void invoke(SavestatePaths path);
+	public int getCurrentIndex() {
+		return indexer.getCurrentSavestate().index;
 	}
 
 	public List<SavestateIndexer.Savestate> getSavestateInfo(int tail) {
 		return indexer.getSavestateList(tail);
+	}
+
+	@FunctionalInterface
+	public interface SavestateCallback {
+		public void invoke(SavestatePaths path);
 	}
 
 	/**

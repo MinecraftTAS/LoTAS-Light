@@ -150,13 +150,43 @@ public class SavestateCommand {
 
 	private static int loadRecent(CommandContext<CommandSourceStack> context) {
 		int index = -1;
-		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.load", index).withStyle(ChatFormatting.GREEN), true);
+
+		SavestateCallback cb = (paths) -> {
+			//@formatter:off
+			context.getSource().sendSuccess(() -> 
+				Component.translatable("msg.lotaslight.savestate.load", 
+						Component.literal(paths.getName()).withStyle(ChatFormatting.YELLOW),
+						Component.literal(Integer.toString(paths.getIndex())).withStyle(ChatFormatting.AQUA)
+				).withStyle(ChatFormatting.GREEN), true);
+			//@formatter:on
+		};
+
+		try {
+			LoTASLight.savestateHandler.loadState(index, cb);
+		} catch (Exception e) {
+			sendFailure(context, e);
+		}
 		return 0;
 	}
 
 	private static int loadIndex(CommandContext<CommandSourceStack> context) {
 		int index = context.getArgument("index", Integer.class);
-		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.load", index).withStyle(ChatFormatting.GREEN), true);
+
+		SavestateCallback cb = (paths) -> {
+			//@formatter:off
+			context.getSource().sendSuccess(() -> 
+				Component.translatable("msg.lotaslight.savestate.load", 
+						Component.literal(paths.getName()).withStyle(ChatFormatting.YELLOW),
+						Component.literal(Integer.toString(paths.getIndex())).withStyle(ChatFormatting.AQUA)
+				).withStyle(ChatFormatting.GREEN), true);
+			//@formatter:on
+		};
+
+		try {
+			LoTASLight.savestateHandler.loadState(index, cb);
+		} catch (Exception e) {
+			sendFailure(context, e);
+		}
 		return index;
 	}
 
@@ -208,12 +238,15 @@ public class SavestateCommand {
 
 	private static int info(CommandContext<CommandSourceStack> context) {
 		List<Savestate> savestateList = LoTASLight.savestateHandler.getSavestateInfo(5);
+		int currentIndex = LoTASLight.savestateHandler.getCurrentIndex();
 		String format = I18n.get("msg.lotaslight.savestate.dateformat");
+
 		context.getSource().sendSystemMessage(Component.literal(" "));
 		SimpleDateFormat dateFormat = new SimpleDateFormat(format);
 		for (Savestate savestate : savestateList) {
 
 			String index = savestate.getIndex() == null ? "" : Integer.toString(savestate.getIndex());
+			boolean isCurrentIndex = savestate.getIndex() == currentIndex;
 			String name = savestate.getName() == null ? "" : savestate.getName();
 			String date = savestate.getDate() == null ? "" : dateFormat.format(savestate.getDate());
 
@@ -234,8 +267,8 @@ public class SavestateCommand {
 			if(savestate instanceof FailedSavestate) {
 				FailedSavestate failedSavestate = (FailedSavestate) savestate;
 				msg = Component.translatable("%s: %s %s",
-						Component.literal(index).withStyle(ChatFormatting.AQUA), 
-						Component.literal(name).withStyle(ChatFormatting.YELLOW),
+						Component.literal(index).withStyle(isCurrentIndex ? ChatFormatting.AQUA : ChatFormatting.BLUE), 
+						Component.literal(name).withStyle(isCurrentIndex ? ChatFormatting.YELLOW : ChatFormatting.GOLD),
 						Component.translatable("msg.lotaslight.savestates.info.error", failedSavestate.getError().getMessage())
 					.withStyle(ChatFormatting.RED))
 					.withStyle(t -> 
@@ -244,8 +277,8 @@ public class SavestateCommand {
 						)));
 			} else {
 				msg = Component.translatable("%s: %s",
-						Component.literal(index).withStyle(ChatFormatting.AQUA), 
-						Component.literal(name).withStyle(ChatFormatting.YELLOW))
+						Component.literal(index).withStyle(isCurrentIndex ? ChatFormatting.AQUA : ChatFormatting.BLUE), 
+						Component.literal(name).withStyle(isCurrentIndex ? ChatFormatting.YELLOW : ChatFormatting.GOLD))
 					.withStyle(click)
 					.withStyle(hover);
 			}

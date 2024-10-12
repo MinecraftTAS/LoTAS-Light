@@ -5,6 +5,10 @@ public class LoadstateException extends Exception {
 		super(s);
 	}
 
+	public LoadstateException(String s, Object... args) {
+		super(String.format(s, args));
+	}
+
 	public LoadstateException(Throwable t) {
 		super(t);
 	}

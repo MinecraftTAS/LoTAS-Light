@@ -17,6 +17,8 @@ public class LoTASLight implements ModInitializer {
 
 	public static SavestateHandler savestateHandler = null;
 
+	public static Float startTickrate = null;
+
 	@Override
 	public void onInitialize() {
 		LOGGER.debug("Initializing LoTAS-Light");

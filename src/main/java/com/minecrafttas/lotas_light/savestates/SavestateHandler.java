@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 
+import com.minecrafttas.lotas_light.LoTASLight;
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 import com.minecrafttas.lotas_light.mixin.AccessorLevelStorage;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.SavestatePaths;
@@ -16,19 +17,24 @@ import com.minecrafttas.lotas_light.savestates.exceptions.LoadstateException;
 import com.minecrafttas.lotas_light.savestates.exceptions.SavestateException;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.DirectoryLock;
+import net.minecraft.world.TickRateManager;
 import net.minecraft.world.level.storage.LevelStorageSource.LevelStorageAccess;
 
 public class SavestateHandler {
 
 	private final Logger logger;
-	private final MinecraftServer server;
+	private MinecraftServer server;
 
 	private final SavestateIndexer indexer;
+	private final String worldname;
 
-	public State state = State.NONE;
+	private State state = State.NONE;
 
 	public enum State {
 		SAVESTATING,
@@ -48,7 +54,7 @@ public class SavestateHandler {
 		this.server = server;
 		Path savesDir = server.isSingleplayer() ? server.getServerDirectory().resolve("saves") : server.getServerDirectory();
 		Path savestateBaseDir = savesDir.resolve("savestates");
-		String worldname = ((AccessorLevelStorage) server).getStorageSource().getLevelId();
+		worldname = ((AccessorLevelStorage) server).getStorageSource().getLevelId();
 
 		logger.debug("Created savestate handler with saves: {}, savestates: {}, worldname: {}", savesDir, savestateBaseDir, worldname);
 		this.logger = logger;
@@ -78,16 +84,16 @@ public class SavestateHandler {
 
 		List<SavestateFlags> flagList = Arrays.asList(flags);
 
+		logger.trace("Save world & players");
+		server.saveEverything(true, true, false);
+		server.getPlayerList().saveAll();
+
 		logger.trace("Enable tickrate 0");
 		Minecraft mc = Minecraft.getInstance();
 		Tickratechanger tickratechangerServer = (Tickratechanger) server.tickRateManager();
 		Tickratechanger tickratechangerClient = (Tickratechanger) mc.level.tickRateManager();
 		tickratechangerServer.enableTickrate0(true);
 		tickratechangerClient.enableTickrate0(true);
-
-		logger.trace("Save world & players");
-		server.saveEverything(true, true, false);
-		server.getPlayerList().saveAll();
 
 		logger.trace("Remove session.lock");
 		LevelStorageAccess levelStorage = ((AccessorLevelStorage) server).getStorageSource();
@@ -97,6 +103,11 @@ public class SavestateHandler {
 		SavestatePaths paths = indexer.createSavestate(index, name, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX));
 		logger.debug("Source: {}, Target: {}", paths.getSourceFolder(), paths.getTargetFolder());
 
+		if (Files.exists(paths.getTargetFolder())) {
+			logger.warn("Overwriting existing savestate");
+			deleteFolder(paths.getTargetFolder());
+		}
+
 		logger.trace("Copying folders");
 		copyFolder(paths.getSourceFolder(), paths.getTargetFolder());
 
@@ -104,7 +115,7 @@ public class SavestateHandler {
 
 		if (shouldBlock(flagList, SavestateFlags.BLOCK_PAUSE_TICKRATE)) {
 			tickratechangerServer.enableTickrate0(false);
-			tickratechangerClient.enableTickrate0(true);
+			tickratechangerClient.enableTickrate0(false);
 		}
 
 		state = State.NONE;
@@ -131,11 +142,45 @@ public class SavestateHandler {
 		if (state != State.NONE) {
 			throw new LoadstateException(I18n.get(String.format("msg.lotaslight.loadstate.%s.error", state == State.SAVESTATING ? "save" : "load")));
 		}
+		state = State.LOADSTATING;
+
 		List<SavestateFlags> flagList = Arrays.asList(flags);
+
+		Minecraft mc = Minecraft.getInstance();
+		TickRateManager trmServer = server.tickRateManager();
+		TickRateManager trmClient = mc.level.tickRateManager();
+
+		LoTASLight.startTickrate = trmServer.tickrate();
+
+		trmServer.setTickRate(20f);
+		trmClient.setTickRate(20f);
+
+		for (ServerLevel level : server.getAllLevels()) {
+			level.noSave = true;
+		}
+
+		mc.level.disconnect();
+		mc.clearClientLevel(new Screen(Component.literal("")) {
+		});
+
+		while (server.isCurrentlySaving() || server.isRunning()) {
+		}
 
 		logger.trace("Load savestate index via indexer");
 		SavestatePaths paths = indexer.loadSavestate(index, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX));
 		logger.debug("Source: {}, Target: {}", paths.getSourceFolder(), paths.getTargetFolder());
+
+		deleteFolder(paths.getTargetFolder());
+
+		logger.trace("Copying folders");
+		copyFolder(paths.getSourceFolder(), paths.getTargetFolder());
+
+		mc.createWorldOpenFlows().openWorld(worldname, () -> {
+		});
+
+		mc.gui.getChat().clearMessages(true);
+
+		state = State.NONE;
 
 		if (cb != null) {
 			cb.invoke(paths);
@@ -144,6 +189,10 @@ public class SavestateHandler {
 
 	public void reload() {
 		indexer.reload();
+	}
+
+	public State getState() {
+		return state;
 	}
 
 	public int getCurrentIndex() {

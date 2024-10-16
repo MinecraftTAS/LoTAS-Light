@@ -22,5 +22,6 @@
 	"msg.lotaslight.savestate.reload":"Reloading savestate index. Necessary when you edit the savestates outside of Minecraft.",
 	"msg.lotaslight.savestate.dateformat":"MM/dd/yyyy hh:mm:ss a",
 	"msg.lotaslight.savestate.info.hover":"%s\nClick to load savestate #%s",
-	"msg.lotaslight.savestates.info.error":"Savestate failed: %s"
+	"msg.lotaslight.savestates.info.error":"Savestate failed: %s",
+	"gui.lotaslight.savestate.load":"Loading a savestate, please wait"
 }

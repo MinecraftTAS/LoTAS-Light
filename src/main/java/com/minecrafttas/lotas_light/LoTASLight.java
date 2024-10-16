@@ -5,11 +5,15 @@ import org.apache.logging.log4j.Logger;
 
 import com.minecrafttas.lotas_light.command.LoTASLightCommand;
 import com.minecrafttas.lotas_light.command.SavestateCommand;
+import com.minecrafttas.lotas_light.networking.SavestateConnectPayload;
+import com.minecrafttas.lotas_light.networking.SavestateDisconnectPayload;
 import com.minecrafttas.lotas_light.savestates.SavestateHandler;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.minecraft.network.codec.StreamCodec;
 
 public class LoTASLight implements ModInitializer {
 
@@ -28,11 +32,14 @@ public class LoTASLight implements ModInitializer {
 		});
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-			savestateHandler = new SavestateHandler(LOGGER, server);
+			if (savestateHandler == null) {
+				savestateHandler = new SavestateHandler(LOGGER, server);
+			} else {
+				savestateHandler.setIndexer(server);
+			}
 		});
 
-		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
-			savestateHandler = null;
-		});
+		PayloadTypeRegistry.playS2C().register(SavestateDisconnectPayload.ID, StreamCodec.unit(SavestateDisconnectPayload.INSTANCE));
+		PayloadTypeRegistry.playS2C().register(SavestateConnectPayload.ID, SavestateConnectPayload.CODEC);
 	}
 }

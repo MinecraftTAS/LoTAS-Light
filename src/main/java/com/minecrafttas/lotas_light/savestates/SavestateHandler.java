@@ -12,14 +12,15 @@ import org.apache.logging.log4j.Logger;
 import com.minecrafttas.lotas_light.LoTASLight;
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 import com.minecrafttas.lotas_light.mixin.AccessorLevelStorage;
+import com.minecrafttas.lotas_light.networking.SavestateConnectPayload;
+import com.minecrafttas.lotas_light.networking.SavestateDisconnectPayload;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.SavestatePaths;
 import com.minecrafttas.lotas_light.savestates.exceptions.LoadstateException;
 import com.minecrafttas.lotas_light.savestates.exceptions.SavestateException;
 
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.DirectoryLock;
@@ -31,8 +32,8 @@ public class SavestateHandler {
 	private final Logger logger;
 	private MinecraftServer server;
 
-	private final SavestateIndexer indexer;
-	private final String worldname;
+	private SavestateIndexer indexer;
+	private String worldname;
 
 	private State state = State.NONE;
 
@@ -51,15 +52,8 @@ public class SavestateHandler {
 	 * @param worldname The name of the world that is going to be savestated
 	 */
 	public SavestateHandler(Logger logger, MinecraftServer server) {
-		this.server = server;
-		Path savesDir = server.isSingleplayer() ? server.getServerDirectory().resolve("saves") : server.getServerDirectory();
-		Path savestateBaseDir = savesDir.resolve("savestates");
-		worldname = ((AccessorLevelStorage) server).getStorageSource().getLevelId();
-
-		logger.debug("Created savestate handler with saves: {}, savestates: {}, worldname: {}", savesDir, savestateBaseDir, worldname);
 		this.logger = logger;
-
-		this.indexer = new SavestateIndexer(logger, savesDir, savestateBaseDir, worldname);
+		setIndexer(server);
 	}
 
 	public void saveState(SavestateCallback cb, SavestateFlags... options) throws Exception {
@@ -159,12 +153,9 @@ public class SavestateHandler {
 			level.noSave = true;
 		}
 
-		mc.level.disconnect();
-		mc.clearClientLevel(new Screen(Component.literal("")) {
+		server.getPlayerList().getPlayers().forEach(player -> {
+			ServerPlayNetworking.send(player, new SavestateDisconnectPayload());
 		});
-
-		while (server.isCurrentlySaving() || server.isRunning()) {
-		}
 
 		logger.trace("Load savestate index via indexer");
 		SavestatePaths paths = indexer.loadSavestate(index, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX));
@@ -175,7 +166,8 @@ public class SavestateHandler {
 		logger.trace("Copying folders");
 		copyFolder(paths.getSourceFolder(), paths.getTargetFolder());
 
-		mc.createWorldOpenFlows().openWorld(worldname, () -> {
+		server.getPlayerList().getPlayers().forEach(player -> {
+			ServerPlayNetworking.send(player, new SavestateConnectPayload(worldname));
 		});
 
 		mc.gui.getChat().clearMessages(true);
@@ -269,5 +261,16 @@ public class SavestateHandler {
 
 	private boolean shouldBlock(List<SavestateFlags> flagList, SavestateFlags flag) {
 		return flagList.contains(flag);
+	}
+
+	public void setIndexer(MinecraftServer server) {
+		this.server = server;
+		Path savesDir = server.isSingleplayer() ? server.getServerDirectory().resolve("saves") : server.getServerDirectory();
+		Path savestateBaseDir = savesDir.resolve("savestates");
+		worldname = ((AccessorLevelStorage) server).getStorageSource().getLevelId();
+
+		logger.debug("Created savestate handler with saves: {}, savestates: {}, worldname: {}", savesDir, savestateBaseDir, worldname);
+
+		this.indexer = new SavestateIndexer(logger, savesDir, savestateBaseDir, worldname);
 	}
 }

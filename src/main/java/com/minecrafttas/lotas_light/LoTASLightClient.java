@@ -9,16 +9,20 @@ import com.minecrafttas.lotas_light.config.Configuration.ConfigOptions;
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 import com.minecrafttas.lotas_light.event.EventClientGameLoop;
 import com.minecrafttas.lotas_light.event.HudRenderExperienceCallback;
+import com.minecrafttas.lotas_light.networking.SavestateConnectPayload;
+import com.minecrafttas.lotas_light.networking.SavestateDisconnectPayload;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -48,7 +52,27 @@ public class LoTASLightClient implements ClientModInitializer {
 		config = new Configuration("LoTAS-Light config", configpath);
 		config.loadFromXML();
 		registerKeybindings();
+		registerNetworking();
 		HudRenderExperienceCallback.EVENT.register(this::drawHud);
+	}
+
+	private void registerNetworking() {
+		ClientPlayNetworking.registerGlobalReceiver(SavestateDisconnectPayload.ID, (payload, context) -> {
+			Minecraft mc = context.client();
+			mc.execute(() -> {
+				mc.level.disconnect();
+				mc.clearClientLevel(new Screen(Component.translatable("gui.lotaslight.savestate.load")) {
+				});
+			});
+		});
+
+		ClientPlayNetworking.registerGlobalReceiver(SavestateConnectPayload.ID, (payload, context) -> {
+			Minecraft mc = context.client();
+			mc.execute(() -> {
+				mc.createWorldOpenFlows().openWorld(payload.worldname(), () -> {
+				});
+			});
+		});
 	}
 
 	private void registerKeybindings() {

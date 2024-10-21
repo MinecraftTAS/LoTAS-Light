@@ -28,11 +28,15 @@ public class LoTASLight implements ModInitializer {
 		});
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-			savestateHandler = new SavestateHandler(LOGGER, server);
+			if (savestateHandler == null) {
+				savestateHandler = new SavestateHandler(LOGGER, server);
+			} else {
+				savestateHandler.setIndexer(server);
+			}
 		});
 
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
-			savestateHandler = null;
+//			savestateHandler = null;
 		});
 	}
 }

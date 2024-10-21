@@ -191,8 +191,8 @@ public class LoTASLightClient implements ClientModInitializer {
 		try {
 			LoTASLight.savestateHandler.saveState(null);
 		} catch (Exception e) {
-			mc.gui.getChat().addMessage(Component.literal(e.getMessage()));
 			LoTASLight.LOGGER.catching(e);
+			mc.gui.getChat().addMessage(Component.literal(e.getMessage()));
 		}
 	}
 
@@ -201,8 +201,8 @@ public class LoTASLightClient implements ClientModInitializer {
 		try {
 			LoTASLight.savestateHandler.loadState(null);
 		} catch (Exception e) {
-			mc.gui.getChat().addMessage(Component.literal(e.getMessage()));
 			LoTASLight.LOGGER.catching(e);
+			mc.gui.getChat().addMessage(Component.literal(e.getMessage()));
 		}
 	}
 }

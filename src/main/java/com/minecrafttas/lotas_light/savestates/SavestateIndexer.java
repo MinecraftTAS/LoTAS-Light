@@ -94,7 +94,7 @@ public class SavestateIndexer {
 		Path sourceDir = savesDir.resolve(worldname);
 		Path targetDir = currentSavestateDir.resolve(worldname + index);
 
-		return SavestatePaths.of(index, name, sourceDir, targetDir);
+		return SavestatePaths.of(currentSavestate.clone(), sourceDir, targetDir);
 	}
 
 	public SavestatePaths loadSavestate(int index, boolean changeIndex) throws LoadstateException {
@@ -115,7 +115,7 @@ public class SavestateIndexer {
 		Path sourceDir = currentSavestateDir.resolve(worldname + currentSavestate.index);
 		Path targetDir = savesDir.resolve(worldname);
 
-		SavestatePaths out = SavestatePaths.of(currentSavestate.index, currentSavestate.name, sourceDir, targetDir);
+		SavestatePaths out = SavestatePaths.of(currentSavestate.clone(), sourceDir, targetDir);
 
 		if (!changeIndex)
 			currentSavestate.index = savedIndex;
@@ -237,7 +237,10 @@ public class SavestateIndexer {
 		private enum Options {
 			INDEX,
 			NAME,
-			DATE;
+			DATE,
+			MOTION_X,
+			MOTION_Y,
+			MOTION_Z;
 
 			@Override
 			public String toString() {
@@ -339,24 +342,18 @@ public class SavestateIndexer {
 	}
 
 	public static class SavestatePaths {
-		private final Integer index;
-		private final String name;
+		private final Savestate savestate;
 		private final Path sourceFolder;
 		private final Path targetFolder;
 
-		private SavestatePaths(Integer index, String name, Path sourceFolder, Path targetFolder) {
-			this.index = index;
-			this.name = name;
+		private SavestatePaths(Savestate savestate, Path sourceFolder, Path targetFolder) {
+			this.savestate = savestate;
 			this.sourceFolder = sourceFolder;
 			this.targetFolder = targetFolder;
 		}
 
-		public Integer getIndex() {
-			return index;
-		}
-
-		public String getName() {
-			return name;
+		public Savestate getSavestate() {
+			return savestate;
 		}
 
 		public Path getSourceFolder() {
@@ -367,8 +364,8 @@ public class SavestateIndexer {
 			return targetFolder;
 		}
 
-		public static SavestatePaths of(int index, String name, Path sourceFolder, Path targetFolder) {
-			return new SavestatePaths(index, name, sourceFolder, targetFolder);
+		public static SavestatePaths of(Savestate savestate, Path sourceFolder, Path targetFolder) {
+			return new SavestatePaths(savestate, sourceFolder, targetFolder);
 		}
 	}
 }

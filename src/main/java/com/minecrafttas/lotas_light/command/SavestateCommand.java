@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 
 import com.minecrafttas.lotas_light.LoTASLight;
-import com.minecrafttas.lotas_light.savestates.SavestateHandler.SavestateCallback;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.FailedSavestate;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.Savestate;
 import com.mojang.brigadier.CommandDispatcher;
@@ -67,21 +66,23 @@ public class SavestateCommand {
 	private static int saveNew(CommandContext<CommandSourceStack> context) {
 		int index = -1;
 
-		SavestateCallback cb = (paths) -> {
-			//@formatter:off
-			context.getSource().sendSuccess(() -> 
-				Component.translatable("msg.lotaslight.savestate.save", 
-						Component.literal(paths.getName()).withStyle(ChatFormatting.YELLOW),
-						Component.literal(Integer.toString(paths.getIndex())).withStyle(ChatFormatting.AQUA)
-				).withStyle(ChatFormatting.GREEN), true);
-			//@formatter:on
-		};
+//		SavestateCallback cb = (paths) -> {
+//			//@formatter:off
+//			context.getSource().sendSuccess(() -> 
+//				Component.translatable("msg.lotaslight.savestate.save", 
+//						Component.literal(paths.getName()).withStyle(ChatFormatting.YELLOW),
+//						Component.literal(Integer.toString(paths.getIndex())).withStyle(ChatFormatting.AQUA)
+//				).withStyle(ChatFormatting.GREEN), true);
+//			//@formatter:on
+//		};
 
-		try {
-			LoTASLight.savestateHandler.saveState(index, cb);
-		} catch (Exception e) {
-			sendFailure(context, e);
-		}
+		Minecraft.getInstance().execute(() -> {
+			try {
+				LoTASLight.savestateHandler.saveState(index, null);
+			} catch (Exception e) {
+				sendFailure(context, e);
+			}
+		});
 		return 0;
 	}
 
@@ -98,26 +99,28 @@ public class SavestateCommand {
 //			//@formatter:on
 //		};
 
-		try {
-			LoTASLight.savestateHandler.saveState(index, null);
-		} catch (Exception e) {
-			sendFailure(context, e);
-		}
+		Minecraft.getInstance().execute(() -> {
+			try {
+				LoTASLight.savestateHandler.saveState(index, null);
+			} catch (Exception e) {
+				sendFailure(context, e);
+			}
+		});
 		return index;
 	}
 
 	private static int saveName(CommandContext<CommandSourceStack> context) {
 		String name = context.getArgument("name", String.class);
 
-		SavestateCallback cb = (paths) -> {
-			//@formatter:off
-			context.getSource().sendSuccess(() -> 
-				Component.translatable("msg.lotaslight.savestate.save", 
-						Component.literal(paths.getName()).withStyle(ChatFormatting.YELLOW),
-						Component.literal(Integer.toString(paths.getIndex())).withStyle(ChatFormatting.AQUA)
-				).withStyle(ChatFormatting.GREEN), true);
-			//@formatter:on
-		};
+//		SavestateCallback cb = (paths) -> {
+//			//@formatter:off
+//			context.getSource().sendSuccess(() -> 
+//				Component.translatable("msg.lotaslight.savestate.save", 
+//						Component.literal(paths.getName()).withStyle(ChatFormatting.YELLOW),
+//						Component.literal(Integer.toString(paths.getIndex())).withStyle(ChatFormatting.AQUA)
+//				).withStyle(ChatFormatting.GREEN), true);
+//			//@formatter:on
+//		};
 
 		try {
 			LoTASLight.savestateHandler.saveState(name, null);

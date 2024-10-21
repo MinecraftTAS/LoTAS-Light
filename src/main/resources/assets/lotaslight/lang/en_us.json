@@ -10,9 +10,7 @@
 	"msg.lotaslight.turnOff":"To turn off these messages, use /lotaslight showMessage false",
 	"msg.lotaslight.showmsg.true":"Tickrate messages enabled",
 	"msg.lotaslight.showmsg.false":"Tickrate messages disabled",
-	"msg.lotaslight.savestate.save":"Creating a new savestate %s at index %s",
 	"msg.lotaslight.savestate.save.error":"Can't perform this action: A savestate operation is already being carried out!",
-	"msg.lotaslight.savestate.load":"Load savestate %s from index %s",
 	"msg.lotaslight.savestate.load.error":"Can't perform this action: A loadstate operation is already being carried out!",
 	"msg.lotaslight.savestate.delete":"Trying to delete savestate at index %s",
 	"msg.lotaslight.savestate.deleteMore.singular":"You are about to delete %s savestate! Do you want to continue? %s",
@@ -23,5 +21,7 @@
 	"msg.lotaslight.savestate.dateformat":"MM/dd/yyyy hh:mm:ss a",
 	"msg.lotaslight.savestate.info.hover":"%s\nClick to load savestate #%s",
 	"msg.lotaslight.savestates.info.error":"Savestate failed: %s",
-	"gui.lotaslight.savestate.load":"Loading a savestate, please wait"
+	"gui.lotaslight.savestate.load":"Loading a savestate, please wait",
+	"gui.lotaslight.savestate.donesaving":"Done saving a savestate",
+	"gui.lotaslight.savestate.button.closegui":"Close"
 }

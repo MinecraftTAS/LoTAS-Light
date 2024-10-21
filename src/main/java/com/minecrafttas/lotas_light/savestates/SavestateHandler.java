@@ -16,9 +16,7 @@ import com.minecrafttas.lotas_light.savestates.SavestateIndexer.SavestatePaths;
 import com.minecrafttas.lotas_light.savestates.exceptions.LoadstateException;
 import com.minecrafttas.lotas_light.savestates.exceptions.SavestateException;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -33,8 +31,8 @@ public class SavestateHandler {
 	private final Logger logger;
 	private MinecraftServer server;
 
-	private final SavestateIndexer indexer;
-	private final String worldname;
+	private SavestateIndexer indexer;
+	private String worldname;
 
 	private State state = State.NONE;
 
@@ -53,15 +51,8 @@ public class SavestateHandler {
 	 * @param worldname The name of the world that is going to be savestated
 	 */
 	public SavestateHandler(Logger logger, MinecraftServer server) {
-		this.server = server;
-		Path savesDir = server.isSingleplayer() ? server.getServerDirectory().resolve("saves") : server.getServerDirectory();
-		Path savestateBaseDir = savesDir.resolve("savestates");
-		worldname = ((AccessorLevelStorage) server).getStorageSource().getLevelId();
-
-		logger.debug("Created savestate handler with saves: {}, savestates: {}, worldname: {}", savesDir, savestateBaseDir, worldname);
 		this.logger = logger;
-
-		this.indexer = new SavestateIndexer(logger, savesDir, savestateBaseDir, worldname);
+		this.setIndexer(server);
 	}
 
 	public void saveState(SavestateCallback cb, SavestateFlags... options) throws Exception {
@@ -86,12 +77,17 @@ public class SavestateHandler {
 
 		List<SavestateFlags> flagList = Arrays.asList(flags);
 
+		Minecraft mc = Minecraft.getInstance();
+
+		logger.trace("Create new savestate index via indexer");
+		SavestatePaths paths = indexer.createSavestate(index, name, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX));
+		logger.debug("Source: {}, Target: {}", paths.getSourceFolder(), paths.getTargetFolder());
+
 		logger.trace("Save world & players");
 		server.saveEverything(true, true, false);
 		server.getPlayerList().saveAll();
 
 		logger.trace("Enable tickrate 0");
-		Minecraft mc = Minecraft.getInstance();
 		Tickratechanger tickratechangerServer = (Tickratechanger) server.tickRateManager();
 		Tickratechanger tickratechangerClient = (Tickratechanger) mc.level.tickRateManager();
 		tickratechangerServer.enableTickrate0(true);
@@ -100,30 +96,6 @@ public class SavestateHandler {
 		logger.trace("Remove session.lock");
 		LevelStorageAccess levelStorage = ((AccessorLevelStorage) server).getStorageSource();
 		levelStorage.lock.close();
-
-		logger.trace("Create new savestate index via indexer");
-		SavestatePaths paths = indexer.createSavestate(index, name, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX));
-		logger.debug("Source: {}, Target: {}", paths.getSourceFolder(), paths.getTargetFolder());
-
-		//@formatter:off
-		Component component = Component.translatable("msg.lotaslight.savestate.save", 
-				Component.literal(paths.getName()).withStyle(ChatFormatting.YELLOW),
-				Component.literal(Integer.toString(paths.getIndex())).withStyle(ChatFormatting.AQUA)
-		).withStyle(ChatFormatting.GREEN);
-		//@formatter:on
-
-		mc.setScreen(new Screen(component) {
-			@Override
-			public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-				renderBlurredBackground(f);
-				guiGraphics.drawString(font, title, mc.getWindow().getGuiScaledWidth() / 2, 50, 0xFFFFFF);
-			}
-
-			@Override
-			public boolean isPauseScreen() {
-				return true;
-			}
-		});
 
 		if (Files.exists(paths.getTargetFolder())) {
 			logger.warn("Overwriting existing savestate");
@@ -139,19 +111,6 @@ public class SavestateHandler {
 			tickratechangerServer.enableTickrate0(false);
 			tickratechangerClient.enableTickrate0(false);
 		}
-
-		mc.setScreen(new Screen(component) {
-			@Override
-			public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-				renderBlurredBackground(f);
-				guiGraphics.drawString(font, "Done", mc.getWindow().getGuiScaledWidth() / 2, 50, 0xFFFFFF);
-			}
-
-			@Override
-			public boolean isPauseScreen() {
-				return true;
-			}
-		});
 
 		state = State.NONE;
 
@@ -198,21 +157,8 @@ public class SavestateHandler {
 		SavestatePaths paths = indexer.loadSavestate(index, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX));
 		logger.debug("Source: {}, Target: {}", paths.getSourceFolder(), paths.getTargetFolder());
 
-		//@formatter:off
-		Component component = Component.translatable("msg.lotaslight.savestate.load", 
-				Component.literal(paths.getName()).withStyle(ChatFormatting.YELLOW),
-				Component.literal(Integer.toString(paths.getIndex())).withStyle(ChatFormatting.AQUA)
-		).withStyle(ChatFormatting.GREEN);
-		//@formatter:on
-
 		mc.level.disconnect();
-		mc.clearClientLevel(new Screen(component) {
-			@Override
-			public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-				renderBlurredBackground(f);
-				guiGraphics.drawCenteredString(font, title, mc.getWindow().getGuiScaledWidth() / 2, 50, 0xFFFFFF);
-			}
-
+		mc.clearClientLevel(new Screen(Component.literal("")) {
 		});
 
 		while (server.isCurrentlySaving() || server.isRunning()) {
@@ -227,7 +173,6 @@ public class SavestateHandler {
 		});
 
 		mc.gui.getChat().clearMessages(true);
-
 		state = State.NONE;
 
 		if (cb != null) {
@@ -317,5 +262,16 @@ public class SavestateHandler {
 
 	private boolean shouldBlock(List<SavestateFlags> flagList, SavestateFlags flag) {
 		return flagList.contains(flag);
+	}
+
+	public void setIndexer(MinecraftServer server) {
+		this.server = server;
+		Path savesDir = server.isSingleplayer() ? server.getServerDirectory().resolve("saves") : server.getServerDirectory();
+		Path savestateBaseDir = savesDir.resolve("savestates");
+		worldname = ((AccessorLevelStorage) server).getStorageSource().getLevelId();
+
+		logger.debug("Created savestate handler with saves: {}, savestates: {}, worldname: {}", savesDir, savestateBaseDir, worldname);
+
+		this.indexer = new SavestateIndexer(logger, savesDir, savestateBaseDir, worldname);
 	}
 }

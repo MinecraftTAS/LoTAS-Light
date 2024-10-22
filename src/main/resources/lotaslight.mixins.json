@@ -5,7 +5,8 @@
 	"mixins": [
 		"MixinTickRateManager",
 		"MixinTickCommand",
-		"MixinMinecraftServer"
+		"MixinMinecraftServer",
+		"AccessorLevelStorage"
 	],
 	"client":[
 		"MixinMinecraft",

@@ -1,15 +1,27 @@
 {
+	"keycategory.lotaslight.lotaslight":"LoTAS-Light",
 	"key.lotaslight.increaseTickrate":"Increase Tickrate",
 	"key.lotaslight.decreaseTickrate":"Decrease Tickrate",
 	"key.lotaslight.freezeTickrate":"Freeze Tickrate",
 	"key.lotaslight.advanceTickrate":"Advance Tick",
 	"key.lotaslight.savestate":"Savestate",
 	"key.lotaslight.loadstate":"Loadstate",
-	
 	"msg.lotaslight.setTickrate":"Set the tickrate to %s",
 	"msg.lotaslight.turnOff":"To turn off these messages, use /lotaslight showMessage false",
 	"msg.lotaslight.showmsg.true":"Tickrate messages enabled",
 	"msg.lotaslight.showmsg.false":"Tickrate messages disabled",
-	
-	"keycategory.lotaslight.lotaslight":"LoTAS-Light"
+	"msg.lotaslight.savestate.save.error":"Can't perform this action: A savestate operation is already being carried out!",
+	"msg.lotaslight.savestate.load.error":"Can't perform this action: A loadstate operation is already being carried out!",
+	"msg.lotaslight.savestate.delete":"Trying to delete savestate at index %s",
+	"msg.lotaslight.savestate.deleteMore.singular":"You are about to delete %s savestate! Do you want to continue? %s",
+	"msg.lotaslight.savestate.deleteMore.plural":"You are about to delete %s savestates! Do you want to continue? %s",
+	"msg.lotaslight.savestate.deleteMore.confirm":"YES",
+	"msg.lotaslight.savestate.deleteMore.hover":"This can not be undone or stopped!",
+	"msg.lotaslight.savestate.reload":"Reloading savestate index. Necessary when you edit the savestates outside of Minecraft.",
+	"msg.lotaslight.savestate.dateformat":"MM/dd/yyyy hh:mm:ss a",
+	"msg.lotaslight.savestate.info.hover":"%s\nClick to load savestate #%s",
+	"msg.lotaslight.savestates.info.error":"Savestate failed: %s",
+	"gui.lotaslight.savestate.load":"Loading a savestate, please wait",
+	"gui.lotaslight.savestate.donesaving":"Done saving a savestate",
+	"gui.lotaslight.savestate.button.closegui":"Close"
 }

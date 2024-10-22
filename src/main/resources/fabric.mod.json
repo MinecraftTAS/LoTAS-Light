@@ -14,6 +14,7 @@
 	},
 	"license": "GPLv3",
 	"icon": "assets/lotaslight/potion.png",
+	"accesswideners": "lotaslight.accesswidener",
 	"environment": "*",
 	"entrypoints": {
 		"main": [

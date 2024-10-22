@@ -48,7 +48,27 @@ public class LoTASLightClient implements ClientModInitializer {
 		config = new Configuration("LoTAS-Light config", configpath);
 		config.loadFromXML();
 		registerKeybindings();
+		registerNetworking();
 		HudRenderExperienceCallback.EVENT.register(this::drawHud);
+	}
+
+	private void registerNetworking() {
+//		ClientPlayNetworking.registerGlobalReceiver(SavestateDisconnectPayload.ID, (payload, context) -> {
+//			Minecraft mc = context.client();
+//			mc.execute(() -> {
+//				mc.level.disconnect();
+//				mc.clearClientLevel(new Screen(Component.translatable("gui.lotaslight.savestate.load")) {
+//				});
+//			});
+//		});
+//
+//		ClientPlayNetworking.registerGlobalReceiver(SavestateConnectPayload.ID, (payload, context) -> {
+//			Minecraft mc = context.client();
+//			mc.execute(() -> {
+//				mc.createWorldOpenFlows().openWorld(payload.worldname(), () -> {
+//				});
+//			});
+//		});
 	}
 
 	private void registerKeybindings() {
@@ -167,10 +187,22 @@ public class LoTASLightClient implements ClientModInitializer {
 	}
 
 	private void savestate() {
-
+		Minecraft mc = Minecraft.getInstance();
+		try {
+			LoTASLight.savestateHandler.saveState(null);
+		} catch (Exception e) {
+			LoTASLight.LOGGER.catching(e);
+			mc.gui.getChat().addMessage(Component.literal(e.getMessage()));
+		}
 	}
 
 	private void loadstate() {
-
+		Minecraft mc = Minecraft.getInstance();
+		try {
+			LoTASLight.savestateHandler.loadState(null);
+		} catch (Exception e) {
+			LoTASLight.LOGGER.catching(e);
+			mc.gui.getChat().addMessage(Component.literal(e.getMessage()));
+		}
 	}
 }

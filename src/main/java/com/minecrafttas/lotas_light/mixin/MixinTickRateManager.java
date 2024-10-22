@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.minecrafttas.lotas_light.LoTASLight;
 import com.minecrafttas.lotas_light.LoTASLightClient;
 import com.minecrafttas.lotas_light.config.Configuration.ConfigOptions;
 import com.minecrafttas.lotas_light.duck.SoundPitchDuck;
@@ -46,6 +47,10 @@ public abstract class MixinTickRateManager implements Tickratechanger {
 	@Inject(method = "<init>", at = @At(value = "RETURN"))
 	public void inject_trcConstructor(CallbackInfo ci) {
 		this.tickrate = tickrateMirror;
+		if (LoTASLight.startTickrate != null) {
+			this.tickrate = LoTASLight.startTickrate;
+			LoTASLight.startTickrate = null;
+		}
 		this.nanosecondsPerTick = (long) ((double) TimeUtil.NANOSECONDS_PER_SECOND / (double) tickrateMirror);
 	}
 
@@ -85,6 +90,19 @@ public abstract class MixinTickRateManager implements Tickratechanger {
 		} else {
 			setTickRate(0f);
 		}
+	}
+
+	@Override
+	public void enableTickrate0(boolean enable) {
+		advanceTickrate = false;
+		if (enable) {
+			if (tickrate != 0)
+				setTickRate(0f);
+		} else {
+			if (tickrate == 0)
+				setTickRate(tickrateSaved);
+		}
+
 	}
 
 	@Override

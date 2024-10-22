@@ -240,7 +240,7 @@ public class SavestateCommand {
 		int currentIndex = LoTASLight.savestateHandler.getCurrentIndex();
 		String format = I18n.get("msg.lotaslight.savestate.dateformat");
 
-		context.getSource().sendSystemMessage(Component.literal(" "));
+		context.getSource().sendSystemMessage(Component.literal(""));
 		SimpleDateFormat dateFormat = new SimpleDateFormat(format);
 		for (Savestate savestate : savestateList) {
 

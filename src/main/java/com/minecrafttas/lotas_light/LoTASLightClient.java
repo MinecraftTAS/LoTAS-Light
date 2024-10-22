@@ -8,6 +8,7 @@ import com.minecrafttas.lotas_light.config.Configuration;
 import com.minecrafttas.lotas_light.config.Configuration.ConfigOptions;
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 import com.minecrafttas.lotas_light.event.EventClientGameLoop;
+import com.minecrafttas.lotas_light.event.EventOnClientJoinServer;
 import com.minecrafttas.lotas_light.event.HudRenderExperienceCallback;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -99,6 +100,10 @@ public class LoTASLightClient implements ClientModInitializer {
 				loadstate();
 			}
 
+		});
+
+		EventOnClientJoinServer.EVENT.register(player -> {
+			LoTASLight.savestateHandler.onLoadstateComplete(player);
 		});
 
 	}

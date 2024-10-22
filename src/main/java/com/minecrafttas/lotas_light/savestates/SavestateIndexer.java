@@ -25,6 +25,8 @@ import com.minecrafttas.lotas_light.config.AbstractDataFile;
 import com.minecrafttas.lotas_light.savestates.exceptions.LoadstateException;
 import com.minecrafttas.lotas_light.savestates.exceptions.SavestateException;
 
+import net.minecraft.world.phys.Vec3;
+
 /**
  * Manages the savestates on the filesystem and assignes new indizes
  * 
@@ -63,11 +65,11 @@ public class SavestateIndexer {
 		}
 	}
 
-	public SavestatePaths createSavestate(int index) {
-		return createSavestate(index, null, true);
+	public SavestatePaths createSavestate(int index, Vec3 motion) {
+		return createSavestate(index, null, true, motion);
 	}
 
-	public SavestatePaths createSavestate(int index, String name, boolean changeIndex) {
+	public SavestatePaths createSavestate(int index, String name, boolean changeIndex, Vec3 motion) {
 		logger.trace("Creating savestate in indexer");
 		if (index < 0) {
 			index = currentSavestate.getIndex() + 1;
@@ -217,20 +219,22 @@ public class SavestateIndexer {
 		protected Integer index;
 		protected String name;
 		protected Date date;
+		protected Vec3 motion;
 
 		private Savestate(Path file) {
-			this(file, -1, null, null);
+			this(file, -1, null, null, null);
 		}
 
-		private Savestate(Path file, Integer index, String name, Date date) {
+		private Savestate(Path file, Integer index, String name, Date date, Vec3 motion) {
 			super(LoTASLight.LOGGER, file, "Savestate", "Stores savestate related data");
 			this.index = index;
 			this.name = name;
 			this.date = date;
+			this.motion = motion;
 		}
 
-		private Savestate(Path file, Properties properties, Integer index, String name, Date date) {
-			this(file, index, name, date);
+		private Savestate(Path file, Properties properties, Integer index, String name, Date date, Vec3 motion) {
+			this(file, index, name, date, motion);
 			this.properties = properties;
 		}
 
@@ -260,11 +264,20 @@ public class SavestateIndexer {
 			return date;
 		}
 
+		public Vec3 getMotion() {
+			return motion;
+		}
+
 		@Override
 		public void saveToXML() {
 			properties.setProperty(Options.INDEX.toString(), Integer.toString(index));
 			properties.setProperty(Options.NAME.toString(), name);
 			properties.setProperty(Options.DATE.toString(), Long.toString(ChronoUnit.SECONDS.between(Instant.EPOCH, date.toInstant())));
+			if (motion != null) {
+				properties.setProperty(Options.MOTION_X.toString(), Double.toString(motion.x));
+				properties.setProperty(Options.MOTION_Y.toString(), Double.toString(motion.y));
+				properties.setProperty(Options.MOTION_Z.toString(), Double.toString(motion.z));
+			}
 			super.saveToXML();
 		}
 
@@ -284,11 +297,23 @@ public class SavestateIndexer {
 				logger.error("Can't parse '{}' in {}", Options.DATE.toString(), currentSavestateDir.resolve(savestateDatPath));
 				logger.catching(e);
 			}
+
+			String x = properties.getProperty(Options.MOTION_X.toString());
+			String y = properties.getProperty(Options.MOTION_Y.toString());
+			String z = properties.getProperty(Options.MOTION_Z.toString());
+			if (x != null && y != null && z != null) {
+				try {
+					this.motion = new Vec3(Double.parseDouble(x), Double.parseDouble(y), Double.parseDouble(z));
+				} catch (Exception e) {
+					logger.error("Can't parse '{}' in {}", Options.DATE.toString(), currentSavestateDir.resolve(savestateDatPath));
+					logger.catching(e);
+				}
+			}
 		}
 
 		@Override
 		protected Savestate clone() {
-			return new Savestate(file, properties, index, name, date);
+			return new Savestate(file, properties, index, name, date, motion);
 		}
 
 		private static Date parseDate(String dateString) throws Exception {
@@ -306,12 +331,12 @@ public class SavestateIndexer {
 		}
 
 		public FailedSavestate(Path file, Integer index, String name, Date date, Throwable t) {
-			super(file, index, name, date);
+			super(file, index, name, date, null);
 			this.t = t;
 		}
 
 		public FailedSavestate(Path file, Properties properties, Integer index, String name, Date date, Throwable t) {
-			super(file, index, name, date);
+			super(file, index, name, date, null);
 			this.t = t;
 		}
 

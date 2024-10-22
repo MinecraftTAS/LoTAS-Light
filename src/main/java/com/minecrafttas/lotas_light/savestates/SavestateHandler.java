@@ -12,12 +12,14 @@ import org.apache.logging.log4j.Logger;
 import com.minecrafttas.lotas_light.LoTASLight;
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 import com.minecrafttas.lotas_light.mixin.AccessorLevelStorage;
+import com.minecrafttas.lotas_light.mixin.AccessorServerPlayer;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.SavestatePaths;
 import com.minecrafttas.lotas_light.savestates.exceptions.LoadstateException;
 import com.minecrafttas.lotas_light.savestates.exceptions.SavestateException;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -25,6 +27,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.DirectoryLock;
 import net.minecraft.world.TickRateManager;
 import net.minecraft.world.level.storage.LevelStorageSource.LevelStorageAccess;
+import net.minecraft.world.phys.Vec3;
 
 public class SavestateHandler {
 
@@ -79,13 +82,15 @@ public class SavestateHandler {
 
 		Minecraft mc = Minecraft.getInstance();
 
-		logger.trace("Create new savestate index via indexer");
-		SavestatePaths paths = indexer.createSavestate(index, name, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX));
-		logger.debug("Source: {}, Target: {}", paths.getSourceFolder(), paths.getTargetFolder());
-
 		logger.trace("Save world & players");
 		server.saveEverything(true, true, false);
 		server.getPlayerList().saveAll();
+
+		indexer.getCurrentSavestate().motion = mc.player.getDeltaMovement();
+
+		logger.trace("Create new savestate index via indexer");
+		SavestatePaths paths = indexer.createSavestate(index, name, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX), mc.player.getDeltaMovement());
+		logger.debug("Source: {}, Target: {}", paths.getSourceFolder(), paths.getTargetFolder());
 
 		logger.trace("Enable tickrate 0");
 		Tickratechanger tickratechangerServer = (Tickratechanger) server.tickRateManager();
@@ -172,12 +177,27 @@ public class SavestateHandler {
 		mc.createWorldOpenFlows().openWorld(worldname, () -> {
 		});
 
-		mc.gui.getChat().clearMessages(true);
-		state = State.NONE;
-
 		if (cb != null) {
 			cb.invoke(paths);
 		}
+	}
+
+	public void onLoadstateComplete(LocalPlayer player) {
+		if (state != State.LOADSTATING)
+			return;
+
+		Minecraft mc = Minecraft.getInstance();
+		mc.setScreen(new Screen(Component.literal("")) {
+		});
+		Vec3 motion = indexer.getCurrentSavestate().motion;
+		this.server.getPlayerList().getPlayers().forEach(serverplayer -> {
+			((AccessorServerPlayer) serverplayer).setSpawnInvulnerableTime(0);
+			serverplayer.setDeltaMovement(motion);
+		});
+		mc.player.setDeltaMovement(motion);
+		mc.gui.getChat().clearMessages(true);
+
+		state = State.NONE;
 	}
 
 	public void reload() {

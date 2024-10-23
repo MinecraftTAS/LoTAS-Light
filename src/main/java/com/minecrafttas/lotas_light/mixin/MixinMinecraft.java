@@ -39,4 +39,12 @@ public class MixinMinecraft {
 			}
 		}
 	}
+
+	@Inject(method = "stop", at = @At("HEAD"))
+	public void inject_stop(CallbackInfo ci) {
+		Minecraft mc = Minecraft.getInstance();
+		if (mc.level != null && mc.player != null) {
+			mc.level.tickRateManager().setTickRate(20f);
+		}
+	}
 }

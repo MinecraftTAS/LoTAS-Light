@@ -4,8 +4,10 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 
@@ -66,5 +68,11 @@ public class MixinMinecraftServer {
 
 			return currentTime;
 		}
+	}
+
+	@Inject(method = "stopServer", at = @At("HEAD"))
+	public void inject_stopServer(CallbackInfo ci) {
+		MinecraftServer server = (MinecraftServer) (Object) this;
+		server.tickRateManager().setTickRate(20f);
 	}
 }

@@ -27,7 +27,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.DirectoryLock;
 import net.minecraft.world.TickRateManager;
 import net.minecraft.world.level.storage.LevelStorageSource.LevelStorageAccess;
-import net.minecraft.world.phys.Vec3;
 
 public class SavestateHandler {
 
@@ -38,6 +37,8 @@ public class SavestateHandler {
 	private String worldname;
 
 	private State state = State.NONE;
+
+	public Runnable applyMotion = null;
 
 	public enum State {
 		SAVESTATING,
@@ -177,6 +178,10 @@ public class SavestateHandler {
 		mc.createWorldOpenFlows().openWorld(worldname, () -> {
 		});
 
+		applyMotion = () -> {
+			mc.player.setDeltaMovement(indexer.getCurrentSavestate().motion);
+		};
+
 		if (cb != null) {
 			cb.invoke(paths);
 		}
@@ -189,12 +194,10 @@ public class SavestateHandler {
 		Minecraft mc = Minecraft.getInstance();
 		mc.setScreen(new Screen(Component.literal("")) {
 		});
-		Vec3 motion = indexer.getCurrentSavestate().motion;
+
 		this.server.getPlayerList().getPlayers().forEach(serverplayer -> {
 			((AccessorServerPlayer) serverplayer).setSpawnInvulnerableTime(0);
-			serverplayer.setDeltaMovement(motion);
 		});
-		mc.player.setDeltaMovement(motion);
 		mc.gui.getChat().clearMessages(true);
 
 		state = State.NONE;

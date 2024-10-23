@@ -7,9 +7,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.minecrafttas.lotas_light.LoTASLight;
 import com.minecrafttas.lotas_light.event.EventClientGameLoop;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 
 @Mixin(Minecraft.class)
@@ -26,5 +28,15 @@ public class MixinMinecraft {
 	@ModifyExpressionValue(method = "getTickTargetMillis", at = @At(value = "INVOKE", target = "Ljava/lang/Math;max(FF)F"))
 	public float modifyExpressionValue_GetTargetMillis(float original) {
 		return this.level.tickRateManager().millisecondsPerTick();
+	}
+
+	@Inject(method = "setScreen", at = @At(value = "HEAD"), cancellable = true)
+	public void injectdisplayGuiScreen(Screen guiScreenIn, CallbackInfo ci) {
+		if (guiScreenIn == null && (((Minecraft) (Object) this).player != null)) {
+			if (LoTASLight.savestateHandler.applyMotion != null) {
+				LoTASLight.savestateHandler.applyMotion.run();
+				LoTASLight.savestateHandler.applyMotion = null;
+			}
+		}
 	}
 }

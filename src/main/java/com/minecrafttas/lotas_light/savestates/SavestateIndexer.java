@@ -3,6 +3,7 @@ package com.minecrafttas.lotas_light.savestates;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -23,8 +24,10 @@ import org.apache.logging.log4j.Logger;
 import com.minecrafttas.lotas_light.LoTASLight;
 import com.minecrafttas.lotas_light.config.AbstractDataFile;
 import com.minecrafttas.lotas_light.savestates.exceptions.LoadstateException;
+import com.minecrafttas.lotas_light.savestates.exceptions.SavestateDeleteException;
 import com.minecrafttas.lotas_light.savestates.exceptions.SavestateException;
 
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -108,7 +111,7 @@ public class SavestateIndexer {
 		Savestate savestateToLoad = savestateList.get(index);
 
 		if (savestateToLoad == null) {
-			throw new LoadstateException("Savestate %s does not exist", index);
+			throw new LoadstateException(I18n.get("msg.lotaslight.savestate.error.noexist", index));
 		}
 
 		int savedIndex = currentSavestate.index;
@@ -123,6 +126,38 @@ public class SavestateIndexer {
 			currentSavestate.index = savedIndex;
 
 		return out;
+	}
+
+	public SavestatePaths deleteSavestate(int index) throws Exception {
+		logger.trace("Deleting savestate {}", index);
+
+		if (!savestateList.containsKey(index)) {
+			throw new SavestateDeleteException(I18n.get("msg.lotaslight.savestate.error.noexist", index));
+		}
+
+		Savestate toDelete = savestateList.get(index);
+		Path targetDir = currentSavestateDir.resolve(worldname + currentSavestate.index);
+		SavestatePaths out = SavestatePaths.of(toDelete, null, targetDir);
+
+		savestateList.remove(index);
+
+		for (int i = index; i > 0; i--) {
+			if (savestateList.containsKey(i)) {
+				currentSavestate.index = i;
+			}
+		}
+
+		return out;
+	}
+
+	public void deleteMultipleSavestates(int from, int to, DeletionRunnable onDelete, ExceptionRunnable onError) {
+		for (int i = from; i <= to; i++) {
+			try {
+				onDelete.run(deleteSavestate(i));
+			} catch (Exception e) {
+				onError.run(e);
+			}
+		}
 	}
 
 	private void sortSavestateList() {
@@ -392,5 +427,56 @@ public class SavestateIndexer {
 		public static SavestatePaths of(Savestate savestate, Path sourceFolder, Path targetFolder) {
 			return new SavestatePaths(savestate, sourceFolder, targetFolder);
 		}
+	}
+
+	public static void copyFolder(Path src, Path dest) {
+		try {
+			Files.walk(src).forEach(s -> {
+				try {
+					Path d = dest.resolve(src.relativize(s));
+					if (Files.isDirectory(s)) {
+						if (!Files.exists(d))
+							Files.createDirectory(d);
+						return;
+					}
+					Files.copy(s, d, StandardCopyOption.REPLACE_EXISTING);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void deleteFolder(Path toDelete) {
+		try {
+			Files.walk(toDelete).forEach(s -> {
+				if (toDelete.equals(s))
+					return;
+				if (Files.isDirectory(s)) {
+					deleteFolder(s);
+				} else {
+					try {
+						Files.delete(s);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			Files.delete(toDelete);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@FunctionalInterface
+	public interface DeletionRunnable {
+		public void run(SavestatePaths paths);
+	}
+
+	@FunctionalInterface
+	public interface ExceptionRunnable {
+		public void run(Exception e);
 	}
 }

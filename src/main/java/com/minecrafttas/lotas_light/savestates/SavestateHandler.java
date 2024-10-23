@@ -1,9 +1,7 @@
 package com.minecrafttas.lotas_light.savestates;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
 
@@ -105,11 +103,11 @@ public class SavestateHandler {
 
 		if (Files.exists(paths.getTargetFolder())) {
 			logger.warn("Overwriting existing savestate");
-			deleteFolder(paths.getTargetFolder());
+			SavestateIndexer.deleteFolder(paths.getTargetFolder());
 		}
 
 		logger.trace("Copying folders");
-		copyFolder(paths.getSourceFolder(), paths.getTargetFolder());
+		SavestateIndexer.copyFolder(paths.getSourceFolder(), paths.getTargetFolder());
 
 		levelStorage.lock = DirectoryLock.create(paths.getSourceFolder());
 
@@ -170,10 +168,10 @@ public class SavestateHandler {
 		while (server.isCurrentlySaving() || server.isRunning()) {
 		}
 
-		deleteFolder(paths.getTargetFolder());
+		SavestateIndexer.deleteFolder(paths.getTargetFolder());
 
 		logger.trace("Copying folders");
-		copyFolder(paths.getSourceFolder(), paths.getTargetFolder());
+		SavestateIndexer.copyFolder(paths.getSourceFolder(), paths.getTargetFolder());
 
 		mc.createWorldOpenFlows().openWorld(worldname, () -> {
 		});
@@ -240,47 +238,6 @@ public class SavestateHandler {
 		 * Stops setting the tickrate to 0 after a savestate/loadstate
 		 */
 		BLOCK_PAUSE_TICKRATE;
-	}
-
-	public static void copyFolder(Path src, Path dest) {
-		try {
-			Files.walk(src).forEach(s -> {
-				try {
-					Path d = dest.resolve(src.relativize(s));
-					if (Files.isDirectory(s)) {
-						if (!Files.exists(d))
-							Files.createDirectory(d);
-						return;
-					}
-					Files.copy(s, d, StandardCopyOption.REPLACE_EXISTING);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			});
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void deleteFolder(Path toDelete) {
-		try {
-			Files.walk(toDelete).forEach(s -> {
-				if (toDelete.equals(s))
-					return;
-				if (Files.isDirectory(s)) {
-					deleteFolder(s);
-				} else {
-					try {
-						Files.delete(s);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			});
-			Files.delete(toDelete);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	private boolean shouldBlock(List<SavestateFlags> flagList, SavestateFlags flag) {

@@ -11,8 +11,11 @@ import com.minecrafttas.lotas_light.LoTASLight;
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 import com.minecrafttas.lotas_light.mixin.AccessorLevelStorage;
 import com.minecrafttas.lotas_light.mixin.AccessorServerPlayer;
+import com.minecrafttas.lotas_light.savestates.SavestateIndexer.DeletionRunnable;
+import com.minecrafttas.lotas_light.savestates.SavestateIndexer.ErrorRunnable;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.SavestatePaths;
 import com.minecrafttas.lotas_light.savestates.exceptions.LoadstateException;
+import com.minecrafttas.lotas_light.savestates.exceptions.SavestateDeleteException;
 import com.minecrafttas.lotas_light.savestates.exceptions.SavestateException;
 
 import net.minecraft.client.Minecraft;
@@ -25,6 +28,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.DirectoryLock;
 import net.minecraft.world.TickRateManager;
 import net.minecraft.world.level.storage.LevelStorageSource.LevelStorageAccess;
+import net.minecraft.world.phys.Vec3;
 
 public class SavestateHandler {
 
@@ -88,7 +92,13 @@ public class SavestateHandler {
 		indexer.getCurrentSavestate().motion = mc.player.getDeltaMovement();
 
 		logger.trace("Create new savestate index via indexer");
-		SavestatePaths paths = indexer.createSavestate(index, name, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX), mc.player.getDeltaMovement());
+		SavestatePaths paths = null;
+		try {
+			paths = indexer.createSavestate(index, name, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX), mc.player.getDeltaMovement());
+		} catch (Exception e) {
+			state = State.NONE;
+			throw e;
+		}
 		logger.debug("Source: {}, Target: {}", paths.getSourceFolder(), paths.getTargetFolder());
 
 		logger.trace("Enable tickrate 0");
@@ -138,7 +148,7 @@ public class SavestateHandler {
 	public void loadState(int index, String name, SavestateCallback cb, SavestateFlags... flags) throws Exception {
 		// Check if a loadstating operation is being carried out
 		if (state != State.NONE) {
-			throw new LoadstateException(I18n.get(String.format("msg.lotaslight.loadstate.%s.error", state == State.SAVESTATING ? "save" : "load")));
+			throw new LoadstateException(I18n.get(String.format("msg.lotaslight.savestate.%s.error", state == State.SAVESTATING ? "save" : "load")));
 		}
 		state = State.LOADSTATING;
 
@@ -158,7 +168,13 @@ public class SavestateHandler {
 		}
 
 		logger.trace("Load savestate index via indexer");
-		SavestatePaths paths = indexer.loadSavestate(index, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX));
+		SavestatePaths paths = null;
+		try {
+			paths = indexer.loadSavestate(index, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX));
+		} catch (Exception e) {
+			state = State.NONE;
+			throw e;
+		}
 		logger.debug("Source: {}, Target: {}", paths.getSourceFolder(), paths.getTargetFolder());
 
 		mc.level.disconnect();
@@ -177,7 +193,9 @@ public class SavestateHandler {
 		});
 
 		applyMotion = () -> {
-			mc.player.setDeltaMovement(indexer.getCurrentSavestate().motion);
+			Vec3 motion = indexer.getCurrentSavestate().motion;
+			if (motion != null)
+				mc.player.setDeltaMovement(motion);
 		};
 
 		if (cb != null) {
@@ -201,6 +219,34 @@ public class SavestateHandler {
 		state = State.NONE;
 	}
 
+	public void delete(int index, SavestateCallback cb) throws Exception {
+		if (state == State.SAVESTATING) {
+			throw new SavestateDeleteException("msg.lotaslight.savestate.save.error");
+		} else if (state == State.LOADSTATING) {
+			throw new SavestateDeleteException("msg.lotaslight.savestate.load.error");
+		}
+
+		SavestatePaths paths = indexer.deleteSavestate(index);
+		SavestateIndexer.deleteFolder(paths.getTargetFolder());
+
+		cb.invoke(paths);
+	}
+
+	public void delete(int from, int to, SavestateCallback cb, ErrorRunnable err) throws Exception {
+		if (state == State.SAVESTATING) {
+			throw new SavestateDeleteException("msg.lotaslight.savestate.save.error");
+		} else if (state == State.LOADSTATING) {
+			throw new SavestateDeleteException("msg.lotaslight.savestate.load.error");
+		}
+
+		DeletionRunnable onDelete = (paths) -> {
+			SavestateIndexer.deleteFolder(paths.getTargetFolder());
+			cb.invoke(paths);
+		};
+
+		indexer.deleteMultipleSavestates(from, to, onDelete, err);
+	}
+
 	public void reload() {
 		indexer.reload();
 	}
@@ -211,6 +257,10 @@ public class SavestateHandler {
 
 	public int getCurrentIndex() {
 		return indexer.getCurrentSavestate().index;
+	}
+
+	public List<SavestateIndexer.Savestate> getSavestateInfo() {
+		return getSavestateInfo(0);
 	}
 
 	public List<SavestateIndexer.Savestate> getSavestateInfo(int tail) {

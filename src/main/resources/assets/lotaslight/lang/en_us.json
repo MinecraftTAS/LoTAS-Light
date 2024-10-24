@@ -13,7 +13,7 @@
 	"msg.lotaslight.savestate.save.error":"Can't perform this action: A savestate operation is already being carried out!",
 	"msg.lotaslight.savestate.load.error":"Can't perform this action: A loadstate operation is already being carried out!",
 	"msg.lotaslight.savestate.error.noexist":"Savestate %s does not exist",
-	"msg.lotaslight.savestate.delete":"Trying to delete savestate at index %s",
+	"msg.lotaslight.savestate.delete":"Deleted savestate at index %s",
 	"msg.lotaslight.savestate.deleteMore.singular":"You are about to delete %s savestate! Do you want to continue? %s",
 	"msg.lotaslight.savestate.deleteMore.plural":"You are about to delete %s savestates! Do you want to continue? %s",
 	"msg.lotaslight.savestate.deleteMore.confirm":"YES",

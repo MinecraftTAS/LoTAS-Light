@@ -102,10 +102,14 @@ public class SavestateIndexer {
 		return SavestatePaths.of(currentSavestate.clone(), sourceDir, targetDir);
 	}
 
-	public SavestatePaths loadSavestate(int index, boolean changeIndex) throws LoadstateException {
+	public SavestatePaths loadSavestate(int index, boolean changeIndex) throws Exception {
 		logger.trace("Loading savestate in indexer");
 		if (index < 0) {
 			index = currentSavestate.getIndex();
+
+			if (savestateList.containsKey(index)) {
+				index = findLatestIndex(index);
+			}
 		}
 
 		Savestate savestateToLoad = savestateList.get(index);
@@ -136,21 +140,19 @@ public class SavestateIndexer {
 		}
 
 		Savestate toDelete = savestateList.get(index);
-		Path targetDir = currentSavestateDir.resolve(worldname + currentSavestate.index);
+		Path targetDir = currentSavestateDir.resolve(worldname + toDelete.index);
 		SavestatePaths out = SavestatePaths.of(toDelete, null, targetDir);
 
 		savestateList.remove(index);
 
-		for (int i = index; i > 0; i--) {
-			if (savestateList.containsKey(i)) {
-				currentSavestate.index = i;
-			}
+		if (!savestateList.containsKey(currentSavestate.index)) {
+			currentSavestate.index = findLatestIndex(currentSavestate.index);
 		}
 
 		return out;
 	}
 
-	public void deleteMultipleSavestates(int from, int to, DeletionRunnable onDelete, ExceptionRunnable onError) {
+	public void deleteMultipleSavestates(int from, int to, DeletionRunnable onDelete, ErrorRunnable onError) {
 		for (int i = from; i <= to; i++) {
 			try {
 				onDelete.run(deleteSavestate(i));
@@ -195,15 +197,15 @@ public class SavestateIndexer {
 
 				stream.close();
 
-				Pattern pattern = Pattern.compile(worldname + "(\\d)$");
+				Pattern pattern = Pattern.compile(worldname + "(\\d+)$");
 
 				pathSet.forEach(path -> {
 					Path savestateDat = path.resolve(savestateDatPath);
 
 					Savestate savestate = null;
 					if (!Files.exists(savestateDat)) {
-
-						Matcher matcher = pattern.matcher(path.getFileName().toString());
+						String filename = path.getFileName().toString();
+						Matcher matcher = pattern.matcher(filename);
 						int backupIndex = -1;
 						if (matcher.find()) {
 							backupIndex = Integer.parseInt(matcher.group(1));
@@ -217,8 +219,13 @@ public class SavestateIndexer {
 						savestate.loadFromXML();
 					}
 					savestateList.put(savestate.getIndex(), savestate.clone());
-					sortSavestateList();
 				});
+				sortSavestateList();
+				try {
+					currentSavestate.index = findLatestIndex(currentSavestate.index);
+				} catch (Exception e) {
+					logger.catching(e);
+				}
 			}
 		}, "Savestate Reload");
 		t.run();
@@ -243,6 +250,18 @@ public class SavestateIndexer {
 			out.addFirst(entry.getValue());
 		}
 		return out;
+	}
+
+	public int findLatestIndex(int start) throws Exception {
+		if (savestateList.containsKey(start))
+			return start;
+
+		for (int i = start; i >= 0; i--) {
+			if (savestateList.containsKey(i) && !(savestateList.get(i) instanceof FailedSavestate)) {
+				return i;
+			}
+		}
+		throw new SavestateException("No savestates found");
 	}
 
 	public Savestate getCurrentSavestate() {
@@ -476,7 +495,7 @@ public class SavestateIndexer {
 	}
 
 	@FunctionalInterface
-	public interface ExceptionRunnable {
+	public interface ErrorRunnable {
 		public void run(Exception e);
 	}
 }

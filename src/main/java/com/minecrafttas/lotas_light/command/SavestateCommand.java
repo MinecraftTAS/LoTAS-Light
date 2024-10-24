@@ -28,6 +28,7 @@ public class SavestateCommand {
 		//@formatter:off
 		commandDispatcher
 		.register(Commands.literal("savestate")
+				.executes(SavestateCommand::info)
 				.then(Commands.literal("save")
 						.executes(SavestateCommand::saveNew)
 						.then(Commands.argument("index", IntegerArgumentType.integer(1))
@@ -55,10 +56,6 @@ public class SavestateCommand {
 				.then(Commands.literal("reload")
 						.executes(SavestateCommand::reload)
 				)
-				.then(Commands.literal("info")
-						.executes(SavestateCommand::info)
-				)
-				
 		);
 		//@formatter:on
 	}
@@ -191,7 +188,13 @@ public class SavestateCommand {
 
 	private static int delete(CommandContext<CommandSourceStack> context) {
 		int index = context.getArgument("index", Integer.class);
-		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.delete", index).withStyle(ChatFormatting.GREEN), true);
+		try {
+			LoTASLight.savestateHandler.delete(index, (paths) -> {
+				context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.delete", paths.getSavestate().getIndex()).withStyle(ChatFormatting.GREEN), true);
+			});
+		} catch (Exception e) {
+			sendFailure(context, e);
+		}
 		return index;
 	}
 
@@ -236,7 +239,7 @@ public class SavestateCommand {
 	}
 
 	private static int info(CommandContext<CommandSourceStack> context) {
-		List<Savestate> savestateList = LoTASLight.savestateHandler.getSavestateInfo(5);
+		List<Savestate> savestateList = LoTASLight.savestateHandler.getSavestateInfo();
 		int currentIndex = LoTASLight.savestateHandler.getCurrentIndex();
 		String format = I18n.get("msg.lotaslight.savestate.dateformat");
 

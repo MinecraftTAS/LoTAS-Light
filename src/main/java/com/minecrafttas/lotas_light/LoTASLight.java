@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import com.minecrafttas.lotas_light.command.LoTASLightCommand;
 import com.minecrafttas.lotas_light.command.SavestateCommand;
 import com.minecrafttas.lotas_light.savestates.SavestateHandler;
+import com.minecrafttas.lotas_light.savestates.SavestateHandler.State;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -31,7 +32,9 @@ public class LoTASLight implements ModInitializer {
 			if (savestateHandler == null) {
 				savestateHandler = new SavestateHandler(LOGGER, server);
 			} else {
-				savestateHandler.setIndexer(server);
+				if (savestateHandler.getState() == State.NONE) {
+					savestateHandler.setIndexer(server);
+				}
 			}
 		});
 

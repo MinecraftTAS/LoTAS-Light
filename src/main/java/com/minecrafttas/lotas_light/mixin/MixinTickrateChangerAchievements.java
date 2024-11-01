@@ -16,7 +16,7 @@ import net.minecraft.client.Minecraft;
 @Mixin(targets = "net/minecraft/client/gui/components/toasts/ToastComponent$ToastInstance")
 public class MixinTickrateChangerAchievements {
 
-	@ModifyExpressionValue(method = "Lnet/minecraft/client/gui/components/toasts/ToastComponent$ToastInstance;render(II)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/Util;getMillis()J"))
+	@ModifyExpressionValue(method = "Lnet/minecraft/client/gui/components/toasts/ToastComponent$ToastInstance;render(ILnet/minecraft/client/gui/GuiGraphics;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/Util;getMillis()J"))
 	public long modifyAnimationTimeAdvancements(long millis) {
 		Minecraft mc = Minecraft.getInstance();
 		if (mc.level != null)

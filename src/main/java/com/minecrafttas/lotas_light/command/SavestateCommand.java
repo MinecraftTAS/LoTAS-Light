@@ -14,6 +14,7 @@ import com.mojang.brigadier.context.CommandContext;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -22,6 +23,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.server.level.ServerLevel;
 
 public class SavestateCommand {
 	public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
@@ -75,6 +77,10 @@ public class SavestateCommand {
 
 		Minecraft.getInstance().execute(() -> {
 			try {
+				for (ServerLevel level : Minecraft.getInstance().getSingleplayerServer().getAllLevels()) {
+					level.noSave = true;
+				}
+				Minecraft.getInstance().setScreen(new PauseScreen(false));
 				LoTASLight.savestateHandler.saveState(index, null);
 			} catch (Exception e) {
 				sendFailure(context, e);
@@ -98,6 +104,10 @@ public class SavestateCommand {
 
 		Minecraft.getInstance().execute(() -> {
 			try {
+				for (ServerLevel level : Minecraft.getInstance().getSingleplayerServer().getAllLevels()) {
+					level.noSave = true;
+				}
+				Minecraft.getInstance().setScreen(new PauseScreen(false));
 				LoTASLight.savestateHandler.saveState(index, null);
 			} catch (Exception e) {
 				sendFailure(context, e);
@@ -119,19 +129,27 @@ public class SavestateCommand {
 //			//@formatter:on
 //		};
 
-		try {
-			LoTASLight.savestateHandler.saveState(name, null);
-		} catch (Exception e) {
-			sendFailure(context, e);
-		}
+		Minecraft.getInstance().execute(() -> {
+			try {
+				for (ServerLevel level : Minecraft.getInstance().getSingleplayerServer().getAllLevels()) {
+					level.noSave = true;
+				}
+				Minecraft.getInstance().setScreen(new PauseScreen(false));
+				LoTASLight.savestateHandler.saveState(name, null);
+			} catch (Exception e) {
+				sendFailure(context, e);
+			}
+		});
 		return 0;
 	}
 
 	private static int saveNameIndex(CommandContext<CommandSourceStack> context) {
 		int index = context.getArgument("index", Integer.class);
 		String name = context.getArgument("name", String.class);
-
 		try {
+			for (ServerLevel level : Minecraft.getInstance().getSingleplayerServer().getAllLevels()) {
+				level.noSave = true;
+			}
 			LoTASLight.savestateHandler.saveState(index, name, null);
 		} catch (Exception e) {
 			sendFailure(context, e);
@@ -154,6 +172,10 @@ public class SavestateCommand {
 
 		Minecraft.getInstance().execute(() -> {
 			try {
+				for (ServerLevel level : Minecraft.getInstance().getSingleplayerServer().getAllLevels()) {
+					level.noSave = true;
+				}
+				Minecraft.getInstance().setScreen(new PauseScreen(false));
 				LoTASLight.savestateHandler.loadState(index, null);
 			} catch (Exception e) {
 				sendFailure(context, e);
@@ -178,6 +200,10 @@ public class SavestateCommand {
 
 		Minecraft.getInstance().execute(() -> {
 			try {
+				for (ServerLevel level : Minecraft.getInstance().getSingleplayerServer().getAllLevels()) {
+					level.noSave = true;
+				}
+				Minecraft.getInstance().setScreen(new PauseScreen(false));
 				LoTASLight.savestateHandler.loadState(index, null);
 			} catch (Exception e) {
 				sendFailure(context, e);
@@ -294,5 +320,6 @@ public class SavestateCommand {
 	private static void sendFailure(CommandContext<CommandSourceStack> context, Throwable e) {
 		context.getSource().sendFailure(Component.literal(e.getMessage()));
 		LoTASLight.LOGGER.catching(e);
+		LoTASLight.savestateHandler.resetState();
 	}
 }

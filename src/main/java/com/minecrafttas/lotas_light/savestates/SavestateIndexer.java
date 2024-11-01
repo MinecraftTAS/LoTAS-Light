@@ -55,8 +55,14 @@ public class SavestateIndexer {
 		this.currentSavestateDir = savestateBaseDirectory.resolve(String.format("%s-Savestates", worldname));
 		savestateList = new LinkedHashMap<>();
 		createSavestateDir();
-		currentSavestate = new Savestate(savesDir.resolve(worldname).resolve(savestateDatPath));
-		currentSavestate.loadFromXML();
+
+		Path savestateDat = savesDir.resolve(worldname).resolve(savestateDatPath);
+		if (Files.exists(savestateDat)) {
+			currentSavestate = new Savestate(savestateDat);
+			currentSavestate.loadFromXML();
+		} else {
+			currentSavestate = new Savestate(savestateDat, 0, null, null, null);
+		}
 		reload();
 	}
 
@@ -123,6 +129,11 @@ public class SavestateIndexer {
 
 		Path sourceDir = currentSavestateDir.resolve(worldname + currentSavestate.index);
 		Path targetDir = savesDir.resolve(worldname);
+
+		if (!Files.exists(sourceDir)) {
+			Path missingFile = savesDir.relativize(sourceDir);
+			throw new LoadstateException(I18n.get("msg.lotaslight.savestate.error.filenoexist", missingFile));
+		}
 
 		SavestatePaths out = SavestatePaths.of(currentSavestate.clone(), sourceDir, targetDir);
 
@@ -261,7 +272,7 @@ public class SavestateIndexer {
 				return i;
 			}
 		}
-		throw new SavestateException("No savestates found");
+		return 0;
 	}
 
 	public Savestate getCurrentSavestate() {
@@ -324,9 +335,12 @@ public class SavestateIndexer {
 
 		@Override
 		public void saveToXML() {
-			properties.setProperty(Options.INDEX.toString(), Integer.toString(index));
-			properties.setProperty(Options.NAME.toString(), name);
-			properties.setProperty(Options.DATE.toString(), Long.toString(ChronoUnit.SECONDS.between(Instant.EPOCH, date.toInstant())));
+			if (index != null)
+				properties.setProperty(Options.INDEX.toString(), Integer.toString(index));
+			if (name != null)
+				properties.setProperty(Options.NAME.toString(), name);
+			if (date != null)
+				properties.setProperty(Options.DATE.toString(), Long.toString(ChronoUnit.SECONDS.between(Instant.EPOCH, date.toInstant())));
 			if (motion != null) {
 				properties.setProperty(Options.MOTION_X.toString(), Double.toString(motion.x));
 				properties.setProperty(Options.MOTION_Y.toString(), Double.toString(motion.y));
@@ -339,14 +353,18 @@ public class SavestateIndexer {
 		public void loadFromXML() {
 			super.loadFromXML();
 			try {
-				this.index = Integer.parseInt(properties.getProperty(Options.INDEX.toString()));
+				String loadedIndex = properties.getProperty(Options.INDEX.toString());
+				if (loadedIndex != null)
+					this.index = Integer.parseInt(loadedIndex);
 			} catch (Exception e) {
 				logger.error("Can't parse '{}' in {}", Options.INDEX.toString(), currentSavestateDir.resolve(savestateDatPath));
 				logger.catching(e);
 			}
 			this.name = properties.getProperty(Options.NAME.toString());
 			try {
-				this.date = parseDate(properties.getProperty(Options.DATE.toString()));
+				String loadedDate = properties.getProperty(Options.DATE.toString());
+				if (loadedDate != null)
+					this.date = parseDate(loadedDate);
 			} catch (Exception e) {
 				logger.error("Can't parse '{}' in {}", Options.DATE.toString(), currentSavestateDir.resolve(savestateDatPath));
 				logger.catching(e);

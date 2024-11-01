@@ -8,7 +8,6 @@ import java.util.List;
 import org.apache.logging.log4j.Logger;
 
 import com.minecrafttas.lotas_light.LoTASLight;
-import com.minecrafttas.lotas_light.duck.Tickratechanger;
 import com.minecrafttas.lotas_light.mixin.AccessorLevelStorage;
 import com.minecrafttas.lotas_light.mixin.AccessorServerPlayer;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.DeletionRunnable;
@@ -20,6 +19,7 @@ import com.minecrafttas.lotas_light.savestates.exceptions.SavestateException;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -84,28 +84,24 @@ public class SavestateHandler {
 		List<SavestateFlags> flagList = Arrays.asList(flags);
 
 		Minecraft mc = Minecraft.getInstance();
+		server = mc.getSingleplayerServer(); // Safety server update, because *sometimes* the server is outdated and it will softlock on saveAll
 
 		logger.trace("Save world & players");
 		server.saveEverything(true, true, false);
-		server.getPlayerList().saveAll();
+
+		while (server.isCurrentlySaving()) {
+
+		}
 
 		indexer.getCurrentSavestate().motion = mc.player.getDeltaMovement();
 
 		logger.trace("Create new savestate index via indexer");
 		SavestatePaths paths = null;
-		try {
-			paths = indexer.createSavestate(index, name, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX), mc.player.getDeltaMovement());
-		} catch (Exception e) {
-			state = State.NONE;
-			throw e;
-		}
+		paths = indexer.createSavestate(index, name, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX), mc.player.getDeltaMovement());
 		logger.debug("Source: {}, Target: {}", paths.getSourceFolder(), paths.getTargetFolder());
 
-		logger.trace("Enable tickrate 0");
-		Tickratechanger tickratechangerServer = (Tickratechanger) server.tickRateManager();
-		Tickratechanger tickratechangerClient = (Tickratechanger) mc.level.tickRateManager();
-		tickratechangerServer.enableTickrate0(true);
-		tickratechangerClient.enableTickrate0(true);
+		mc.setScreen(new Screen(Component.literal("")) {
+		});
 
 		logger.trace("Remove session.lock");
 		LevelStorageAccess levelStorage = ((AccessorLevelStorage) server).getStorageSource();
@@ -121,9 +117,8 @@ public class SavestateHandler {
 
 		levelStorage.lock = DirectoryLock.create(paths.getSourceFolder());
 
-		if (shouldBlock(flagList, SavestateFlags.BLOCK_PAUSE_TICKRATE)) {
-			tickratechangerServer.enableTickrate0(false);
-			tickratechangerClient.enableTickrate0(false);
+		for (ServerLevel level : server.getAllLevels()) {
+			level.noSave = false;
 		}
 
 		state = State.NONE;
@@ -155,6 +150,7 @@ public class SavestateHandler {
 		List<SavestateFlags> flagList = Arrays.asList(flags);
 
 		Minecraft mc = Minecraft.getInstance();
+		server = mc.getSingleplayerServer();
 		TickRateManager trmServer = server.tickRateManager();
 		TickRateManager trmClient = mc.level.tickRateManager();
 
@@ -163,23 +159,13 @@ public class SavestateHandler {
 		trmServer.setTickRate(20f);
 		trmClient.setTickRate(20f);
 
-		for (ServerLevel level : server.getAllLevels()) {
-			level.noSave = true;
-		}
-
 		logger.trace("Load savestate index via indexer");
 		SavestatePaths paths = null;
-		try {
-			paths = indexer.loadSavestate(index, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX));
-		} catch (Exception e) {
-			state = State.NONE;
-			throw e;
-		}
+		paths = indexer.loadSavestate(index, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX));
 		logger.debug("Source: {}, Target: {}", paths.getSourceFolder(), paths.getTargetFolder());
 
 		mc.level.disconnect();
-		mc.clearClientLevel(new Screen(Component.literal("")) {
-		});
+		mc.disconnect();
 
 		while (server.isCurrentlySaving() || server.isRunning()) {
 		}
@@ -189,14 +175,17 @@ public class SavestateHandler {
 		logger.trace("Copying folders");
 		SavestateIndexer.copyFolder(paths.getSourceFolder(), paths.getTargetFolder());
 
-		mc.createWorldOpenFlows().openWorld(worldname, () -> {
-		});
+		mc.createWorldOpenFlows().openWorld(worldname, () -> mc.setScreen(new TitleScreen()));
 
 		applyMotion = () -> {
 			Vec3 motion = indexer.getCurrentSavestate().motion;
 			if (motion != null)
 				mc.player.setDeltaMovement(motion);
 		};
+
+		for (ServerLevel level : server.getAllLevels()) {
+			level.noSave = false;
+		}
 
 		if (cb != null) {
 			cb.invoke(paths);
@@ -210,6 +199,12 @@ public class SavestateHandler {
 		Minecraft mc = Minecraft.getInstance();
 		mc.setScreen(new Screen(Component.literal("")) {
 		});
+
+		server = mc.getSingleplayerServer();
+
+		for (ServerLevel level : server.getAllLevels()) {
+			level.noSave = false;
+		}
 
 		this.server.getPlayerList().getPlayers().forEach(serverplayer -> {
 			((AccessorServerPlayer) serverplayer).setSpawnInvulnerableTime(0);
@@ -232,11 +227,13 @@ public class SavestateHandler {
 		cb.invoke(paths);
 	}
 
-	public void delete(int from, int to, SavestateCallback cb, ErrorRunnable err) throws Exception {
+	public void delete(int from, int to, SavestateCallback cb, ErrorRunnable err) {
 		if (state == State.SAVESTATING) {
-			throw new SavestateDeleteException("msg.lotaslight.savestate.save.error");
+			err.run(new SavestateDeleteException("msg.lotaslight.savestate.save.error"));
+			return;
 		} else if (state == State.LOADSTATING) {
-			throw new SavestateDeleteException("msg.lotaslight.savestate.load.error");
+			err.run(new SavestateDeleteException("msg.lotaslight.savestate.load.error"));
+			return;
 		}
 
 		DeletionRunnable onDelete = (paths) -> {
@@ -303,5 +300,9 @@ public class SavestateHandler {
 		logger.debug("Created savestate handler with saves: {}, savestates: {}, worldname: {}", savesDir, savestateBaseDir, worldname);
 
 		this.indexer = new SavestateIndexer(logger, savesDir, savestateBaseDir, worldname);
+	}
+
+	public void resetState() {
+		state = State.NONE;
 	}
 }

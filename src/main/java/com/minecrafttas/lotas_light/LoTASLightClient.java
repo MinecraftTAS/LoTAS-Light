@@ -20,10 +20,14 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.PauseScreen;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTickRateManager;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.TickRateManager;
 
 public class LoTASLightClient implements ClientModInitializer {
@@ -193,21 +197,37 @@ public class LoTASLightClient implements ClientModInitializer {
 
 	private void savestate() {
 		Minecraft mc = Minecraft.getInstance();
+		MinecraftServer server = mc.getSingleplayerServer();
+		for (ServerLevel level : server.getAllLevels()) {
+			level.noSave = true;
+		}
 		try {
+			mc.setScreen(new PauseScreen(false));
 			LoTASLight.savestateHandler.saveState(null);
 		} catch (Exception e) {
 			LoTASLight.LOGGER.catching(e);
 			mc.gui.getChat().addMessage(Component.literal(e.getMessage()));
+			LoTASLight.savestateHandler.resetState();
 		}
 	}
 
 	private void loadstate() {
 		Minecraft mc = Minecraft.getInstance();
 		try {
+			MinecraftServer server = mc.getSingleplayerServer();
+			for (ServerLevel level : server.getAllLevels()) {
+				level.noSave = true;
+			}
+			mc.setScreen(new PauseScreen(false));
 			LoTASLight.savestateHandler.loadState(null);
 		} catch (Exception e) {
 			LoTASLight.LOGGER.catching(e);
-			mc.gui.getChat().addMessage(Component.literal(e.getMessage()));
+			String message = e.getMessage();
+			if (message == null || message.isEmpty()) {
+				message = I18n.get("msg.lotaslight.savestate.failure", e.toString());
+			}
+			mc.gui.getChat().addMessage(Component.literal(message));
+			LoTASLight.savestateHandler.resetState();
 		}
 	}
 }

@@ -143,6 +143,23 @@ public class SavestateIndexer {
 		return out;
 	}
 
+	public SavestatePaths renameSavestate(int index, String name) throws Exception {
+		Savestate savestateToRename = savestateList.get(index);
+
+		if (savestateToRename == null) {
+			throw new SavestateException(I18n.get("msg.lotaslight.savestate.error.noexist", index));
+		}
+
+		if (name.isEmpty()) {
+			name = "Savestate #" + index;
+		}
+
+		savestateToRename.name = name;
+		savestateToRename.saveToXML();
+
+		return SavestatePaths.of(savestateToRename, null, null);
+	}
+
 	public SavestatePaths deleteSavestate(int index) throws Exception {
 		logger.trace("Deleting savestate {}", index);
 

@@ -9,6 +9,8 @@ import com.minecrafttas.lotas_light.savestates.SavestateHandler.SavestateCallbac
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.ErrorRunnable;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.FailedSavestate;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.Savestate;
+import com.minecrafttas.lotas_light.savestates.gui.SavestateDoneGui;
+import com.minecrafttas.lotas_light.savestates.gui.SavestateGui;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -16,7 +18,6 @@ import com.mojang.brigadier.context.CommandContext;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -28,6 +29,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerLevel;
 
 public class SavestateCommand {
+
 	public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
 		//@formatter:off
 		commandDispatcher
@@ -60,30 +62,43 @@ public class SavestateCommand {
 				.then(Commands.literal("reload")
 						.executes(SavestateCommand::reload)
 				)
+				.then(Commands.literal("rename")
+						.then(Commands.argument("index", IntegerArgumentType.integer(0))
+								.then(Commands.argument("name", StringArgumentType.greedyString())
+										.executes(SavestateCommand::rename)
+								)
+						)
+				)
 		);
 		//@formatter:on
+
 	}
 
 	private static int saveNew(CommandContext<CommandSourceStack> context) {
 		int index = -1;
+		Minecraft mc = Minecraft.getInstance();
 
-//		SavestateCallback cb = (paths) -> {
-//			//@formatter:off
-//			context.getSource().sendSuccess(() -> 
-//				Component.translatable("msg.lotaslight.savestate.save", 
-//						Component.literal(paths.getName()).withStyle(ChatFormatting.YELLOW),
-//						Component.literal(Integer.toString(paths.getIndex())).withStyle(ChatFormatting.AQUA)
-//				).withStyle(ChatFormatting.GREEN), true);
-//			//@formatter:on
-//		};
+		SavestateCallback doneSavingCallback = (paths -> {
+			//@formatter:off
+			mc.setScreen(
+					new SavestateDoneGui(
+							Component.translatable("gui.lotaslight.savestate.save.name"), 
+							Component.translatable("gui.lotaslight.savestate.save.end", 
+									Component.literal(paths.getSavestate().getName()).withStyle(ChatFormatting.YELLOW),
+									Component.literal(Integer.toString(paths.getSavestate().getIndex())).withStyle(ChatFormatting.AQUA)
+									).withStyle(ChatFormatting.GREEN)
+							)
+					);
+			//@formatter:on
+		});
 
 		Minecraft.getInstance().execute(() -> {
 			try {
 				for (ServerLevel level : Minecraft.getInstance().getSingleplayerServer().getAllLevels()) {
 					level.noSave = true;
 				}
-				Minecraft.getInstance().setScreen(new PauseScreen(false));
-				LoTASLight.savestateHandler.saveState(index, null);
+				setSavestateScreen();
+				LoTASLight.savestateHandler.saveState(index, doneSavingCallback);
 			} catch (Exception e) {
 				sendFailure(context, e);
 			}
@@ -93,24 +108,29 @@ public class SavestateCommand {
 
 	private static int saveIndex(CommandContext<CommandSourceStack> context) {
 		int index = context.getArgument("index", Integer.class);
+		Minecraft mc = Minecraft.getInstance();
 
-//		SavestateCallback cb = (paths) -> {
-//			//@formatter:off
-//			context.getSource().sendSuccess(() -> 
-//				Component.translatable("msg.lotaslight.savestate.save", 
-//						Component.literal(paths.getName()).withStyle(ChatFormatting.YELLOW),
-//						Component.literal(Integer.toString(paths.getIndex())).withStyle(ChatFormatting.AQUA)
-//				).withStyle(ChatFormatting.GREEN), true);
-//			//@formatter:on
-//		};
+		SavestateCallback doneSavingCallback = (paths -> {
+			//@formatter:off
+			mc.setScreen(
+					new SavestateDoneGui(
+							Component.translatable("gui.lotaslight.savestate.save.name"), 
+							Component.translatable("gui.lotaslight.savestate.save.end", 
+									Component.literal(paths.getSavestate().getName()).withStyle(ChatFormatting.YELLOW),
+									Component.literal(Integer.toString(paths.getSavestate().getIndex())).withStyle(ChatFormatting.AQUA)
+									).withStyle(ChatFormatting.GREEN)
+							)
+					);
+			//@formatter:on
+		});
 
-		Minecraft.getInstance().execute(() -> {
+		mc.execute(() -> {
 			try {
 				for (ServerLevel level : Minecraft.getInstance().getSingleplayerServer().getAllLevels()) {
 					level.noSave = true;
 				}
-				Minecraft.getInstance().setScreen(new PauseScreen(false));
-				LoTASLight.savestateHandler.saveState(index, null);
+				setSavestateScreen();
+				LoTASLight.savestateHandler.saveState(index, doneSavingCallback);
 			} catch (Exception e) {
 				sendFailure(context, e);
 			}
@@ -120,24 +140,29 @@ public class SavestateCommand {
 
 	private static int saveName(CommandContext<CommandSourceStack> context) {
 		String name = context.getArgument("name", String.class);
+		Minecraft mc = Minecraft.getInstance();
 
-//		SavestateCallback cb = (paths) -> {
-//			//@formatter:off
-//			context.getSource().sendSuccess(() -> 
-//				Component.translatable("msg.lotaslight.savestate.save", 
-//						Component.literal(paths.getName()).withStyle(ChatFormatting.YELLOW),
-//						Component.literal(Integer.toString(paths.getIndex())).withStyle(ChatFormatting.AQUA)
-//				).withStyle(ChatFormatting.GREEN), true);
-//			//@formatter:on
-//		};
+		SavestateCallback doneSavingCallback = (paths -> {
+			//@formatter:off
+			mc.setScreen(
+					new SavestateDoneGui(
+							Component.translatable("gui.lotaslight.savestate.save.name"), 
+							Component.translatable("gui.lotaslight.savestate.save.end", 
+									Component.literal(paths.getSavestate().getName()).withStyle(ChatFormatting.YELLOW),
+									Component.literal(Integer.toString(paths.getSavestate().getIndex())).withStyle(ChatFormatting.AQUA)
+									).withStyle(ChatFormatting.GREEN)
+							)
+					);
+			//@formatter:on
+		});
 
-		Minecraft.getInstance().execute(() -> {
+		mc.execute(() -> {
 			try {
 				for (ServerLevel level : Minecraft.getInstance().getSingleplayerServer().getAllLevels()) {
 					level.noSave = true;
 				}
-				Minecraft.getInstance().setScreen(new PauseScreen(false));
-				LoTASLight.savestateHandler.saveState(name, null);
+				setSavestateScreen();
+				LoTASLight.savestateHandler.saveState(name, doneSavingCallback);
 			} catch (Exception e) {
 				sendFailure(context, e);
 			}
@@ -148,37 +173,61 @@ public class SavestateCommand {
 	private static int saveNameIndex(CommandContext<CommandSourceStack> context) {
 		int index = context.getArgument("index", Integer.class);
 		String name = context.getArgument("name", String.class);
-		try {
-			for (ServerLevel level : Minecraft.getInstance().getSingleplayerServer().getAllLevels()) {
-				level.noSave = true;
+		Minecraft mc = Minecraft.getInstance();
+
+		SavestateCallback doneSavingCallback = (paths -> {
+			//@formatter:off
+			mc.setScreen(
+					new SavestateDoneGui(
+							Component.translatable("gui.lotaslight.savestate.save.name"), 
+							Component.translatable("gui.lotaslight.savestate.save.end", 
+									Component.literal(paths.getSavestate().getName()).withStyle(ChatFormatting.YELLOW),
+									Component.literal(Integer.toString(paths.getSavestate().getIndex())).withStyle(ChatFormatting.AQUA)
+									).withStyle(ChatFormatting.GREEN)
+							)
+					);
+			//@formatter:on
+		});
+
+		mc.execute(() -> {
+			try {
+				for (ServerLevel level : Minecraft.getInstance().getSingleplayerServer().getAllLevels()) {
+					level.noSave = true;
+				}
+				setSavestateScreen();
+				LoTASLight.savestateHandler.saveState(index, name, doneSavingCallback);
+			} catch (Exception e) {
+				sendFailure(context, e);
 			}
-			LoTASLight.savestateHandler.saveState(index, name, null);
-		} catch (Exception e) {
-			sendFailure(context, e);
-		}
+		});
 		return 0;
 	}
 
 	private static int loadRecent(CommandContext<CommandSourceStack> context) {
 		int index = -1;
+		Minecraft mc = Minecraft.getInstance();
 
-//		SavestateCallback cb = (paths) -> {
-//			//@formatter:off
-//			context.getSource().sendSuccess(() -> 
-//				Component.translatable("msg.lotaslight.savestate.load", 
-//						Component.literal(paths.getName()).withStyle(ChatFormatting.YELLOW),
-//						Component.literal(Integer.toString(paths.getIndex())).withStyle(ChatFormatting.AQUA)
-//				).withStyle(ChatFormatting.GREEN), true);
-//			//@formatter:on
-//		};
+		SavestateCallback doneLoadingCallback = (paths -> {
+			//@formatter:off
+			mc.setScreen(
+					new SavestateDoneGui(
+							Component.translatable("gui.lotaslight.savestate.load.name"), 
+							Component.translatable("gui.lotaslight.savestate.load.end", 
+									Component.literal(paths.getSavestate().getName()).withStyle(ChatFormatting.YELLOW),
+									Component.literal(Integer.toString(paths.getSavestate().getIndex())).withStyle(ChatFormatting.AQUA)
+									).withStyle(ChatFormatting.GREEN)
+							)
+					);
+			//@formatter:on
+		});
 
-		Minecraft.getInstance().execute(() -> {
+		mc.execute(() -> {
 			try {
 				for (ServerLevel level : Minecraft.getInstance().getSingleplayerServer().getAllLevels()) {
 					level.noSave = true;
 				}
-				Minecraft.getInstance().setScreen(new PauseScreen(false));
-				LoTASLight.savestateHandler.loadState(index, null);
+				setLoadstateScreen();
+				LoTASLight.savestateHandler.loadState(index, doneLoadingCallback);
 			} catch (Exception e) {
 				sendFailure(context, e);
 			}
@@ -189,24 +238,29 @@ public class SavestateCommand {
 
 	private static int loadIndex(CommandContext<CommandSourceStack> context) {
 		int index = context.getArgument("index", Integer.class);
+		Minecraft mc = Minecraft.getInstance();
 
-//		SavestateCallback cb = (paths) -> {
-//			//@formatter:off
-//			context.getSource().sendSuccess(() -> 
-//				Component.translatable("msg.lotaslight.savestate.load", 
-//						Component.literal(paths.getName()).withStyle(ChatFormatting.YELLOW),
-//						Component.literal(Integer.toString(paths.getIndex())).withStyle(ChatFormatting.AQUA)
-//				).withStyle(ChatFormatting.GREEN), true);
-//			//@formatter:on
-//		};
+		SavestateCallback doneLoadingCallback = (paths -> {
+			//@formatter:off
+			mc.setScreen(
+					new SavestateDoneGui(
+							Component.translatable("gui.lotaslight.savestate.load.name"), 
+							Component.translatable("gui.lotaslight.savestate.load.end", 
+									Component.literal(paths.getSavestate().getName()).withStyle(ChatFormatting.YELLOW),
+									Component.literal(Integer.toString(paths.getSavestate().getIndex())).withStyle(ChatFormatting.AQUA)
+									).withStyle(ChatFormatting.GREEN)
+							)
+					);
+			//@formatter:on
+		});
 
-		Minecraft.getInstance().execute(() -> {
+		mc.execute(() -> {
 			try {
 				for (ServerLevel level : Minecraft.getInstance().getSingleplayerServer().getAllLevels()) {
 					level.noSave = true;
 				}
-				Minecraft.getInstance().setScreen(new PauseScreen(false));
-				LoTASLight.savestateHandler.loadState(index, null);
+				setLoadstateScreen();
+				LoTASLight.savestateHandler.loadState(index, doneLoadingCallback);
 			} catch (Exception e) {
 				sendFailure(context, e);
 			}
@@ -241,7 +295,7 @@ public class SavestateCommand {
 		//@formatter:off
 		Component countComponent = Component.literal(Integer.toString(count)).withStyle(ChatFormatting.RED);
 		
-		Component confirmationComponent = ComponentUtils.wrapInSquareBrackets(Component.translatable("msg.lotaslight.savestate.deleteMore.confirm", true)
+		Component confirmationComponent = ComponentUtils.wrapInSquareBrackets(Component.translatable("msg.lotaslight.savestate.deleteMore.clickable", true)
 				.withStyle(
 						style -> style
 							.withClickEvent(
@@ -275,7 +329,7 @@ public class SavestateCommand {
 	}
 
 	private static int reload(CommandContext<CommandSourceStack> context) {
-		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.reload"), true);
+		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.reload").withStyle(ChatFormatting.GREEN), true);
 		LoTASLight.savestateHandler.reload();
 		return 0;
 	}
@@ -333,9 +387,38 @@ public class SavestateCommand {
 		return 0;
 	}
 
+	private static int rename(CommandContext<CommandSourceStack> context) {
+		int index = context.getArgument("index", Integer.class);
+		String name = context.getArgument("name", String.class);
+
+		SavestateCallback cb = (paths) -> {
+			//@formatter:off
+			context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.rename",
+						Component.literal(Integer.toString(paths.getSavestate().getIndex())).withStyle(ChatFormatting.AQUA),
+						Component.literal(paths.getSavestate().getName()).withStyle(ChatFormatting.YELLOW)
+					).withStyle(ChatFormatting.GREEN), true);
+			//@formatter:on
+		};
+
+		try {
+			LoTASLight.savestateHandler.rename(index, name, cb);
+		} catch (Exception e) {
+			sendFailure(context, e);
+		}
+		return 0;
+	}
+
 	private static void sendFailure(CommandContext<CommandSourceStack> context, Throwable e) {
 		context.getSource().sendFailure(Component.literal(e.getMessage()));
 		LoTASLight.LOGGER.catching(e);
 		LoTASLight.savestateHandler.resetState();
+	}
+
+	private static void setSavestateScreen() {
+		Minecraft.getInstance().setScreen(new SavestateGui(Component.translatable("gui.lotaslight.savestates.save.name"), Component.translatable("gui.lotaslight.savestates.save.start")));
+	}
+
+	private static void setLoadstateScreen() {
+		Minecraft.getInstance().setScreen(new SavestateGui(Component.translatable("gui.lotaslight.savestates.load.name"), Component.translatable("gui.lotaslight.savestates.load.start")));
 	}
 }

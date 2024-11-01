@@ -18,11 +18,8 @@ import com.minecrafttas.lotas_light.savestates.exceptions.SavestateDeleteExcepti
 import com.minecrafttas.lotas_light.savestates.exceptions.SavestateException;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.DirectoryLock;
@@ -40,6 +37,7 @@ public class SavestateHandler {
 
 	private State state = State.NONE;
 
+	public Runnable loadStateComplete = null;
 	public Runnable applyMotion = null;
 
 	public enum State {
@@ -96,12 +94,8 @@ public class SavestateHandler {
 		indexer.getCurrentSavestate().motion = mc.player.getDeltaMovement();
 
 		logger.trace("Create new savestate index via indexer");
-		SavestatePaths paths = null;
-		paths = indexer.createSavestate(index, name, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX), mc.player.getDeltaMovement());
+		SavestatePaths paths = indexer.createSavestate(index, name, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX), mc.player.getDeltaMovement());
 		logger.debug("Source: {}, Target: {}", paths.getSourceFolder(), paths.getTargetFolder());
-
-		mc.setScreen(new Screen(Component.literal("")) {
-		});
 
 		logger.trace("Remove session.lock");
 		LevelStorageAccess levelStorage = ((AccessorLevelStorage) server).getStorageSource();
@@ -160,8 +154,7 @@ public class SavestateHandler {
 		trmClient.setTickRate(20f);
 
 		logger.trace("Load savestate index via indexer");
-		SavestatePaths paths = null;
-		paths = indexer.loadSavestate(index, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX));
+		SavestatePaths paths = indexer.loadSavestate(index, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX));
 		logger.debug("Source: {}, Target: {}", paths.getSourceFolder(), paths.getTargetFolder());
 
 		mc.level.disconnect();
@@ -177,41 +170,34 @@ public class SavestateHandler {
 
 		mc.createWorldOpenFlows().openWorld(worldname, () -> mc.setScreen(new TitleScreen()));
 
+		for (ServerLevel level : server.getAllLevels()) {
+			level.noSave = false;
+		}
+
 		applyMotion = () -> {
 			Vec3 motion = indexer.getCurrentSavestate().motion;
 			if (motion != null)
 				mc.player.setDeltaMovement(motion);
 		};
 
-		for (ServerLevel level : server.getAllLevels()) {
-			level.noSave = false;
-		}
+		loadStateComplete = () -> {
+			server = mc.getSingleplayerServer();
 
-		if (cb != null) {
-			cb.invoke(paths);
-		}
-	}
+			for (ServerLevel level : server.getAllLevels()) {
+				level.noSave = false;
+			}
 
-	public void onLoadstateComplete(LocalPlayer player) {
-		if (state != State.LOADSTATING)
-			return;
+			this.server.getPlayerList().getPlayers().forEach(serverplayer -> {
+				((AccessorServerPlayer) serverplayer).setSpawnInvulnerableTime(0);
+			});
+			mc.gui.getChat().clearMessages(true);
 
-		Minecraft mc = Minecraft.getInstance();
-		mc.setScreen(new Screen(Component.literal("")) {
-		});
+			if (cb != null) {
+				cb.invoke(paths);
+			}
 
-		server = mc.getSingleplayerServer();
-
-		for (ServerLevel level : server.getAllLevels()) {
-			level.noSave = false;
-		}
-
-		this.server.getPlayerList().getPlayers().forEach(serverplayer -> {
-			((AccessorServerPlayer) serverplayer).setSpawnInvulnerableTime(0);
-		});
-		mc.gui.getChat().clearMessages(true);
-
-		state = State.NONE;
+			state = State.NONE;
+		};
 	}
 
 	public void delete(int index, SavestateCallback cb) throws Exception {
@@ -304,5 +290,16 @@ public class SavestateHandler {
 
 	public void resetState() {
 		state = State.NONE;
+	}
+
+	public void rename(int index, String name) throws Exception {
+		rename(index, name, null);
+	}
+
+	public void rename(int index, String name, SavestateCallback cb) throws Exception {
+		SavestatePaths paths = indexer.renameSavestate(index, name);
+		if (cb != null) {
+			cb.invoke(paths);
+		}
 	}
 }

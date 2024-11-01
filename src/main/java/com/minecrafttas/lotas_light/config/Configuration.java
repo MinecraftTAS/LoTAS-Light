@@ -16,9 +16,9 @@ public class Configuration extends AbstractDataFile {
 
 	public enum ConfigOptions {
 
-		DEFAULT_TICKRATE("defaultTickrate", "20.0"),
-		SHOW_MESSAGES("showMessages", "true"),
-		SAVESTATE_DATEFORMAT("savestateDateformat", "DD-MM-YYYY hh:mm:ss");
+		DEFAULT_TICKRATE("trcDefaultTickrate", "20.0"),
+		TICKRATE_SHOW_MESSAGES("trcShowMessages", "true"),
+		SAVESTATE_SHOW_CONTROLS("savestateShowControls", "true");
 
 		private String key;
 		private String defaultValue;

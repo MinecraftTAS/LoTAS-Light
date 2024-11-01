@@ -11,7 +11,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -263,19 +262,28 @@ public class SavestateIndexer {
 		return savestateList.keySet();
 	}
 
-	public List<Savestate> getSavestateList(int amount) {
+	public List<Savestate> getSavestateList() {
+		return getSavestateList(currentSavestate.index);
+	}
+
+	public List<Savestate> getSavestateList(int center) {
+		return getSavestateList(center, 10);
+	}
+
+	public List<Savestate> getSavestateList(int center, int amount) {
 		List<Savestate> out = new LinkedList<>();
-		if (amount <= 0) {
+		if (center < 0) {
 			savestateList.forEach((key, value) -> out.add(value));
 			return out;
 		}
 
 		LinkedHashMap<Integer, Savestate> copy = new LinkedHashMap<>(savestateList);
-		for (int i = 0; i < amount; i++) {
-			Entry<Integer, Savestate> entry = copy.pollLastEntry();
-			if (entry == null)
-				break;
-			out.addFirst(entry.getValue());
+		int delta = ((int) amount / 2);
+
+		for (int i = center - delta; i <= center + delta; i++) {
+			Savestate entry = copy.get(i);
+			if (entry != null)
+				out.add(entry);
 		}
 		return out;
 	}

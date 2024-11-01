@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 
 import com.minecrafttas.lotas_light.LoTASLight;
+import com.minecrafttas.lotas_light.LoTASLightClient;
+import com.minecrafttas.lotas_light.config.Configuration.ConfigOptions;
 import com.minecrafttas.lotas_light.savestates.SavestateHandler.SavestateCallback;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.ErrorRunnable;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.FailedSavestate;
@@ -35,6 +37,12 @@ public class SavestateCommand {
 		commandDispatcher
 		.register(Commands.literal("savestate")
 				.executes(SavestateCommand::info)
+				.then(Commands.argument("index", IntegerArgumentType.integer(0))
+						.executes(SavestateCommand::infoIndex)
+						.then(Commands.argument("amount", IntegerArgumentType.integer(0))
+							.executes(SavestateCommand::infoIndexAmount)
+						)
+				)
 				.then(Commands.literal("save")
 						.executes(SavestateCommand::saveNew)
 						.then(Commands.argument("index", IntegerArgumentType.integer(1))
@@ -66,6 +74,15 @@ public class SavestateCommand {
 						.then(Commands.argument("index", IntegerArgumentType.integer(0))
 								.then(Commands.argument("name", StringArgumentType.greedyString())
 										.executes(SavestateCommand::rename)
+								)
+						)
+				)
+				.then(Commands.literal("info")
+						.executes(SavestateCommand::info)
+						.then(Commands.argument("index", IntegerArgumentType.integer(0))
+								.executes(SavestateCommand::infoIndex)
+								.then(Commands.argument("amount", IntegerArgumentType.integer(0))
+										.executes(SavestateCommand::infoIndexAmount)
 								)
 						)
 				)
@@ -141,6 +158,11 @@ public class SavestateCommand {
 	private static int saveName(CommandContext<CommandSourceStack> context) {
 		String name = context.getArgument("name", String.class);
 		Minecraft mc = Minecraft.getInstance();
+
+		if (name.equals("0")) {
+			context.getSource().sendFailure(Component.translatable("msg.lotaslight.savestate.save.error2"));
+			return -1;
+		}
 
 		SavestateCallback doneSavingCallback = (paths -> {
 			//@formatter:off
@@ -335,55 +357,20 @@ public class SavestateCommand {
 	}
 
 	private static int info(CommandContext<CommandSourceStack> context) {
-		List<Savestate> savestateList = LoTASLight.savestateHandler.getSavestateInfo();
-		int currentIndex = LoTASLight.savestateHandler.getCurrentIndex();
-		String format = I18n.get("msg.lotaslight.savestate.dateformat");
+		showInfo(context);
+		return 0;
+	}
 
-		context.getSource().sendSystemMessage(Component.literal(""));
-		SimpleDateFormat dateFormat = new SimpleDateFormat(format);
-		for (Savestate savestate : savestateList) {
+	private static int infoIndex(CommandContext<CommandSourceStack> context) {
+		int index = context.getArgument("index", Integer.class);
+		showInfo(context, index, null);
+		return 0;
+	}
 
-			String index = savestate.getIndex() == null ? "" : Integer.toString(savestate.getIndex());
-			boolean isCurrentIndex = savestate.getIndex() == currentIndex;
-			String name = savestate.getName() == null ? "" : savestate.getName();
-			String date = savestate.getDate() == null ? "" : dateFormat.format(savestate.getDate());
-
-			//@formatter:off
-			UnaryOperator<Style> click = t -> 
-							t.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,
-								String.format("/savestate load %s", index)));
-			
-			UnaryOperator<Style> hover = t -> 
-							t.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-								Component.translatable("msg.lotaslight.savestate.info.hover", 
-								Component.literal(date).withStyle(ChatFormatting.GOLD),
-								index
-							).withStyle(ChatFormatting.GREEN)));
-			
-			Component msg = null;
-					
-			if(savestate instanceof FailedSavestate) {
-				FailedSavestate failedSavestate = (FailedSavestate) savestate;
-				msg = Component.translatable("%s: %s %s",
-						Component.literal(index).withStyle(isCurrentIndex ? ChatFormatting.AQUA : ChatFormatting.BLUE), 
-						Component.literal(name).withStyle(isCurrentIndex ? ChatFormatting.YELLOW : ChatFormatting.GOLD),
-						Component.translatable("msg.lotaslight.savestates.info.error", failedSavestate.getError().getMessage())
-					.withStyle(ChatFormatting.RED))
-					.withStyle(t -> 
-						t.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-							Component.literal(date).withStyle(ChatFormatting.GOLD)
-						)));
-			} else {
-				msg = Component.translatable("%s: %s",
-						Component.literal(index).withStyle(isCurrentIndex ? ChatFormatting.AQUA : ChatFormatting.BLUE), 
-						Component.literal(name).withStyle(isCurrentIndex ? ChatFormatting.YELLOW : ChatFormatting.GOLD))
-					.withStyle(click)
-					.withStyle(hover);
-			}
-		
-			//@formatter:on
-			context.getSource().sendSystemMessage(msg);
-		}
+	private static int infoIndexAmount(CommandContext<CommandSourceStack> context) {
+		int index = context.getArgument("index", Integer.class);
+		int amount = context.getArgument("amount", Integer.class);
+		showInfo(context, index, amount);
 		return 0;
 	}
 
@@ -420,5 +407,117 @@ public class SavestateCommand {
 
 	private static void setLoadstateScreen() {
 		Minecraft.getInstance().setScreen(new SavestateGui(Component.translatable("gui.lotaslight.savestates.load.name"), Component.translatable("gui.lotaslight.savestates.load.start")));
+	}
+
+	private static void showInfo(CommandContext<CommandSourceStack> context) {
+		showInfo(context, null, null);
+	}
+
+	private static void showInfo(CommandContext<CommandSourceStack> context, Integer indexToDisplay, Integer amount) {
+
+		int currentIndex = LoTASLight.savestateHandler.getCurrentIndex();
+		if (indexToDisplay == null) {
+			indexToDisplay = currentIndex;
+		}
+		if (amount == null) {
+			amount = 10;
+		}
+
+		context.getSource().sendSystemMessage(Component.literal("")); // Print an empty line
+		String format = I18n.get("msg.lotaslight.savestate.dateformat");
+		SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+
+		List<Savestate> savestateList = LoTASLight.savestateHandler.getSavestateInfo(indexToDisplay, amount);
+		for (Savestate savestate : savestateList) {
+
+			String index = savestate.getIndex() == null ? "" : Integer.toString(savestate.getIndex());
+			boolean isCurrentIndex = savestate.getIndex() == currentIndex;
+			String name = savestate.getName() == null ? "" : savestate.getName();
+			String date = savestate.getDate() == null ? "" : dateFormat.format(savestate.getDate());
+
+			ChatFormatting indexColor = isCurrentIndex ? ChatFormatting.AQUA : ChatFormatting.BLUE;
+			ChatFormatting nameColor = isCurrentIndex ? ChatFormatting.WHITE : ChatFormatting.GRAY;
+			ChatFormatting dateColor = isCurrentIndex ? ChatFormatting.AQUA : ChatFormatting.DARK_AQUA;
+			ChatFormatting saveColor = isCurrentIndex ? ChatFormatting.LIGHT_PURPLE : ChatFormatting.DARK_PURPLE;
+			ChatFormatting deleteColor = isCurrentIndex ? ChatFormatting.RED : ChatFormatting.DARK_RED;
+			ChatFormatting renameColor = isCurrentIndex ? ChatFormatting.YELLOW : ChatFormatting.GOLD;
+			ChatFormatting loadColor = isCurrentIndex ? ChatFormatting.GREEN : ChatFormatting.DARK_GREEN;
+
+			//@formatter:off
+			UnaryOperator<Style> hover = t -> 
+							t.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(date).withStyle(dateColor)));
+			
+			Component msg = null;
+					
+			if(savestate instanceof FailedSavestate) {
+				FailedSavestate failedSavestate = (FailedSavestate) savestate;
+				msg = Component.translatable("%s: %s %s",
+						Component.literal(index).withStyle(indexColor), 
+						Component.literal(name).withStyle(nameColor),
+						Component.translatable("msg.lotaslight.savestates.info.error", failedSavestate.getError().getMessage())
+					.withStyle(ChatFormatting.RED))
+					.withStyle(t -> 
+						t.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+							Component.literal(date).withStyle(ChatFormatting.GOLD)
+						)));
+			} else {
+				if(!LoTASLightClient.config.getBoolean(ConfigOptions.SAVESTATE_SHOW_CONTROLS)) {
+					msg = Component.translatable("%s: %s", 
+							Component.literal(index).withStyle(indexColor), 
+							Component.literal(name).withStyle(nameColor))
+							.withStyle(hover);
+					
+				}
+				else {
+					Component saveComponent = Component.translatable("msg.lotaslight.savestate.save.clickable").withStyle(saveColor)
+							.withStyle(t->
+								t.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/savestate save %s", index)))
+							)
+							.withStyle(t->
+								t.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("msg.lotaslight.savestate.save.hover", name).withStyle(saveColor)))
+							);
+					
+					Component deleteComponent = Component.translatable("msg.lotaslight.savestate.delete.clickable").withStyle(deleteColor)
+							.withStyle(t->
+								t.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/savestate delete %s", index)))
+							)
+							.withStyle(t->
+								t.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("msg.lotaslight.savestate.delete.hover", name).withStyle(deleteColor)))
+							);
+					
+					Component renameComponent = Component.translatable("msg.lotaslight.savestate.rename.clickable").withStyle(renameColor)
+							.withStyle(t->
+								t.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/savestate rename %s ", index)))
+							)
+							.withStyle(t->
+								t.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("msg.lotaslight.savestate.rename.hover", name).withStyle(renameColor)))
+							);
+					
+					Component loadComponent = Component.translatable("msg.lotaslight.savestate.load.clickable").withStyle(loadColor)
+							.withStyle(t->
+								t.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/savestate load %s", index)))
+							)
+							.withStyle(t->
+								t.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("msg.lotaslight.savestate.load.hover", name).withStyle(loadColor)))
+							);
+					
+					msg = Component.translatable("%s: %s     %s %s %s %s",
+							Component.literal(index).withStyle(indexColor), 
+							Component.literal(name).withStyle(nameColor),
+							wrap(saveComponent),
+							wrap(deleteComponent),
+							wrap(renameComponent),
+							wrap(loadComponent)
+						).withStyle(hover);
+				}
+			}
+			
+			//@formatter:on
+			context.getSource().sendSystemMessage(msg);
+		}
+	}
+
+	private static Component wrap(Component component) {
+		return ComponentUtils.wrapInSquareBrackets(component).withStyle(ChatFormatting.GRAY);
 	}
 }

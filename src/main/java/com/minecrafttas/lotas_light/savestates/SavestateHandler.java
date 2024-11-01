@@ -243,11 +243,11 @@ public class SavestateHandler {
 	}
 
 	public List<SavestateIndexer.Savestate> getSavestateInfo() {
-		return getSavestateInfo(0);
+		return getSavestateInfo(-1, 10);
 	}
 
-	public List<SavestateIndexer.Savestate> getSavestateInfo(int tail) {
-		return indexer.getSavestateList(tail);
+	public List<SavestateIndexer.Savestate> getSavestateInfo(int index, int amount) {
+		return indexer.getSavestateList(index, amount);
 	}
 
 	@FunctionalInterface

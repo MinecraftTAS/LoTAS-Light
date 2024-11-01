@@ -19,7 +19,8 @@
 		"MixinTickrateChangerWorldborder",
 		"MixinTickrateChangerSubtitleOverlay",
 		"MixinClientPacketListener",
-		"MixinPauseScreen"
+		"MixinPauseScreen",
+		"MixinPlayerList"
 	],
 	"injectors": {
 		"defaultRequire": 1

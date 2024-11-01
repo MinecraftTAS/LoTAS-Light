@@ -56,27 +56,7 @@ public class LoTASLightClient implements ClientModInitializer {
 		config = new Configuration("LoTAS-Light config", configpath);
 		config.loadFromXML();
 		registerKeybindings();
-		registerNetworking();
 		HudRenderExperienceCallback.EVENT.register(this::drawHud);
-	}
-
-	private void registerNetworking() {
-//		ClientPlayNetworking.registerGlobalReceiver(SavestateDisconnectPayload.ID, (payload, context) -> {
-//			Minecraft mc = context.client();
-//			mc.execute(() -> {
-//				mc.level.disconnect();
-//				mc.clearClientLevel(new Screen(Component.translatable("gui.lotaslight.savestate.load")) {
-//				});
-//			});
-//		});
-//
-//		ClientPlayNetworking.registerGlobalReceiver(SavestateConnectPayload.ID, (payload, context) -> {
-//			Minecraft mc = context.client();
-//			mc.execute(() -> {
-//				mc.createWorldOpenFlows().openWorld(payload.worldname(), () -> {
-//				});
-//			});
-//		});
 	}
 
 	private void registerKeybindings() {
@@ -128,7 +108,7 @@ public class LoTASLightClient implements ClientModInitializer {
 		rateIndex++;
 		rateIndex = (short) Math.clamp(rateIndex, 0, rates.length - 1);
 		float tickrate = rates[rateIndex];
-		if (config.getBoolean(ConfigOptions.SHOW_MESSAGES)) {
+		if (config.getBoolean(ConfigOptions.TICKRATE_SHOW_MESSAGES)) {
 			if (showHint) {
 				showHint = false;
 				client.gui.getChat().addMessage(Component.translatable("msg.lotaslight.turnOff", tickrate).withStyle(ChatFormatting.YELLOW));
@@ -150,7 +130,7 @@ public class LoTASLightClient implements ClientModInitializer {
 		rateIndex--;
 		rateIndex = (short) Math.clamp(rateIndex, 0, rates.length - 1);
 		float tickrate = rates[rateIndex];
-		if (config.getBoolean(ConfigOptions.SHOW_MESSAGES)) {
+		if (config.getBoolean(ConfigOptions.TICKRATE_SHOW_MESSAGES)) {
 			if (showHint) {
 				showHint = false;
 				client.gui.getChat().addMessage(Component.translatable("msg.lotaslight.turnOff", tickrate).withStyle(ChatFormatting.YELLOW));
@@ -193,7 +173,7 @@ public class LoTASLightClient implements ClientModInitializer {
 
 	private void drawHud(GuiGraphics context, DeltaTracker deltaTicks) {
 		RenderSystem.enableBlend();
-		RenderSystem.setShaderColor(1, 1, 1, .5f);
+		RenderSystem.setShaderColor(1, 1, 1, .2f);
 		context.blit(ResourceLocation.fromNamespaceAndPath("lotaslight", "potion.png"), Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2 - 10, Minecraft.getInstance().getWindow().getGuiScaledHeight()
 				- 50, 0, 0, 20, 20, 20, 20);
 		RenderSystem.setShaderColor(1, 1, 1, 1);

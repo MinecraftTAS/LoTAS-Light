@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 
 import com.minecrafttas.lotas_light.LoTASLight;
+import com.minecrafttas.lotas_light.savestates.SavestateHandler.SavestateCallback;
+import com.minecrafttas.lotas_light.savestates.SavestateIndexer.ErrorRunnable;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.FailedSavestate;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.Savestate;
 import com.mojang.brigadier.CommandDispatcher;
@@ -227,7 +229,12 @@ public class SavestateCommand {
 	private static int deleteMore(CommandContext<CommandSourceStack> context) {
 		int index = context.getArgument("index", Integer.class);
 		int indexTo = context.getArgument("indexTo", Integer.class);
-		int count = (index + 1) - indexTo;
+		int count = (indexTo + 1) - index;
+
+		if (count < 0) {
+			context.getSource().sendFailure(Component.translatable("msg.lotaslight.savestate.deleteMore.error.negative", count));
+			return -1;
+		}
 
 		String translationKey = "msg.lotaslight.savestate.deleteMore" + (count == 1 ? ".singular" : ".plural");
 
@@ -254,7 +261,16 @@ public class SavestateCommand {
 	private static int deleteDis(CommandContext<CommandSourceStack> context) {
 		int index = context.getArgument("index", Integer.class);
 		int indexTo = context.getArgument("indexTo", Integer.class);
-		context.getSource().sendSuccess(() -> Component.literal("Yeet"), true);
+
+		SavestateCallback cb = (paths) -> {
+			context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.delete", paths.getSavestate().getIndex()).withStyle(ChatFormatting.GREEN), true);
+		};
+
+		ErrorRunnable onErr = (exception) -> {
+			sendFailure(context, exception);
+		};
+
+		LoTASLight.savestateHandler.delete(index, indexTo, cb, onErr);
 		return index;
 	}
 

@@ -203,11 +203,15 @@ public class LoTASLightClient implements ClientModInitializer {
 		};
 
 		try {
-			mc.setScreen(new SavestateGui(Component.translatable("gui.lotaslight.savestates.save.name"), Component.translatable("gui.lotaslight.savestates.save.start")));
+			mc.setScreen(new SavestateGui(Component.translatable("gui.lotaslight.savestate.save.name"), Component.translatable("gui.lotaslight.savestate.save.start").withStyle(ChatFormatting.YELLOW)));
 			LoTASLight.savestateHandler.saveState(renameCallback);
 		} catch (Exception e) {
 			LoTASLight.LOGGER.catching(e);
-			mc.gui.getChat().addMessage(Component.literal(e.getMessage()));
+			String message = e.getMessage();
+			if (message == null || message.isEmpty()) {
+				message = I18n.get("msg.lotaslight.savestate.failure", e.toString());
+			}
+			mc.gui.getChat().addMessage(Component.literal(message).withStyle(ChatFormatting.RED));
 			LoTASLight.savestateHandler.resetState();
 		}
 	}
@@ -234,7 +238,7 @@ public class LoTASLightClient implements ClientModInitializer {
 			for (ServerLevel level : server.getAllLevels()) {
 				level.noSave = true;
 			}
-			mc.setScreen(new SavestateGui(Component.translatable("gui.lotaslight.savestates.load.name"), Component.translatable("gui.lotaslight.savestates.load.start")));
+			mc.setScreen(new SavestateGui(Component.translatable("gui.lotaslight.savestate.load.name"), Component.translatable("gui.lotaslight.savestate.load.start").withStyle(ChatFormatting.YELLOW)));
 			LoTASLight.savestateHandler.loadState(doneLoadingCallback);
 		} catch (Exception e) {
 			LoTASLight.LOGGER.catching(e);
@@ -242,7 +246,7 @@ public class LoTASLightClient implements ClientModInitializer {
 			if (message == null || message.isEmpty()) {
 				message = I18n.get("msg.lotaslight.savestate.failure", e.toString());
 			}
-			mc.gui.getChat().addMessage(Component.literal(message));
+			mc.gui.getChat().addMessage(Component.literal(message).withStyle(ChatFormatting.RED));
 			LoTASLight.savestateHandler.resetState();
 		}
 	}

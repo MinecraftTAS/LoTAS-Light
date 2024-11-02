@@ -50,8 +50,6 @@ public abstract class AbstractDataFile {
 		this.name = name;
 		this.comment = comment;
 		this.properties = new Properties();
-
-		createDirectory(file);
 	}
 
 	/**
@@ -129,6 +127,7 @@ public abstract class AbstractDataFile {
 	}
 
 	public void save(Path file) {
+		createDirectory(file);
 		try {
 			OutputStream fos = Files.newOutputStream(file);
 			properties.store(fos, comment);

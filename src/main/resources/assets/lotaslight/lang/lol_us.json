@@ -7,7 +7,7 @@
 	"key.lotaslight.savestate": "Mayke Déjà-vu-point",
 	"key.lotaslight.loadstate": "Lode Déjà-vu-point",
 	"msg.lotaslight.setTickrate": "Put tiktokk 2 %s",
-	"msg.lotaslight.turnOff": "To turn off these messages, use /lotaslight trc_showMessage false",
+	"msg.lotaslight.turnOff": "MSGS ANNOYING? Yeet with /lotaslight trc_showMessage false",
 	"msg.lotaslight.showmsg.true": "Msgs r b4ck",
 	"msg.lotaslight.showmsg.false": "Msgs banned 2 shadow realm",
 	"msg.lotaslight.showctrls.true": "Savestate controls enabled",

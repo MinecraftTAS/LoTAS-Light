@@ -7,7 +7,7 @@
 	"key.lotaslight.savestate":"Savestate",
 	"key.lotaslight.loadstate":"Loadstate",
 	"msg.lotaslight.setTickrate":"Set the tickrate to %s",
-	"msg.lotaslight.turnOff":"To turn off these messages, use /lotaslight showMessage false",
+	"msg.lotaslight.turnOff":"To turn off these messages, use /lotaslight trc_showMessage false",
 	"msg.lotaslight.showmsg.true":"Tickrate messages enabled",
 	"msg.lotaslight.showmsg.false":"Tickrate messages disabled",
 	"msg.lotaslight.showctrls.true":"Savestate controls enabled",

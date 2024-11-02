@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.logging.log4j.Logger;
 
 import com.minecrafttas.lotas_light.LoTASLight;
+import com.minecrafttas.lotas_light.duck.StorageLock;
 import com.minecrafttas.lotas_light.mixin.AccessorLevelStorage;
 import com.minecrafttas.lotas_light.mixin.AccessorServerPlayer;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.DeletionRunnable;
@@ -22,9 +23,7 @@ import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.DirectoryLock;
 import net.minecraft.world.TickRateManager;
-import net.minecraft.world.level.storage.LevelStorageSource.LevelStorageAccess;
 import net.minecraft.world.phys.Vec3;
 
 public class SavestateHandler {
@@ -98,8 +97,8 @@ public class SavestateHandler {
 		logger.debug("Source: {}, Target: {}", paths.getSourceFolder(), paths.getTargetFolder());
 
 		logger.trace("Remove session.lock");
-		LevelStorageAccess levelStorage = ((AccessorLevelStorage) server).getStorageSource();
-		levelStorage.lock.close();
+		StorageLock levelStorage = (StorageLock) ((AccessorLevelStorage) server).getStorageSource();
+		levelStorage.unlock();
 
 		if (Files.exists(paths.getTargetFolder())) {
 			logger.warn("Overwriting existing savestate");
@@ -109,7 +108,7 @@ public class SavestateHandler {
 		logger.trace("Copying folders");
 		SavestateIndexer.copyFolder(paths.getSourceFolder(), paths.getTargetFolder());
 
-		levelStorage.lock = DirectoryLock.create(paths.getSourceFolder());
+		levelStorage.lock(paths.getSourceFolder());
 
 		for (ServerLevel level : server.getAllLevels()) {
 			level.noSave = false;

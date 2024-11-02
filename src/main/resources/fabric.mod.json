@@ -15,6 +15,7 @@
 	"license": "GPLv3",
 	"icon": "assets/lotaslight/potion.png",
 	"environment": "*",
+	"accessWidener" : "lotaslight.accesswidener",
 	"entrypoints": {
 		"main": [
 			"com.minecrafttas.lotas_light.LoTASLight"

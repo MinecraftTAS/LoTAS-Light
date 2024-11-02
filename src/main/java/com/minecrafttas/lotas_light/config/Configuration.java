@@ -4,6 +4,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
+import com.minecrafttas.lotas_light.LoTASLight;
+
 /**
  * A <i>very</i> simple configuration class
  * 
@@ -14,8 +16,9 @@ public class Configuration extends AbstractDataFile {
 
 	public enum ConfigOptions {
 
-		DEFAULT_TICKRATE("defaultTickrate", "20.0"),
-		SHOW_MESSAGES("showMessages", "true");
+		DEFAULT_TICKRATE("trcDefaultTickrate", "20.0"),
+		TICKRATE_SHOW_MESSAGES("trcShowMessages", "true"),
+		SAVESTATE_SHOW_CONTROLS("savestateShowControls", "true");
 
 		private String key;
 		private String defaultValue;
@@ -35,7 +38,7 @@ public class Configuration extends AbstractDataFile {
 	}
 
 	public Configuration(String comment, Path configFile) {
-		super(configFile, "config", comment);
+		super(LoTASLight.LOGGER, configFile, "config", comment);
 	}
 
 	@Override

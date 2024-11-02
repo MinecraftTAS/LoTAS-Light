@@ -9,10 +9,16 @@ import java.nio.file.Path;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 
+import org.apache.logging.log4j.Logger;
+
 import com.minecrafttas.lotas_light.LoTASLight;
 
 public abstract class AbstractDataFile {
 
+	/**
+	 * The logger
+	 */
+	protected final Logger logger;
 	/**
 	 * The save location of this data file
 	 */
@@ -38,7 +44,8 @@ public abstract class AbstractDataFile {
 	 * @param name The {@link #name} of the data file, used in logging
 	 * @param comment The {@link #comment} in the data file
 	 */
-	protected AbstractDataFile(Path file, String name, String comment) {
+	protected AbstractDataFile(Logger logger, Path file, String name, String comment) {
+		this.logger = logger;
 		this.file = file;
 		this.name = name;
 		this.comment = comment;
@@ -73,13 +80,13 @@ public abstract class AbstractDataFile {
 			newProp.load(fis);
 			fis.close();
 		} catch (InvalidPropertiesFormatException e) {
-			LoTASLight.LOGGER.error("The {} file could not be read", name, e);
+			logger.error("The {} file could not be read", name, e);
 			return;
 		} catch (FileNotFoundException e) {
-			LoTASLight.LOGGER.warn("No {} file found: {}", name, file);
+			logger.warn("No {} file found: {}", name, file);
 			return;
 		} catch (IOException e) {
-			LoTASLight.LOGGER.error("An error occured while reading the {} file", file, e);
+			logger.error("An error occured while reading the {} file", file, e);
 			return;
 		}
 		this.properties = newProp;
@@ -105,13 +112,13 @@ public abstract class AbstractDataFile {
 			newProp.loadFromXML(fis);
 			fis.close();
 		} catch (InvalidPropertiesFormatException e) {
-			LoTASLight.LOGGER.error("The {} file could not be read", name, e);
+			logger.error("The {} file could not be read", name, e);
 			return;
 		} catch (FileNotFoundException e) {
-			LoTASLight.LOGGER.warn("No {} file found: {}", name, file);
+			logger.warn("No {} file found: {}", name, file);
 			return;
 		} catch (IOException e) {
-			LoTASLight.LOGGER.error("An error occured while reading the {} file", file, e);
+			logger.error("An error occured while reading the {} file", file, e);
 			return;
 		}
 		this.properties = newProp;

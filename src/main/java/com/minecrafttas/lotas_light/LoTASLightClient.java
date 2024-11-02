@@ -8,7 +8,12 @@ import com.minecrafttas.lotas_light.config.Configuration;
 import com.minecrafttas.lotas_light.config.Configuration.ConfigOptions;
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 import com.minecrafttas.lotas_light.event.EventClientGameLoop;
+import com.minecrafttas.lotas_light.event.EventOnClientJoinServer;
 import com.minecrafttas.lotas_light.event.HudRenderExperienceCallback;
+import com.minecrafttas.lotas_light.savestates.SavestateHandler.SavestateCallback;
+import com.minecrafttas.lotas_light.savestates.gui.SavestateDoneGui;
+import com.minecrafttas.lotas_light.savestates.gui.SavestateGui;
+import com.minecrafttas.lotas_light.savestates.gui.SavestateRenameGui;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -19,10 +24,13 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTickRateManager;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.TickRateManager;
 
 public class LoTASLightClient implements ClientModInitializer {
@@ -78,7 +86,13 @@ public class LoTASLightClient implements ClientModInitializer {
 			while (loadstate.consumeClick()) {
 				loadstate();
 			}
+		});
 
+		EventOnClientJoinServer.EVENT.register(player -> {
+			if (LoTASLight.savestateHandler.loadStateComplete != null) {
+				LoTASLight.savestateHandler.loadStateComplete.run();
+				LoTASLight.savestateHandler.loadStateComplete = null;
+			}
 		});
 
 	}
@@ -94,7 +108,7 @@ public class LoTASLightClient implements ClientModInitializer {
 		rateIndex++;
 		rateIndex = (short) Math.clamp(rateIndex, 0, rates.length - 1);
 		float tickrate = rates[rateIndex];
-		if (config.getBoolean(ConfigOptions.SHOW_MESSAGES)) {
+		if (config.getBoolean(ConfigOptions.TICKRATE_SHOW_MESSAGES)) {
 			if (showHint) {
 				showHint = false;
 				client.gui.getChat().addMessage(Component.translatable("msg.lotaslight.turnOff", tickrate).withStyle(ChatFormatting.YELLOW));
@@ -116,7 +130,7 @@ public class LoTASLightClient implements ClientModInitializer {
 		rateIndex--;
 		rateIndex = (short) Math.clamp(rateIndex, 0, rates.length - 1);
 		float tickrate = rates[rateIndex];
-		if (config.getBoolean(ConfigOptions.SHOW_MESSAGES)) {
+		if (config.getBoolean(ConfigOptions.TICKRATE_SHOW_MESSAGES)) {
 			if (showHint) {
 				showHint = false;
 				client.gui.getChat().addMessage(Component.translatable("msg.lotaslight.turnOff", tickrate).withStyle(ChatFormatting.YELLOW));
@@ -159,7 +173,7 @@ public class LoTASLightClient implements ClientModInitializer {
 
 	private void drawHud(GuiGraphics context, DeltaTracker deltaTicks) {
 		RenderSystem.enableBlend();
-		RenderSystem.setShaderColor(1, 1, 1, .5f);
+		RenderSystem.setShaderColor(1, 1, 1, .2f);
 		context.blit(ResourceLocation.fromNamespaceAndPath("lotaslight", "potion.png"), Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2 - 10, Minecraft.getInstance().getWindow().getGuiScaledHeight()
 				- 50, 0, 0, 20, 20, 20, 20);
 		RenderSystem.setShaderColor(1, 1, 1, 1);
@@ -167,10 +181,69 @@ public class LoTASLightClient implements ClientModInitializer {
 	}
 
 	private void savestate() {
+		Minecraft mc = Minecraft.getInstance();
+		MinecraftServer server = mc.getSingleplayerServer();
+		for (ServerLevel level : server.getAllLevels()) {
+			level.noSave = true;
+		}
 
+		SavestateCallback renameCallback = (paths) -> {
+			int index = paths.getSavestate().getIndex();
+			//@formatter:off
+			mc.setScreen(
+					new SavestateRenameGui(
+							Component.translatable("gui.lotaslight.savestate.save.name"),
+							Component.translatable("gui.lotaslight.savestate.save.rename", 
+									Component.literal(Integer.toString(index)).withStyle(ChatFormatting.AQUA)
+							).withStyle(ChatFormatting.GREEN),
+							index
+					)
+			);
+			//@formatter:on
+		};
+
+		try {
+			mc.setScreen(new SavestateGui(Component.translatable("gui.lotaslight.savestates.save.name"), Component.translatable("gui.lotaslight.savestates.save.start")));
+			LoTASLight.savestateHandler.saveState(renameCallback);
+		} catch (Exception e) {
+			LoTASLight.LOGGER.catching(e);
+			mc.gui.getChat().addMessage(Component.literal(e.getMessage()));
+			LoTASLight.savestateHandler.resetState();
+		}
 	}
 
 	private void loadstate() {
+		Minecraft mc = Minecraft.getInstance();
 
+		SavestateCallback doneLoadingCallback = (paths -> {
+			//@formatter:off
+			mc.setScreen(
+					new SavestateDoneGui(
+							Component.translatable("gui.lotaslight.savestate.load.name"), 
+							Component.translatable("gui.lotaslight.savestate.load.end", 
+									Component.literal(paths.getSavestate().getName()).withStyle(ChatFormatting.YELLOW),
+									Component.literal(Integer.toString(paths.getSavestate().getIndex())).withStyle(ChatFormatting.AQUA)
+									).withStyle(ChatFormatting.GREEN)
+							)
+					);
+			//@formatter:on
+		});
+
+		try {
+			MinecraftServer server = mc.getSingleplayerServer();
+			for (ServerLevel level : server.getAllLevels()) {
+				level.noSave = true;
+			}
+			mc.setScreen(new SavestateGui(Component.translatable("gui.lotaslight.savestates.load.name"), Component.translatable("gui.lotaslight.savestates.load.start")));
+			LoTASLight.savestateHandler.loadState(doneLoadingCallback);
+		} catch (Exception e) {
+			LoTASLight.LOGGER.catching(e);
+			String message = e.getMessage();
+			if (message == null || message.isEmpty()) {
+				message = I18n.get("msg.lotaslight.savestate.failure", e.toString());
+			}
+			mc.gui.getChat().addMessage(Component.literal(message));
+			LoTASLight.savestateHandler.resetState();
+		}
 	}
 }

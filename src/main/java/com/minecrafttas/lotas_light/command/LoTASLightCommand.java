@@ -15,25 +15,41 @@ public class LoTASLightCommand {
 		//@formatter:off
 		commandDispatcher
 		.register(Commands.literal("lotaslight")
-				.then(Commands.literal("showMessages")
+				.then(Commands.literal("trc_showMessages")
 						.then(Commands.literal("true").executes(LoTASLightCommand::showMessages))
 						.then(Commands.literal("false").executes(LoTASLightCommand::hideMessages))
 				)
-				.then(Commands.literal("defaultTickrate")
+				.then(Commands.literal("savestate_showControls")
+						.then(Commands.literal("true").executes(LoTASLightCommand::showControls))
+						.then(Commands.literal("false").executes(LoTASLightCommand::hideControls))
+				)
+				.then(Commands.literal("trc_defaultTickrate")
 						.then(Commands.argument("tickrate", FloatArgumentType.floatArg(.1f, 60f)).executes(LoTASLightCommand::defaultTickrate)))
 		);
 		//@formatter:on
 	}
 
 	public static int showMessages(CommandContext<CommandSourceStack> context) {
-		LoTASLightClient.config.set(ConfigOptions.SHOW_MESSAGES, true);
+		LoTASLightClient.config.set(ConfigOptions.TICKRATE_SHOW_MESSAGES, true);
 		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.showmsg.true"), true);
 		return 1;
 	}
 
 	public static int hideMessages(CommandContext<CommandSourceStack> context) {
-		LoTASLightClient.config.set(ConfigOptions.SHOW_MESSAGES, false);
+		LoTASLightClient.config.set(ConfigOptions.TICKRATE_SHOW_MESSAGES, false);
 		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.showmsg.false"), true);
+		return 1;
+	}
+
+	public static int showControls(CommandContext<CommandSourceStack> context) {
+		LoTASLightClient.config.set(ConfigOptions.SAVESTATE_SHOW_CONTROLS, true);
+		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.showctrls.true"), true);
+		return 1;
+	}
+
+	public static int hideControls(CommandContext<CommandSourceStack> context) {
+		LoTASLightClient.config.set(ConfigOptions.SAVESTATE_SHOW_CONTROLS, false);
+		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.showctrls.false"), true);
 		return 1;
 	}
 

@@ -6,6 +6,8 @@ public interface Tickratechanger {
 
 	public void toggleTickrate0();
 
+	public void enableTickrate0(boolean enable);
+
 	public void advanceTick();
 
 	public boolean isAdvanceTick();

@@ -5,7 +5,10 @@
 	"mixins": [
 		"MixinTickRateManager",
 		"MixinTickCommand",
-		"MixinMinecraftServer"
+		"MixinMinecraftServer",
+		"AccessorLevelStorage",
+		"AccessorServerPlayer",
+		"MixinLevelStorageAccess"
 	],
 	"client":[
 		"MixinMinecraft",
@@ -15,7 +18,10 @@
 		"MixinTickrateChangerEnchantmentGlimm",
 		"MixinTickrateChangerAchievements",
 		"MixinTickrateChangerWorldborder",
-		"MixinTickrateChangerSubtitleOverlay"
+		"MixinTickrateChangerSubtitleOverlay",
+		"MixinClientPacketListener",
+		"MixinPauseScreen",
+		"MixinPlayerList"
 	],
 	"injectors": {
 		"defaultRequire": 1

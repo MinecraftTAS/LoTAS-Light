@@ -459,10 +459,10 @@ public class SavestateCommand {
 					
 			if(savestate instanceof FailedSavestate) {
 				FailedSavestate failedSavestate = (FailedSavestate) savestate;
-				msg = Component.translatable("%s: %s %s",
+				msg = Component.translatable("%s: %s%s",
 						Component.literal(index).withStyle(indexColor), 
 						Component.literal(name).withStyle(nameColor),
-						Component.translatable("msg.lotaslight.savestates.info.error", failedSavestate.getError().getMessage())
+						Component.translatable("msg.lotaslight.savestate.info.error", failedSavestate.getError().getMessage())
 					.withStyle(ChatFormatting.RED))
 					.withStyle(t -> 
 						t.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,

@@ -37,7 +37,7 @@ public class SavestateCommand {
 		commandDispatcher
 		.register(Commands.literal("savestate")
 				.executes(SavestateCommand::info)
-				.then(Commands.argument("index", IntegerArgumentType.integer(0))
+				.then(Commands.argument("index", IntegerArgumentType.integer())
 						.executes(SavestateCommand::infoIndex)
 						.then(Commands.argument("amount", IntegerArgumentType.integer(0))
 							.executes(SavestateCommand::infoIndexAmount)
@@ -84,6 +84,9 @@ public class SavestateCommand {
 								.then(Commands.argument("amount", IntegerArgumentType.integer(0))
 										.executes(SavestateCommand::infoIndexAmount)
 								)
+						)
+						.then(Commands.literal("all")
+								.executes(SavestateCommand::infoAll)
 						)
 				)
 		);
@@ -361,6 +364,11 @@ public class SavestateCommand {
 		return 0;
 	}
 
+	private static int infoAll(CommandContext<CommandSourceStack> context) {
+		showInfo(context, -1, 0);
+		return 0;
+	}
+
 	private static int infoIndex(CommandContext<CommandSourceStack> context) {
 		int index = context.getArgument("index", Integer.class);
 		showInfo(context, index, null);
@@ -504,10 +512,10 @@ public class SavestateCommand {
 					msg = Component.translatable("%s: %s     %s %s %s %s",
 							Component.literal(index).withStyle(indexColor), 
 							Component.literal(name).withStyle(nameColor),
-							wrap(saveComponent),
-							wrap(deleteComponent),
-							wrap(renameComponent),
-							wrap(loadComponent)
+							wrap(saveComponent, nameColor),
+							wrap(deleteComponent, nameColor),
+							wrap(renameComponent, nameColor),
+							wrap(loadComponent, nameColor)
 						).withStyle(hover);
 				}
 			}
@@ -517,7 +525,7 @@ public class SavestateCommand {
 		}
 	}
 
-	private static Component wrap(Component component) {
-		return ComponentUtils.wrapInSquareBrackets(component).withStyle(ChatFormatting.GRAY);
+	private static Component wrap(Component component, ChatFormatting color) {
+		return ComponentUtils.wrapInSquareBrackets(component).withStyle(color);
 	}
 }

@@ -7,7 +7,7 @@
 	"key.lotaslight.savestate": "Sicherungspunkt erstellen",
 	"key.lotaslight.loadstate": "Sicherungspunkt laden",
 	"msg.lotaslight.setTickrate": "Setze die Tickrate auf %s",
-	"msg.lotaslight.turnOff": "To turn off these messages, use /lotaslight trc_showMessage false",
+	"msg.lotaslight.turnOff": "Um diese Nachrichten auszuschalten, benutze /lotaslight trc_showMessage false",
 	"msg.lotaslight.showmsg.true": "Tickrate Nachrichten eingeschaltet",
 	"msg.lotaslight.showmsg.false": "Tickrate Nachrichten ausgeschaltet",
 	"msg.lotaslight.showctrls.true": "Savestate controls enabled",

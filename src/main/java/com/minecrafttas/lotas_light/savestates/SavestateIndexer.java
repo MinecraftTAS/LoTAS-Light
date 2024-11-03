@@ -147,6 +147,8 @@ public class SavestateIndexer {
 
 		if (savestateToRename == null) {
 			throw new SavestateException(I18n.get("msg.lotaslight.savestate.error.noexist", index));
+		} else if (savestateToRename instanceof FailedSavestate) {
+			throw new SavestateException(I18n.get("msg.lotaslight.savestate.rename.error"));
 		}
 
 		if (name.isEmpty()) {

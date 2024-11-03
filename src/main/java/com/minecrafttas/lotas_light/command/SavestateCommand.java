@@ -410,11 +410,11 @@ public class SavestateCommand {
 	}
 
 	private static void setSavestateScreen() {
-		Minecraft.getInstance().setScreen(new SavestateGui(Component.translatable("gui.lotaslight.savestates.save.name"), Component.translatable("gui.lotaslight.savestates.save.start")));
+		Minecraft.getInstance().setScreen(new SavestateGui(Component.translatable("gui.lotaslight.savestate.save.name"), Component.translatable("gui.lotaslight.savestate.save.start").withStyle(ChatFormatting.YELLOW)));
 	}
 
 	private static void setLoadstateScreen() {
-		Minecraft.getInstance().setScreen(new SavestateGui(Component.translatable("gui.lotaslight.savestates.load.name"), Component.translatable("gui.lotaslight.savestates.load.start")));
+		Minecraft.getInstance().setScreen(new SavestateGui(Component.translatable("gui.lotaslight.savestate.load.name"), Component.translatable("gui.lotaslight.savestate.load.start").withStyle(ChatFormatting.YELLOW)));
 	}
 
 	private static void showInfo(CommandContext<CommandSourceStack> context) {

@@ -15,8 +15,6 @@ import com.minecrafttas.lotas_light.savestates.gui.SavestateDoneGui;
 import com.minecrafttas.lotas_light.savestates.gui.SavestateGui;
 import com.minecrafttas.lotas_light.savestates.gui.SavestateRenameGui;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.ChatFormatting;
@@ -31,6 +29,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTickRateManager;
 import net.minecraft.server.level.ServerLevel;
+//#1.21.3
+//$$import net.minecraft.client.renderer.RenderType;
+//$$import net.minecraft.util.ARGB;
+//#def
+import com.mojang.blaze3d.systems.RenderSystem;
+//#end
 import net.minecraft.world.TickRateManager;
 
 public class LoTASLightClient implements ClientModInitializer {
@@ -172,12 +176,19 @@ public class LoTASLightClient implements ClientModInitializer {
 	}
 
 	private void drawHud(GuiGraphics context, DeltaTracker deltaTicks) {
+		//# 1.21.3
+//$$		int i = ARGB.colorFromFloat(.2F, 1f, 1f, 1f);
+//$$		context.blit(RenderType::guiTexturedOverlay, ResourceLocation.fromNamespaceAndPath("lotaslight", "potion.png"), Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2
+//$$				- 10, Minecraft.getInstance().getWindow().getGuiScaledHeight()
+//$$						- 50, 0, 0, 20, 20, 20, 20, i);
+		//# def
 		RenderSystem.enableBlend();
-		RenderSystem.setShaderColor(1, 1, 1, .2f);
+		context.setColor(1f, 1f, 1f, .2F);
 		context.blit(ResourceLocation.fromNamespaceAndPath("lotaslight", "potion.png"), Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2 - 10, Minecraft.getInstance().getWindow().getGuiScaledHeight()
 				- 50, 0, 0, 20, 20, 20, 20);
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		context.setColor(1, 1, 1, 1);
 		RenderSystem.disableBlend();
+		//# end
 	}
 
 	private void savestate() {

@@ -55,9 +55,16 @@ public class SavestateRenameGui extends SavestateGui {
 		return super.mouseClicked(d, e, i);
 	}
 
+	//# 1.21.3
+//$$	@Override
+//$$	public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
+//$$	}
+//$$
+	//# def
 	@Override
 	protected void renderBlurredBackground(float f) {
 	}
+	//# end
 
 	private boolean renameAndExit() {
 		String name = editBox.getValue();

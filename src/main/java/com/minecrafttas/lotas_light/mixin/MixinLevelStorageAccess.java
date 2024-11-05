@@ -10,8 +10,9 @@ import org.spongepowered.asm.mixin.Shadow;
 import com.minecrafttas.lotas_light.duck.StorageLock;
 
 import net.minecraft.util.DirectoryLock;
+import net.minecraft.world.level.storage.LevelStorageSource.LevelStorageAccess;
 
-@Mixin(targets = "net/minecraft/world/level/storage/LevelStorageSource$LevelStorageAccess")
+@Mixin(LevelStorageAccess.class)
 public class MixinLevelStorageAccess implements StorageLock {
 
 	@Shadow

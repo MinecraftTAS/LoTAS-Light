@@ -1,0 +1,41 @@
+java {
+	sourceCompatibility = targetCompatibility = 21
+	withSourcesJar()
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base { 
+	archivesName = "${mod_name}-${minecraft_version}"
+}
+
+loom {
+	// set access widener
+	accessWidenerPath = file('src/main/resources/lotaslight.accesswidener')
+	// set custom log4jconfig
+	log4jConfigs.from(file('src/main/resources/log4j.xml'))
+}
+
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 21
+}
+
+dependencies {
+	// To change the versions see the gradle.properties file
+	minecraft "com.mojang:minecraft:${minecraft_version}"
+	mappings loom.officialMojangMappings()
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	// Fabric API. This is technically optional, but you probably want it anyway.
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}

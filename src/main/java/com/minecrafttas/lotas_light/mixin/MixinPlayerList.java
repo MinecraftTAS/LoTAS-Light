@@ -27,6 +27,7 @@ public class MixinPlayerList {
 		flip += 0.26;
 
 		PoseStack memstack = guiGraphics.pose();
+		memstack.pushPose();
 		memstack.translate(memOffsetX, memOffsetY, 0);
 		memstack.scale(flip, flip, flip);
 		memstack.mulPose(fromYXZ(0F, 0F, (float) flipOffset));
@@ -142,6 +143,7 @@ public class MixinPlayerList {
 		memstack.mulPose(fromYXZ(0F, 0F, -(float) flipOffset));
 		memstack.scale(1 / flip, 1 / flip, 1 / flip);
 		memstack.translate(-memOffsetX, -memOffsetY, 0);
+		memstack.popPose();
 	}
 
 	public void setRegistryState(GuiGraphics guiGraphics, int x, int y, int color) {

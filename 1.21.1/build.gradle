@@ -1,5 +1,10 @@
 plugins {
 	id 'fabric-loom' version "${loom_version}"
+	id "com.modrinth.minotaur" version "2.+"
 }
 
 apply from: "../common.gradle"
+
+modrinth {
+    gameVersions = ["1.21", "1.21.1"]
+}

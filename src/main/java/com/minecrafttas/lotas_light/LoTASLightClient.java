@@ -56,7 +56,7 @@ public class LoTASLightClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		Minecraft mc = Minecraft.getInstance();
-		configpath = mc.gameDirectory.toPath().resolve("configs/lotas-light.cfg");
+		configpath = mc.gameDirectory.toPath().resolve("config/lotas-light.cfg");
 		config = new Configuration("LoTAS-Light config", configpath);
 		config.loadFromXML();
 		registerKeybindings();

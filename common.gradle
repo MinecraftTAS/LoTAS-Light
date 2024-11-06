@@ -40,8 +40,13 @@ loom {
 
 processResources {
 	inputs.property "version", project.version
+	inputs.property "allowedMcVersion", project.allowed_mc_version
 
-	filesMatching("fabric.mod.json") {
+	filesMatching("fabric.mod.json") { file -> 
 		expand "version": project.version
+        filter { String line ->
+            line.replace('"minecraft": "*",', '"minecraft": "' + project.allowed_mc_version + '",')
+        };
 	}
 }
+	

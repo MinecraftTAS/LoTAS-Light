@@ -84,7 +84,7 @@ public class SavestateHandler {
 		server = mc.getSingleplayerServer(); // Safety server update, because *sometimes* the server is outdated and it will softlock on saveAll
 
 		logger.trace("Save world & players");
-		server.saveEverything(true, true, false);
+		server.saveEverything(true, true, true);
 
 		while (server.isCurrentlySaving()) {
 

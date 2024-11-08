@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.minecrafttas.lotas_light.LoTASLight;
 import com.minecrafttas.lotas_light.event.EventClientGameLoop;
+import com.minecrafttas.lotas_light.keybind.KeybindManager;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -32,6 +33,7 @@ public class MixinMinecraft {
 
 	@Inject(method = "setScreen", at = @At(value = "HEAD"), cancellable = true)
 	public void injectdisplayGuiScreen(Screen guiScreenIn, CallbackInfo ci) {
+		KeybindManager.focused = false;
 		if (guiScreenIn == null && (((Minecraft) (Object) this).player != null)) {
 			if (LoTASLight.savestateHandler.applyMotion != null) {
 				LoTASLight.savestateHandler.applyMotion.run();

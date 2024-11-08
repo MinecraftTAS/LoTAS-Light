@@ -13,12 +13,14 @@
 	"client":[
 		"MixinMinecraft",
 		"AccessorSoundEngine",
+		"AccessorKeyMapping",
 		"MixinTickrateChangerAudioPitch",
 		"MixinGui",
 		"MixinTickrateChangerEnchantmentGlimm",
 		"MixinTickrateChangerAchievements",
 		"MixinTickrateChangerWorldborder",
 		"MixinTickrateChangerSubtitleOverlay",
+		"MixinAbstractWidget",
 		"MixinClientPacketListener",
 		"MixinPauseScreen",
 		"MixinPlayerList"

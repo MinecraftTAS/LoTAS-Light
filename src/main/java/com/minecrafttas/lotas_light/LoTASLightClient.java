@@ -10,16 +10,15 @@ import com.minecrafttas.lotas_light.duck.Tickratechanger;
 import com.minecrafttas.lotas_light.event.EventClientGameLoop;
 import com.minecrafttas.lotas_light.event.EventOnClientJoinServer;
 import com.minecrafttas.lotas_light.event.HudRenderExperienceCallback;
+import com.minecrafttas.lotas_light.keybind.KeybindManager;
+import com.minecrafttas.lotas_light.keybind.KeybindManager.Keybind;
 import com.minecrafttas.lotas_light.savestates.SavestateHandler.SavestateCallback;
 import com.minecrafttas.lotas_light.savestates.gui.SavestateDoneGui;
 import com.minecrafttas.lotas_light.savestates.gui.SavestateGui;
 import com.minecrafttas.lotas_light.savestates.gui.SavestateRenameGui;
-import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
@@ -39,12 +38,7 @@ import net.minecraft.world.TickRateManager;
 
 public class LoTASLightClient implements ClientModInitializer {
 
-	private KeyMapping increaseTickrate = new KeyMapping("key.lotaslight.increaseTickrate", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_PERIOD, "keycategory.lotaslight.lotaslight");
-	private KeyMapping decreaseTickrate = new KeyMapping("key.lotaslight.decreaseTickrate", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_COMMA, "keycategory.lotaslight.lotaslight");
-	private KeyMapping freezeTickrate = new KeyMapping("key.lotaslight.freezeTickrate", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_F8, "keycategory.lotaslight.lotaslight");
-	private KeyMapping advanceTickrate = new KeyMapping("key.lotaslight.advanceTickrate", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_F9, "keycategory.lotaslight.lotaslight");
-	private KeyMapping savestate = new KeyMapping("key.lotaslight.savestate", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_J, "keycategory.lotaslight.lotaslight");
-	private KeyMapping loadstate = new KeyMapping("key.lotaslight.loadstate", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_K, "keycategory.lotaslight.lotaslight");
+	private KeybindManager keybindManager = new KeybindManager(KeybindManager::isKeyDownExceptTextField);
 
 	private float[] rates = new float[] { .1f, .2f, .5f, 1f, 2f, 5f, 10f, 20f, 40f, 100f };
 	private short rateIndex = 7;
@@ -64,33 +58,14 @@ public class LoTASLightClient implements ClientModInitializer {
 	}
 
 	private void registerKeybindings() {
-		KeyBindingHelper.registerKeyBinding(increaseTickrate);
-		KeyBindingHelper.registerKeyBinding(decreaseTickrate);
-		KeyBindingHelper.registerKeyBinding(freezeTickrate);
-		KeyBindingHelper.registerKeyBinding(advanceTickrate);
-		KeyBindingHelper.registerKeyBinding(savestate);
-		KeyBindingHelper.registerKeyBinding(loadstate);
+		keybindManager.registerKeybind(new Keybind("key.lotaslight.increaseTickrate", "keycategory.lotaslight.lotaslight", GLFW.GLFW_KEY_PERIOD, this::increaseTickrate));
+		keybindManager.registerKeybind(new Keybind("key.lotaslight.decreaseTickrate", "keycategory.lotaslight.lotaslight", GLFW.GLFW_KEY_COMMA, this::decreaseTickrate));
+		keybindManager.registerKeybind(new Keybind("key.lotaslight.freezeTickrate", "keycategory.lotaslight.lotaslight", GLFW.GLFW_KEY_F8, this::freezeTickrate, KeybindManager::isKeyDown));
+		keybindManager.registerKeybind(new Keybind("key.lotaslight.advanceTickrate", "keycategory.lotaslight.lotaslight", GLFW.GLFW_KEY_F9, this::advanceTickrate, KeybindManager::isKeyDown));
+		keybindManager.registerKeybind(new Keybind("key.lotaslight.savestate", "keycategory.lotaslight.lotaslight", GLFW.GLFW_KEY_J, this::savestate));
+		keybindManager.registerKeybind(new Keybind("key.lotaslight.loadstate", "keycategory.lotaslight.lotaslight", GLFW.GLFW_KEY_K, this::loadstate));
 
-		EventClientGameLoop.EVENT.register(client -> {
-			while (increaseTickrate.consumeClick()) {
-				increaseTickrate(client);
-			}
-			while (decreaseTickrate.consumeClick()) {
-				decreaseTickrate(client);
-			}
-			while (freezeTickrate.consumeClick()) {
-				freezeTickrate(client);
-			}
-			while (advanceTickrate.consumeClick()) {
-				advanceTickrate(client);
-			}
-			while (savestate.consumeClick()) {
-				savestate();
-			}
-			while (loadstate.consumeClick()) {
-				loadstate();
-			}
-		});
+		EventClientGameLoop.EVENT.register(keybindManager::onRunClientGameLoop);
 
 		EventOnClientJoinServer.EVENT.register(player -> {
 			if (LoTASLight.savestateHandler.loadStateComplete != null) {
@@ -102,6 +77,9 @@ public class LoTASLightClient implements ClientModInitializer {
 	}
 
 	private void increaseTickrate(Minecraft client) {
+		if (client.level == null) {
+			return;
+		}
 		TickRateManager clientTickrateChanger = client.level.tickRateManager();
 		IntegratedServer server = client.getSingleplayerServer();
 		if (server == null) {
@@ -124,6 +102,9 @@ public class LoTASLightClient implements ClientModInitializer {
 	}
 
 	private void decreaseTickrate(Minecraft client) {
+		if (client.level == null) {
+			return;
+		}
 		TickRateManager clientTickrateChanger = client.level.tickRateManager();
 		IntegratedServer server = client.getSingleplayerServer();
 		if (server == null) {
@@ -146,6 +127,9 @@ public class LoTASLightClient implements ClientModInitializer {
 	}
 
 	private void freezeTickrate(Minecraft client) {
+		if (client.level == null) {
+			return;
+		}
 		TickRateManager clientTickrateManager = client.level.tickRateManager();
 		IntegratedServer server = client.getSingleplayerServer();
 		if (server == null) {
@@ -161,6 +145,9 @@ public class LoTASLightClient implements ClientModInitializer {
 	}
 
 	private void advanceTickrate(Minecraft client) {
+		if (client.level == null) {
+			return;
+		}
 		TickRateManager clientTickrateManager = client.level.tickRateManager();
 		IntegratedServer server = client.getSingleplayerServer();
 		if (server == null) {
@@ -191,9 +178,11 @@ public class LoTASLightClient implements ClientModInitializer {
 		//# end
 	}
 
-	private void savestate() {
-		Minecraft mc = Minecraft.getInstance();
+	private void savestate(Minecraft mc) {
 		MinecraftServer server = mc.getSingleplayerServer();
+		if (server == null) {
+			return;
+		}
 		for (ServerLevel level : server.getAllLevels()) {
 			level.noSave = true;
 		}
@@ -224,12 +213,15 @@ public class LoTASLightClient implements ClientModInitializer {
 			}
 			mc.gui.getChat().addMessage(Component.literal(message).withStyle(ChatFormatting.RED));
 			LoTASLight.savestateHandler.resetState();
+			Minecraft.getInstance().setScreen(null);
 		}
 	}
 
-	private void loadstate() {
-		Minecraft mc = Minecraft.getInstance();
-
+	private void loadstate(Minecraft mc) {
+		MinecraftServer server = mc.getSingleplayerServer();
+		if (server == null) {
+			return;
+		}
 		SavestateCallback doneLoadingCallback = (paths -> {
 			//@formatter:off
 			mc.setScreen(
@@ -245,7 +237,7 @@ public class LoTASLightClient implements ClientModInitializer {
 		});
 
 		try {
-			MinecraftServer server = mc.getSingleplayerServer();
+
 			for (ServerLevel level : server.getAllLevels()) {
 				level.noSave = true;
 			}
@@ -259,6 +251,7 @@ public class LoTASLightClient implements ClientModInitializer {
 			}
 			mc.gui.getChat().addMessage(Component.literal(message).withStyle(ChatFormatting.RED));
 			LoTASLight.savestateHandler.resetState();
+			Minecraft.getInstance().setScreen(null);
 		}
 	}
 }

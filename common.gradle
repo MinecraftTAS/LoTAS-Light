@@ -49,14 +49,3 @@ processResources {
         };
 	}
 }
-
-modrinth {
-    token = project.modrinthtoken
-    projectId = "lotas-light"
-    versionType = "release"
-    uploadFile = remapJar
-    loaders = ["fabric"]
-    dependencies {
-        required.project "fabric-api"
-    }
-}

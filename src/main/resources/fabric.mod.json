@@ -36,5 +36,11 @@
 	"breaks": {
 		"lotas": "*",
 		"tasmod": "*"
+	},
+	"custom": {
+		"mc-publish": {
+			"modrinth": "vyf9TmEf",
+			"curseforge": "1125700"
+		}
 	}
 }

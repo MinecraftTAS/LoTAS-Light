@@ -37,9 +37,5 @@ public class LoTASLight implements ModInitializer {
 				}
 			}
 		});
-
-		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
-//			savestateHandler = null
-		});
 	}
 }

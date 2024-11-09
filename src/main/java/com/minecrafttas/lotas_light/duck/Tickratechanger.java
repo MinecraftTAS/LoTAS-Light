@@ -13,4 +13,6 @@ public interface Tickratechanger {
 	public boolean isAdvanceTick();
 
 	public long getAdjustedMilliseconds();
+
+	public void disconnect();
 }

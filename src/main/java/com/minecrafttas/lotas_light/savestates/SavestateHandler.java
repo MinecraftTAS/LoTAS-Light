@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.minecrafttas.lotas_light.LoTASLight;
 import com.minecrafttas.lotas_light.duck.StorageLock;
+import com.minecrafttas.lotas_light.duck.Tickratechanger;
 import com.minecrafttas.lotas_light.mixin.AccessorLevelStorage;
 import com.minecrafttas.lotas_light.mixin.AccessorServerPlayer;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.DeletionRunnable;
@@ -23,7 +24,6 @@ import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.TickRateManager;
 import net.minecraft.world.phys.Vec3;
 
 public class SavestateHandler {
@@ -144,13 +144,11 @@ public class SavestateHandler {
 
 		Minecraft mc = Minecraft.getInstance();
 		server = mc.getSingleplayerServer();
-		TickRateManager trmServer = server.tickRateManager();
-		TickRateManager trmClient = mc.level.tickRateManager();
+		Tickratechanger trmServer = (Tickratechanger) server.tickRateManager();
+		Tickratechanger trmClient = (Tickratechanger) mc.level.tickRateManager();
 
-		LoTASLight.startTickrate = trmServer.tickrate();
-
-		trmServer.setTickRate(20f);
-		trmClient.setTickRate(20f);
+		trmServer.disconnect();
+		trmClient.disconnect();
 
 		logger.trace("Load savestate index via indexer");
 		SavestatePaths paths = indexer.loadSavestate(index, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX));
@@ -189,6 +187,11 @@ public class SavestateHandler {
 			this.server.getPlayerList().getPlayers().forEach(serverplayer -> {
 				((AccessorServerPlayer) serverplayer).setSpawnInvulnerableTime(0);
 			});
+
+			if (LoTASLight.startTickrate == 0f) {
+				mc.level.tickRateManager().setTickRate(0);
+				mc.getSingleplayerServer().tickRateManager().setTickRate(0);
+			}
 			mc.gui.getChat().clearMessages(true);
 
 			if (cb != null) {

@@ -53,6 +53,8 @@ public class LoTASLightClient implements ClientModInitializer {
 		configpath = mc.gameDirectory.toPath().resolve("config/lotas-light.cfg");
 		config = new Configuration("LoTAS-Light config", configpath);
 		config.loadFromXML();
+		LoTASLight.startTickrate = Float.parseFloat(LoTASLightClient.config.get(ConfigOptions.DEFAULT_TICKRATE));
+		rateIndex = (short) findClosestRateIndex(LoTASLight.startTickrate);
 		registerKeybindings();
 		HudRenderExperienceCallback.EVENT.register(this::drawHud);
 	}
@@ -86,6 +88,7 @@ public class LoTASLightClient implements ClientModInitializer {
 			return;
 		}
 		ServerTickRateManager serverTickrateChanger = server.tickRateManager();
+		rateIndex = findClosestRateIndex(clientTickrateChanger.tickrate());
 
 		rateIndex++;
 		rateIndex = (short) Math.clamp(rateIndex, 0, rates.length - 1);
@@ -111,6 +114,7 @@ public class LoTASLightClient implements ClientModInitializer {
 			return;
 		}
 		ServerTickRateManager serverTickrateChanger = server.tickRateManager();
+		rateIndex = findClosestRateIndex(clientTickrateChanger.tickrate());
 
 		rateIndex--;
 		rateIndex = (short) Math.clamp(rateIndex, 0, rates.length - 1);
@@ -253,5 +257,35 @@ public class LoTASLightClient implements ClientModInitializer {
 			LoTASLight.savestateHandler.resetState();
 			Minecraft.getInstance().setScreen(null);
 		}
+	}
+
+	private short findClosestRateIndex(float tickrate) {
+		for (int i = 0; i < rates.length; i++) {
+			int iMinus1 = i - 1;
+
+			float min = 0f;
+			if (iMinus1 >= 0) {
+				min = rates[iMinus1];
+			}
+			float max = rates[i];
+
+			if (tickrate >= min && tickrate < max) {
+				if (min == 0f) {
+					return (short) i;
+				}
+
+				float distanceToMin = tickrate - min;
+				float distanceToMax = max - tickrate;
+
+				if (distanceToMin < distanceToMax) {
+					return (short) iMinus1;
+				} else if (distanceToMax < distanceToMin) {
+					return (short) i;
+				} else {
+					return (short) iMinus1;
+				}
+			}
+		}
+		return (short) (rates.length - 1);
 	}
 }

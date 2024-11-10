@@ -1,0 +1,10 @@
+accessWidener v2 named
+
+accessible field net/minecraft/world/level/storage/LevelStorageSource$LevelStorageAccess lock Lnet/minecraft/util/DirectoryLock;
+mutable field net/minecraft/world/level/storage/LevelStorageSource$LevelStorageAccess lock Lnet/minecraft/util/DirectoryLock;
+accessible field net/minecraft/client/gui/components/EditBox font Lnet/minecraft/client/gui/Font;
+accessible field net/minecraft/client/gui/components/EditBox value Ljava/lang/String;
+accessible field net/minecraft/client/gui/components/EditBox displayPos I
+accessible field net/minecraft/client/gui/components/EditBox hint Lnet/minecraft/network/chat/Component;
+accessible field net/minecraft/client/gui/components/EditBox textColor I
+accessible field net/minecraft/client/gui/components/EditBox bordered Z

@@ -13,8 +13,9 @@
 		"sources": "https://github.com/MinecraftTAS/LoTAS-Light"
 	},
 	"license": "GPLv3",
-	"icon": "assets/modid/icon.png",
+	"icon": "assets/lotaslight/potion.png",
 	"environment": "*",
+	"accessWidener" : "lotaslight.accesswidener",
 	"entrypoints": {
 		"main": [
 			"com.minecrafttas.lotas_light.LoTASLight"
@@ -28,13 +29,18 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.15.11",
-		"minecraft": "~1.21",
+		"minecraft": "*",
 		"java": ">=21",
 		"fabric-api": "*"
 	},
 	"breaks": {
 		"lotas": "*",
 		"tasmod": "*"
+	},
+	"custom": {
+		"mc-publish": {
+			"modrinth": "vyf9TmEf",
+			"curseforge": "1125700"
+		}
 	}
-	
 }

@@ -1,3 +1,4 @@
+[![Crowdin](https://badges.crowdin.net/lotas-light/localized.svg)](https://crowdin.com/project/lotas-light)
 # LoTAS-Light
 A very slimmed down version of [LoTAS](https://github.com/MinecraftTAS/LoTAS), in an attempt to make it easily upgradable to newer versions.
 
@@ -12,3 +13,20 @@ Needs Fabric API
 - Savestates
   - Saving (<kbd>J</kbd>)
   - Loading (<kbd>K</kbd>)
+
+## Translations
+Help translate this mod with [Crowdin](https://crowdin.com/project/lotas-light)
+
+### Contributions
+- Chinese Simplified
+  - Blom
+- French
+  - Elvee
+- German
+  - ScribbleTAS
+- Korean
+  - swwgdxed
+- LOLCAT
+  - ScribbleTAS
+- Polish
+  - 4NTJ

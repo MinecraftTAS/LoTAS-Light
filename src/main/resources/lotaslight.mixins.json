@@ -3,6 +3,27 @@
 	"package": "com.minecrafttas.lotas_light.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
+		"MixinTickRateManager",
+		"MixinTickCommand",
+		"MixinMinecraftServer",
+		"AccessorLevelStorage",
+		"AccessorServerPlayer",
+		"MixinLevelStorageAccess"
+	],
+	"client":[
+		"MixinMinecraft",
+		"AccessorSoundEngine",
+		"AccessorKeyMapping",
+		"MixinTickrateChangerAudioPitch",
+		"MixinGui",
+		"MixinTickrateChangerEnchantmentGlimm",
+		"MixinTickrateChangerAchievements",
+		"MixinTickrateChangerWorldborder",
+		"MixinTickrateChangerSubtitleOverlay",
+		"MixinAbstractWidget",
+		"MixinClientPacketListener",
+		"MixinPauseScreen",
+		"MixinPlayerList"
 	],
 	"injectors": {
 		"defaultRequire": 1

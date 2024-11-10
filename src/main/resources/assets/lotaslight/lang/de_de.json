@@ -1,0 +1,13 @@
+{
+	"key.lotaslight.increaseTickrate": "Tickrate erhöhen",
+	"key.lotaslight.decreaseTickrate": "Tickrate verringern",
+	"key.lotaslight.freezeTickrate": "Tickrate stoppen",
+	"key.lotaslight.advanceTickrate": "Advance einen Tick",
+	"key.lotaslight.savestate": "Sicherungspunkt erstellen",
+	"key.lotaslight.loadstate": "Sicherungspunkt laden",
+	"msg.lotaslight.setTickrate": "Setze die Tickrate auf %s",
+	"msg.lotaslight.turnOff": "Um diese Nachrichten auszuschalten, benutze /lotaslight showMessage false",
+	"msg.lotaslight.showmsg.true": "Tickrate Nachrichten eingeschaltet",
+	"msg.lotaslight.showmsg.false": "Tickrate Nachrichten ausgeschaltet",
+	"keycategory.lotaslight.lotaslight": "LoTAS-Light"
+}

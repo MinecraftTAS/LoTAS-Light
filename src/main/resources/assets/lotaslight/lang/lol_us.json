@@ -1,0 +1,13 @@
+{
+	"key.lotaslight.increaseTickrate": "fstr tiktk",
+	"key.lotaslight.decreaseTickrate": "S L O W A  T I K T O K K",
+	"key.lotaslight.freezeTickrate": "Stahp TikTo...",
+	"key.lotaslight.advanceTickrate": "1 Tik, no tokk",
+	"key.lotaslight.savestate": "Mayke Déjà-vu-point",
+	"key.lotaslight.loadstate": "Lode Déjà-vu-point",
+	"msg.lotaslight.setTickrate": "Put tiktokk 2 %s",
+	"msg.lotaslight.turnOff": "MSGS ANNOYING? Yeet with /lotaslight showMessage false",
+	"msg.lotaslight.showmsg.true": "Msgs r b4ck",
+	"msg.lotaslight.showmsg.false": "Msgs banned 2 shadow realm",
+	"keycategory.lotaslight.lotaslight": "LoTAS-NotF4t"
+}

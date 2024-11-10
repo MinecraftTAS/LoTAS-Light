@@ -1,0 +1,13 @@
+{
+	"key.lotaslight.increaseTickrate": "Zwiększ tempo",
+	"key.lotaslight.decreaseTickrate": "Zmniejsz tempo",
+	"key.lotaslight.freezeTickrate": "Zamróź grę",
+	"key.lotaslight.advanceTickrate": "Przesuń tick",
+	"key.lotaslight.savestate": "Zapisz stan świata",
+	"key.lotaslight.loadstate": "Załaduj zapisany stan świata",
+	"msg.lotaslight.setTickrate": "Ustawiono tempo gry na %s",
+	"msg.lotaslight.turnOff": "Aby wyłączyć te wiadomości, użyj /lotaslight showMessage false",
+	"msg.lotaslight.showmsg.true": "Włączono wiadomości o tempie gry",
+	"msg.lotaslight.showmsg.false": "Wyłączono wiadomości o tempie gry",
+	"keycategory.lotaslight.lotaslight": "LoTAS-Light"
+}

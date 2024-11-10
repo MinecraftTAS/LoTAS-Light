@@ -71,33 +71,17 @@ public class MixinPlayerList {
 
 		y = 6;
 		setRegistryState(guiGraphics, 2, y, w);
-		setRegistryState(guiGraphics, 3, y, c);
 		setRegistryState(guiGraphics, 4, y, w);
-		setRegistryState(guiGraphics, 5, y, c);
-		setRegistryState(guiGraphics, 6, y, c);
-		setRegistryState(guiGraphics, 7, y, c);
 		setRegistryState(guiGraphics, 8, y, w);
 
 		y = 7;
 		setRegistryState(guiGraphics, 1, y, w);
-		setRegistryState(guiGraphics, 2, y, c);
 		setRegistryState(guiGraphics, 3, y, w);
-		setRegistryState(guiGraphics, 4, y, c);
-		setRegistryState(guiGraphics, 5, y, c);
-		setRegistryState(guiGraphics, 6, y, c);
-		setRegistryState(guiGraphics, 7, y, c);
-		setRegistryState(guiGraphics, 8, y, c);
 		setRegistryState(guiGraphics, 9, y, w);
 
 		y = 8;
 		setRegistryState(guiGraphics, 1, y, w);
-		setRegistryState(guiGraphics, 2, y, c);
 		setRegistryState(guiGraphics, 3, y, w);
-		setRegistryState(guiGraphics, 4, y, c);
-		setRegistryState(guiGraphics, 5, y, c);
-		setRegistryState(guiGraphics, 6, y, c);
-		setRegistryState(guiGraphics, 7, y, c);
-		setRegistryState(guiGraphics, 8, y, c);
 		setRegistryState(guiGraphics, 9, y, w);
 
 		y = 9;

@@ -72,6 +72,7 @@ public class MixinMinecraftServer {
 
 	@Inject(method = "stopServer", at = @At("HEAD"))
 	public void inject_stopServer(CallbackInfo ci) {
-		((MinecraftServer) (Object) this).tickRateManager().setTickRate(20f);
+		Tickratechanger tickrateManager = (Tickratechanger) ((MinecraftServer) (Object) this).tickRateManager();
+		tickrateManager.disconnect();
 	}
 }

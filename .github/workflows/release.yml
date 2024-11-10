@@ -1,0 +1,39 @@
+name: Create Release
+on:
+  release:
+    types: [published]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '22'
+          distribution: 'temurin'
+          architecture: x64
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.10.2
+      - name: Setup workspace
+        run: gradle preprocessBase
+      - name: Build
+        run: gradle collectBuilds
+      - name: Upload assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: 'build/!(-@(dev|sources|javadoc|all)).jar'
+      - name: Publish 1.21.1
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          files: 'build/*-1.21.1-*!(*-@(dev|sources|javadoc|all)).jar'
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+      - name: Publish 1.21.3
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          files: 'build/*-1.21.3-*!(*-@(dev|sources|javadoc|all)).jar'
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}

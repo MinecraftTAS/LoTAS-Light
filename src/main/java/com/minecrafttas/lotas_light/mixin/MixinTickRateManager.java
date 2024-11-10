@@ -11,8 +11,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.minecrafttas.lotas_light.LoTASLight;
-import com.minecrafttas.lotas_light.LoTASLightClient;
-import com.minecrafttas.lotas_light.config.Configuration.ConfigOptions;
 import com.minecrafttas.lotas_light.duck.SoundPitchDuck;
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 
@@ -29,11 +27,11 @@ import net.minecraft.world.TickRateManager;
 @Mixin(TickRateManager.class)
 public abstract class MixinTickRateManager implements Tickratechanger {
 	@Unique
-	private float tickrateSaved;
+	private static float tickrateSaved = 20;
 	@Unique
 	private boolean advanceTickrate;
-
-	private static float tickrateMirror = Float.parseFloat(LoTASLightClient.config.get(ConfigOptions.DEFAULT_TICKRATE));
+	@Unique
+	private boolean isDisconnecting;
 
 	private static long timeOffset = 0L;
 	private static long timeSinceTC = System.currentTimeMillis();
@@ -46,24 +44,21 @@ public abstract class MixinTickRateManager implements Tickratechanger {
 
 	@Inject(method = "<init>", at = @At(value = "RETURN"))
 	public void inject_trcConstructor(CallbackInfo ci) {
-		this.tickrate = tickrateMirror;
 		if (LoTASLight.startTickrate != null) {
-			this.tickrate = LoTASLight.startTickrate;
-			LoTASLight.startTickrate = null;
+			this.tickrate = LoTASLight.startTickrate != 0f ? LoTASLight.startTickrate : tickrateSaved;
 		}
-		this.nanosecondsPerTick = (long) ((double) TimeUtil.NANOSECONDS_PER_SECOND / (double) tickrateMirror);
+		this.nanosecondsPerTick = (long) ((double) TimeUtil.NANOSECONDS_PER_SECOND / (double) this.tickrate);
 	}
 
 	@ModifyExpressionValue(method = "setTickRate", at = @At(value = "INVOKE", target = "Ljava/lang/Math;max(FF)F"))
 	public float modifyExpressionValue_SetTickRate(float original, float f) {
 		f = Math.max(0f, f);
-		if (this.tickrate != 0) {
+		if (this.tickrate != 0 && !isDisconnecting) {
 			tickrateSaved = tickrate;
 		}
 		long time = System.currentTimeMillis() - timeSinceTC - timeOffset;
 		fakeTimeSinceTC += (long) (time * (tickrate / 20F));
 		timeSinceTC = System.currentTimeMillis() - timeOffset;
-		tickrateMirror = f;
 		return f;
 	}
 
@@ -118,6 +113,15 @@ public abstract class MixinTickRateManager implements Tickratechanger {
 		return advanceTickrate;
 	}
 
+	@Override
+	public void disconnect() {
+		if (!this.isDisconnecting) {
+			LoTASLight.startTickrate = tickrate();
+		}
+		this.isDisconnecting = true;
+		setTickRate(20);
+	}
+
 	@Inject(method = "tick", at = @At("RETURN"))
 	public void inject_Tick(CallbackInfo ci) {
 		if (advanceTickrate) {
@@ -149,4 +153,7 @@ public abstract class MixinTickRateManager implements Tickratechanger {
 
 	@Shadow
 	protected abstract void setTickRate(float f);
+
+	@Shadow
+	protected abstract float tickrate();
 }

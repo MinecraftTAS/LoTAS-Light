@@ -149,6 +149,7 @@ public abstract class AbstractDataFile {
 	 * @param file The file to save the {@link #properties} to
 	 */
 	public void saveToXML(Path file) {
+		createDirectory(file);
 		try {
 			OutputStream fos = Files.newOutputStream(file);
 			properties.storeToXML(fos, comment, "UTF-8");

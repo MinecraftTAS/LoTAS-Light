@@ -10,14 +10,6 @@ base {
 	archivesName = "${mod_name}-${minecraft_version}"
 }
 
-loom {
-	// set access widener
-	accessWidenerPath = file('src/main/resources/lotaslight.accesswidener')
-	// set custom log4jconfig
-	log4jConfigs.from(file('src/main/resources/log4j.xml'))
-}
-
-
 tasks.withType(JavaCompile).configureEach {
 	it.options.release = 21
 }
@@ -32,10 +24,28 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 }
 
+loom {
+	// set access widener
+	def accessWidenerFile = file('src/main/resources/lotaslight.accesswidener')
+	if(accessWidenerFile.exists()) {
+		accessWidenerPath = accessWidenerFile
+	}
+	
+	// set custom log4jconfig
+	def log4jFile = file('src/main/resources/log4j.xml')
+	if(log4jFile.exists()) {
+		log4jConfigs.from(log4jFile)
+	}
+}
+
 processResources {
 	inputs.property "version", project.version
+	inputs.property "allowedMcVersion", project.allowed_mc_version
 
-	filesMatching("fabric.mod.json") {
+	filesMatching("fabric.mod.json") { file -> 
 		expand "version": project.version
+        filter { String line ->
+            line.replace('"minecraft": "*",', '"minecraft": "' + project.allowed_mc_version + '",')
+        };
 	}
 }

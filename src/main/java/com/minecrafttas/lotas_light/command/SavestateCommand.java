@@ -120,7 +120,7 @@ public class SavestateCommand {
 				setSavestateScreen();
 				LoTASLight.savestateHandler.saveState(index, doneSavingCallback);
 			} catch (Exception e) {
-				sendFailure(context, e);
+				onFailure(context, e);
 			}
 		});
 		return 0;
@@ -152,7 +152,7 @@ public class SavestateCommand {
 				setSavestateScreen();
 				LoTASLight.savestateHandler.saveState(index, doneSavingCallback);
 			} catch (Exception e) {
-				sendFailure(context, e);
+				onFailure(context, e);
 			}
 		});
 		return index;
@@ -189,7 +189,7 @@ public class SavestateCommand {
 				setSavestateScreen();
 				LoTASLight.savestateHandler.saveState(name, doneSavingCallback);
 			} catch (Exception e) {
-				sendFailure(context, e);
+				onFailure(context, e);
 			}
 		});
 		return 0;
@@ -222,7 +222,7 @@ public class SavestateCommand {
 				setSavestateScreen();
 				LoTASLight.savestateHandler.saveState(index, name, doneSavingCallback);
 			} catch (Exception e) {
-				sendFailure(context, e);
+				onFailure(context, e);
 			}
 		});
 		return 0;
@@ -254,7 +254,7 @@ public class SavestateCommand {
 				setLoadstateScreen();
 				LoTASLight.savestateHandler.loadState(index, doneLoadingCallback);
 			} catch (Exception e) {
-				sendFailure(context, e);
+				onFailure(context, e);
 			}
 		});
 
@@ -287,7 +287,7 @@ public class SavestateCommand {
 				setLoadstateScreen();
 				LoTASLight.savestateHandler.loadState(index, doneLoadingCallback);
 			} catch (Exception e) {
-				sendFailure(context, e);
+				onFailure(context, e);
 			}
 		});
 		return index;
@@ -300,7 +300,7 @@ public class SavestateCommand {
 				context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.delete", paths.getSavestate().getIndex()).withStyle(ChatFormatting.GREEN), true);
 			});
 		} catch (Exception e) {
-			sendFailure(context, e);
+			onFailure(context, e);
 		}
 		return index;
 	}
@@ -346,7 +346,7 @@ public class SavestateCommand {
 		};
 
 		ErrorRunnable onErr = (exception) -> {
-			sendFailure(context, exception);
+			onFailure(context, exception);
 		};
 
 		LoTASLight.savestateHandler.delete(index, indexTo, cb, onErr);
@@ -398,12 +398,13 @@ public class SavestateCommand {
 		try {
 			LoTASLight.savestateHandler.rename(index, name, cb);
 		} catch (Exception e) {
-			sendFailure(context, e);
+			onFailure(context, e);
 		}
 		return 0;
 	}
 
-	private static void sendFailure(CommandContext<CommandSourceStack> context, Throwable e) {
+	private static void onFailure(CommandContext<CommandSourceStack> context, Throwable e) {
+		Minecraft.getInstance().setScreen(null);
 		context.getSource().sendFailure(Component.literal(e.getMessage()));
 		LoTASLight.LOGGER.catching(e);
 		LoTASLight.savestateHandler.resetState();

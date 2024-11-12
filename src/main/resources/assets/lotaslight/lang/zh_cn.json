@@ -12,7 +12,7 @@
 	"msg.lotaslight.showmsg.false": "刻率消息已禁用",
 	"msg.lotaslight.showctrls.true": "Savestate controls enabled",
 	"msg.lotaslight.showctrls.false": "Savestate controls disabled",
-	"msg.lotaslight.savestate.save.clickable": "Save",
+	"msg.lotaslight.savestate.save.clickable": "保存",
 	"msg.lotaslight.savestate.save.hover": "Overwrite savestate %s",
 	"msg.lotaslight.savestate.save.error": "Can't perform this action: A savestate operation is already being carried out!",
 	"msg.lotaslight.savestate.save.error2": "Can't save a savestate at savestate 0",
@@ -23,11 +23,11 @@
 	"msg.lotaslight.savestate.error.noexist": "Savestate %s does not exist",
 	"msg.lotaslight.savestate.error.filenoexist": "The savestate folder does not exist. %s",
 	"msg.lotaslight.savestate.delete": "Deleted savestate at index %s",
-	"msg.lotaslight.savestate.delete.clickable": "Delete",
+	"msg.lotaslight.savestate.delete.clickable": "删除",
 	"msg.lotaslight.savestate.delete.hover": "Delete savestate %s",
 	"msg.lotaslight.savestate.deleteMore.singular": "You are about to delete %s savestate! Do you want to continue? %s",
 	"msg.lotaslight.savestate.deleteMore.plural": "You are about to delete %s savestates! Do you want to continue? %s",
-	"msg.lotaslight.savestate.deleteMore.clickable": "YES",
+	"msg.lotaslight.savestate.deleteMore.clickable": "是",
 	"msg.lotaslight.savestate.deleteMore.hover": "This can not be undone or stopped!",
 	"msg.lotaslight.savestate.deleteMore.error.negative": "Can't delete a negative amount of savestates! (%s)",
 	"msg.lotaslight.savestate.reload": "Reloading savestate index. This is necessary when you edit the savestates outside of Minecraft",
@@ -45,5 +45,5 @@
 	"gui.lotaslight.savestate.load.name": "Loadstate screen",
 	"gui.lotaslight.savestate.load.start": "Loading a savestate, please wait",
 	"gui.lotaslight.savestate.load.end": "Loaded savestate %s from index %s",
-	"gui.lotaslight.savestate.button.closegui": "Close"
+	"gui.lotaslight.savestate.button.closegui": "关闭"
 }

@@ -9,6 +9,7 @@ import com.minecrafttas.lotas_light.config.Configuration.ConfigOptions;
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 import com.minecrafttas.lotas_light.event.EventClientGameLoop;
 import com.minecrafttas.lotas_light.event.EventOnClientJoinServer;
+import com.minecrafttas.lotas_light.event.HudRenderEffectsCallback;
 import com.minecrafttas.lotas_light.event.HudRenderExperienceCallback;
 import com.minecrafttas.lotas_light.keybind.KeybindManager;
 import com.minecrafttas.lotas_light.keybind.KeybindManager.Keybind;
@@ -17,12 +18,14 @@ import com.minecrafttas.lotas_light.savestates.gui.SavestateDoneGui;
 import com.minecrafttas.lotas_light.savestates.gui.SavestateGui;
 import com.minecrafttas.lotas_light.savestates.gui.SavestateRenameGui;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.ChatFormatting;
 //# 1.21.1
 //$$import net.minecraft.client.DeltaTracker;
 //# end
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.chat.Component;
@@ -48,6 +51,7 @@ public class LoTASLightClient implements ClientModInitializer {
 	private Path configpath;
 	public static Configuration config;
 	private boolean showHint = true;
+	private boolean showTickIndicator;
 
 	@Override
 	public void onInitializeClient() {
@@ -58,7 +62,18 @@ public class LoTASLightClient implements ClientModInitializer {
 		LoTASLight.startTickrate = Float.parseFloat(LoTASLightClient.config.get(ConfigOptions.DEFAULT_TICKRATE));
 		rateIndex = (short) findClosestRateIndex(LoTASLight.startTickrate);
 		registerKeybindings();
+
+		EventOnClientJoinServer.EVENT.register(player -> {
+			if (LoTASLight.savestateHandler.loadStateComplete != null) {
+				LoTASLight.savestateHandler.loadStateComplete.run();
+				LoTASLight.savestateHandler.loadStateComplete = null;
+			}
+		});
+
+		ClientTickEvents.START_CLIENT_TICK.register(client -> showTickIndicator = !showTickIndicator);
+
 		HudRenderExperienceCallback.EVENT.register(this::drawHud);
+		HudRenderEffectsCallback.EVENT.register(this::afterDrawEffects);
 	}
 
 	private void registerKeybindings() {
@@ -70,14 +85,6 @@ public class LoTASLightClient implements ClientModInitializer {
 		keybindManager.registerKeybind(new Keybind("key.lotaslight.loadstate", "keycategory.lotaslight.lotaslight", GLFW.GLFW_KEY_K, this::loadstate));
 
 		EventClientGameLoop.EVENT.register(keybindManager::onRunClientGameLoop);
-
-		EventOnClientJoinServer.EVENT.register(player -> {
-			if (LoTASLight.savestateHandler.loadStateComplete != null) {
-				LoTASLight.savestateHandler.loadStateComplete.run();
-				LoTASLight.savestateHandler.loadStateComplete = null;
-			}
-		});
-
 	}
 
 	private void increaseTickrate(Minecraft client) {
@@ -191,6 +198,67 @@ public class LoTASLightClient implements ClientModInitializer {
 		context.setColor(1, 1, 1, 1);
 		RenderSystem.disableBlend();
 		//# end
+	}
+
+	private void afterDrawEffects(GuiGraphics context, DeltaTracker deltaTicks) {
+		Minecraft mc = Minecraft.getInstance();
+		ClientLevel level = mc.level;
+
+		if (level == null) {
+			return;
+		}
+
+		TickRateManager tickrateChanger = level.tickRateManager();
+		IndicatorLocation location = IndicatorLocation.valueOf(config.get(ConfigOptions.TICKRATE_INDICATOR_LOCATION).toUpperCase());
+
+		if (config.getBoolean(ConfigOptions.TICKRATE_INDICATOR) && tickrateChanger.tickrate() <= 5F && showTickIndicator) {
+			float uvCoordinate = 0F;
+			renderIcon(location, uvCoordinate, context);
+		}
+		if (config.getBoolean(ConfigOptions.TICKRATE_PAUSE_INDICATOR) && tickrateChanger.tickrate() == 0) {
+			float uvCoordinate = 16F;
+			renderIcon(location, uvCoordinate, context);
+		}
+	}
+
+	private void renderIcon(IndicatorLocation location, float uvCoordinate, GuiGraphics context) {
+		ResourceLocation streamIcons = ResourceLocation.fromNamespaceAndPath("lotaslight", "stream_indicator.png");
+
+		int x = 0;
+		int y = 0;
+
+		switch (location) {
+			case TOP_LEFT:
+				x = 1;
+				y = 1;
+				break;
+			case BOTTOM_LEFT:
+				x = 1;
+				y = context.guiHeight() - 17;
+				break;
+			case BOTTOM_RIGHT:
+				x = context.guiWidth() - 17;
+				y = context.guiHeight() - 17;
+				break;
+			case TOP_RIGHT:
+			default:
+				x = context.guiWidth() - 17;
+				y = 1;
+				break;
+		}
+
+		//# 1.21.3
+//$$		context.blit(RenderType::guiTexturedOverlay, streamIcons, x, y, uvCoordinate, uvCoordinate, 16, 16, 16, 64);
+		//# def
+		context.blit(streamIcons, x, y, uvCoordinate, uvCoordinate, 16, 16, 16, 64);
+		//# end
+	}
+
+	private static enum IndicatorLocation {
+		TOP_LEFT,
+		BOTTOM_LEFT,
+		TOP_RIGHT,
+		BOTTOM_RIGHT;
 	}
 
 	private void savestate(Minecraft mc) {

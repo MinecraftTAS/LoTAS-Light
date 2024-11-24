@@ -20,7 +20,7 @@ import net.minecraft.world.TickRateManager;
 
 /**
  * Changes the vanilla tickrate manager to allow for lower tickrates,
- * better freeze and stepping funcitonality.
+ * better freeze and stepping functionality.
  * 
  * @author Scribble
  */

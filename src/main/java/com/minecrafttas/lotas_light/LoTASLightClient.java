@@ -162,8 +162,9 @@ public class LoTASLightClient implements ClientModInitializer {
 		Tickratechanger clientTickrateChanger = (Tickratechanger) clientTickrateManager;
 		Tickratechanger serverTickrateChanger = (Tickratechanger) serverTickrateManager;
 
-		serverTickrateChanger.toggleTickrate0();
-		clientTickrateChanger.toggleTickrate0();
+		boolean enable = clientTickrateManager.tickrate() != 0;
+		clientTickrateChanger.enableTickrate0(enable);
+		serverTickrateChanger.enableTickrate0(enable);
 	}
 
 	private void advanceTickrate(Minecraft client) {
@@ -180,8 +181,8 @@ public class LoTASLightClient implements ClientModInitializer {
 		Tickratechanger clientTickrateChanger = (Tickratechanger) clientTickrateManager;
 		Tickratechanger serverTickrateChanger = (Tickratechanger) serverTickrateManager;
 
-		serverTickrateChanger.advanceTick();
 		clientTickrateChanger.advanceTick();
+		serverTickrateChanger.advanceTick();
 	}
 
 	private void drawHud(GuiGraphics context, float deltaTicks) { //@GraphicsDelta;

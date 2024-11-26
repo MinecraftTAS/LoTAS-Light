@@ -11,7 +11,10 @@ import com.minecrafttas.lotas_light.LoTASLight;
 import com.minecrafttas.lotas_light.duck.StorageLock;
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 import com.minecrafttas.lotas_light.mixin.AccessorLevelStorage;
+//# 1.21.4
+//# def
 import com.minecrafttas.lotas_light.mixin.AccessorServerPlayer;
+//# end
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.DeletionRunnable;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.ErrorRunnable;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.SavestatePaths;
@@ -188,9 +191,13 @@ public class SavestateHandler {
 				level.noSave = false;
 			}
 
+			//# 1.21.4
+//$$			// Spawn invulnerability got removed in 1.21.4
+			//# def
 			this.server.getPlayerList().getPlayers().forEach(serverplayer -> {
 				((AccessorServerPlayer) serverplayer).setSpawnInvulnerableTime(0);
 			});
+			//# end
 
 			if (LoTASLight.startTickrate == 0f) {
 				mc.level.tickRateManager().setTickRate(0);

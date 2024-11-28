@@ -1,7 +1,7 @@
 {
 	"required": true,
 	"package": "com.minecrafttas.lotas_light.mixin",
-	"compatibilityLevel": "JAVA_21",
+	"compatibilityLevel": "JAVA_17",
 	"mixins": [
 		"MixinTickRateManager",
 		"MixinTickCommand",

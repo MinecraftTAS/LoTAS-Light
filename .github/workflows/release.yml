@@ -25,6 +25,18 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: 'build/!(-@(dev|sources|javadoc|all)).jar'
+      - name: Publish 1.20.4
+          uses: Kir-Antipov/mc-publish@v3.3
+          with:
+            files: 'build/*-1.20.4-*!(*-@(dev|sources|javadoc|all)).jar'
+            modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+            curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+      - name: Publish 1.20.6
+          uses: Kir-Antipov/mc-publish@v3.3
+          with:
+            files: 'build/*-1.20.6-*!(*-@(dev|sources|javadoc|all)).jar'
+            modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+            curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
       - name: Publish 1.21.1
         uses: Kir-Antipov/mc-publish@v3.3
         with:

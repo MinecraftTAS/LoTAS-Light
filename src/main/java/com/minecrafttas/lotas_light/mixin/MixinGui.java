@@ -1,3 +1,4 @@
+
 package com.minecrafttas.lotas_light.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -7,14 +8,27 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.minecrafttas.lotas_light.event.HudRenderExperienceCallback;
 
-import net.minecraft.client.DeltaTracker;
+//# 1.21.1
+//$$import com.minecrafttas.lotas_light.event.HudRenderExperienceCallback;
+//$$
+//$$import net.minecraft.client.DeltaTracker;
+//# end
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 
 @Mixin(Gui.class)
 public class MixinGui {
-	@Inject(method = "renderExperienceLevel", at = @At("HEAD"))
-	private void onRenderExperienceLevel(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+
+	//# 1.20.6
+//$$	@Inject(method = "renderExperienceLevel", at = @At("HEAD"))
+//$$	private void onRenderExperienceLevel(GuiGraphics guiGraphics, float deltaTracker, CallbackInfo ci) { //@GraphicsDelta;
+//$$		HudRenderExperienceCallback.EVENT.invoker().onRenderPre(guiGraphics, deltaTracker);
+//$$	}
+//$$
+	//# def
+	@Inject(method = "renderExperienceBar", at = @At("HEAD"))
+	private void onRenderExperienceLevel(GuiGraphics guiGraphics, int deltaTracker, CallbackInfo ci) {
 		HudRenderExperienceCallback.EVENT.invoker().onRenderPre(guiGraphics, deltaTracker);
 	}
+	//# end
 }

@@ -165,7 +165,11 @@ public class SavestateHandler {
 		logger.trace("Copying folders");
 		SavestateIndexer.copyFolder(paths.getSourceFolder(), paths.getTargetFolder());
 
-		mc.createWorldOpenFlows().openWorld(worldname, () -> mc.setScreen(new TitleScreen()));
+		//# 1.20.6
+//$$		mc.createWorldOpenFlows().openWorld(worldname, () -> mc.setScreen(new TitleScreen()));
+		//# def
+		mc.createWorldOpenFlows().checkForBackupAndLoad(worldname, () -> mc.setScreen(new TitleScreen()));
+		//# end
 
 		for (ServerLevel level : server.getAllLevels()) {
 			level.noSave = false;
@@ -281,7 +285,13 @@ public class SavestateHandler {
 
 	public void setIndexer(MinecraftServer server) {
 		this.server = server;
-		Path savesDir = server.isSingleplayer() ? server.getServerDirectory().resolve("saves") : server.getServerDirectory();
+		Path savesDir = server.isSingleplayer() ?
+		//# 1.21.1
+//$$				server.getServerDirectory().resolve("saves") :
+//$$				server.getServerDirectory();
+		//# def
+				server.getServerDirectory().toPath().resolve("saves") : server.getServerDirectory().toPath();
+		//# end
 		Path savestateBaseDir = savesDir.resolve("savestates");
 		worldname = ((AccessorLevelStorage) server).getStorageSource().getLevelId();
 

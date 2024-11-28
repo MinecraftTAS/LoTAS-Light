@@ -18,7 +18,9 @@ import com.minecrafttas.lotas_light.savestates.gui.SavestateGui;
 import com.minecrafttas.lotas_light.savestates.gui.SavestateRenameGui;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.DeltaTracker;
+//# 1.21.1
+//$$import net.minecraft.client.DeltaTracker;
+//# end
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
@@ -91,7 +93,11 @@ public class LoTASLightClient implements ClientModInitializer {
 		rateIndex = findClosestRateIndex(clientTickrateChanger.tickrate());
 
 		rateIndex++;
-		rateIndex = (short) Math.clamp(rateIndex, 0, rates.length - 1);
+		//# 1.20.6
+//$$		rateIndex = (short) Math.clamp(rateIndex, 0, rates.length - 1);
+		//# def
+		rateIndex = (short) clamp(rateIndex, 0, rates.length - 1);
+		//# end
 		float tickrate = rates[rateIndex];
 		if (config.getBoolean(ConfigOptions.TICKRATE_SHOW_MESSAGES)) {
 			if (showHint) {
@@ -117,7 +123,12 @@ public class LoTASLightClient implements ClientModInitializer {
 		rateIndex = findClosestRateIndex(clientTickrateChanger.tickrate());
 
 		rateIndex--;
-		rateIndex = (short) Math.clamp(rateIndex, 0, rates.length - 1);
+		//# 1.20.6
+//$$		rateIndex = (short) Math.clamp(rateIndex, 0, rates.length - 1);
+		//# def
+		rateIndex = (short) clamp(rateIndex, 0, rates.length - 1);
+		//# end
+
 		float tickrate = rates[rateIndex];
 		if (config.getBoolean(ConfigOptions.TICKRATE_SHOW_MESSAGES)) {
 			if (showHint) {
@@ -166,7 +177,7 @@ public class LoTASLightClient implements ClientModInitializer {
 		clientTickrateChanger.advanceTick();
 	}
 
-	private void drawHud(GuiGraphics context, DeltaTracker deltaTicks) {
+	private void drawHud(GuiGraphics context, float deltaTicks) { //@GraphicsDelta;
 		//# 1.21.3
 //$$		int i = ARGB.colorFromFloat(.2F, 1f, 1f, 1f);
 //$$		context.blit(RenderType::guiTexturedOverlay, ResourceLocation.fromNamespaceAndPath("lotaslight", "potion.png"), Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2
@@ -175,7 +186,7 @@ public class LoTASLightClient implements ClientModInitializer {
 		//# def
 		RenderSystem.enableBlend();
 		context.setColor(1f, 1f, 1f, .2F);
-		context.blit(ResourceLocation.fromNamespaceAndPath("lotaslight", "potion.png"), Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2 - 10, Minecraft.getInstance().getWindow().getGuiScaledHeight()
+		context.blit(new ResourceLocation("lotaslight", "potion.png"), Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2 - 10, Minecraft.getInstance().getWindow().getGuiScaledHeight() //@ResourceLocation;
 				- 50, 0, 0, 20, 20, 20, 20);
 		context.setColor(1, 1, 1, 1);
 		RenderSystem.disableBlend();
@@ -288,4 +299,14 @@ public class LoTASLightClient implements ClientModInitializer {
 		}
 		return (short) (rates.length - 1);
 	}
+
+	//# 1.20.6
+	//# def
+	public static int clamp(long value, int min, int max) {
+		if (min > max) {
+			throw new IllegalArgumentException(min + " > " + max);
+		}
+		return (int) Math.min(max, Math.max(value, min));
+	}
+	//# end
 }

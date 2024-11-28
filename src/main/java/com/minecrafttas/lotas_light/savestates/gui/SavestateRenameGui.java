@@ -60,9 +60,14 @@ public class SavestateRenameGui extends SavestateGui {
 //$$	public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
 //$$	}
 //$$
+	//# 1.20.6
+//$$	@Override
+//$$	protected void renderBlurredBackground(float f) {
+//$$	}
+//$$
 	//# def
 	@Override
-	protected void renderBlurredBackground(float f) {
+	public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
 	}
 	//# end
 

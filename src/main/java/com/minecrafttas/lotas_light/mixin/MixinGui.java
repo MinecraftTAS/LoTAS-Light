@@ -32,7 +32,16 @@ public class MixinGui {
 	//# end
 
 	@Inject(at = @At(value = "RETURN"), method = "renderEffects")
-	public void onRenderEffects(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+
+	//# 1.21.1
+//$$	public void onRenderEffects(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+//$$
+	//# 1.20.6
+//$$	public void onRenderEffects(GuiGraphics guiGraphics, float deltaTracker, CallbackInfo ci) {
+	//# def
+	public void onRenderEffects(GuiGraphics guiGraphics, CallbackInfo ci) {
+		float deltaTracker = 0f;
+		//# end
 		HudRenderEffectsCallback.EVENT.invoker().onRenderPre(guiGraphics, deltaTracker);
 	}
 }

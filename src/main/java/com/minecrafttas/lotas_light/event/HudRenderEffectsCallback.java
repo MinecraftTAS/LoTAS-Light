@@ -2,7 +2,9 @@ package com.minecrafttas.lotas_light.event;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.client.DeltaTracker;
+//# 1.21.1
+//$$import net.minecraft.client.DeltaTracker;
+//# end
 import net.minecraft.client.gui.GuiGraphics;
 
 public interface HudRenderEffectsCallback {
@@ -11,5 +13,5 @@ public interface HudRenderEffectsCallback {
 			listener.onRenderPre(matrixStack, delta);
 	});
 
-	public void onRenderPre(GuiGraphics drawContext, DeltaTracker tickCounter);
+	public void onRenderPre(GuiGraphics drawContext, float tickCounter); //@GraphicsDelta;
 }

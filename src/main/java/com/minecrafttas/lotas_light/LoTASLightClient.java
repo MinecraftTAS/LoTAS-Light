@@ -201,7 +201,7 @@ public class LoTASLightClient implements ClientModInitializer {
 		//# end
 	}
 
-	private void afterDrawEffects(GuiGraphics context, DeltaTracker deltaTicks) {
+	private void afterDrawEffects(GuiGraphics context, float deltaTicks) { //@GraphicsDelta;
 		Minecraft mc = Minecraft.getInstance();
 		ClientLevel level = mc.level;
 
@@ -223,7 +223,7 @@ public class LoTASLightClient implements ClientModInitializer {
 	}
 
 	private void renderIcon(IndicatorLocation location, float uvCoordinate, GuiGraphics context) {
-		ResourceLocation streamIcons = ResourceLocation.fromNamespaceAndPath("lotaslight", "stream_indicator.png");
+		ResourceLocation streamIcons = new ResourceLocation("lotaslight", "stream_indicator.png"); //@ResourceLocation;
 
 		int x = 0;
 		int y = 0;

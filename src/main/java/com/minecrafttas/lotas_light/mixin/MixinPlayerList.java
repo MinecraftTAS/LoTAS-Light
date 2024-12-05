@@ -7,7 +7,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.DeltaTracker;
+//# 1.21.1
+//$$import net.minecraft.client.DeltaTracker;
+//# end
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,8 +17,13 @@ import net.minecraft.client.gui.GuiGraphics;
 @Mixin(Gui.class)
 public class MixinPlayerList {
 
-	@Inject(method = "renderExperienceLevel", at = @At("HEAD"))
-	private void onRenderExperienceLevel(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+	//# 1.20.6
+//$$	@Inject(method = "renderExperienceLevel", at = @At("HEAD"))
+//$$	private void onRenderExperienceLevel(GuiGraphics guiGraphics, float deltaTracker, CallbackInfo ci) { //@GraphicsDelta;
+	//# def
+	@Inject(method = "renderExperienceBar", at = @At("HEAD"))
+	private void onRenderExperienceLevel(GuiGraphics guiGraphics, int deltaTracker, CallbackInfo ci) {
+		//# end
 		float memOffsetX = (Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2) - 6;
 		float memOffsetY = Minecraft.getInstance().getWindow().getGuiScaledHeight() - 31 - 19;
 

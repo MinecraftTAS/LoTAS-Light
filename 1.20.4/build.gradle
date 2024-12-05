@@ -1,0 +1,13 @@
+plugins {
+	id 'fabric-loom' version "${loom_version}"
+}
+
+apply from: "../common.gradle"
+
+java {
+	sourceCompatibility = targetCompatibility = 17
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 17
+}

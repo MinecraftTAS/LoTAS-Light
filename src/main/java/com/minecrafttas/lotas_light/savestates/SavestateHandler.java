@@ -11,7 +11,10 @@ import com.minecrafttas.lotas_light.LoTASLight;
 import com.minecrafttas.lotas_light.duck.StorageLock;
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 import com.minecrafttas.lotas_light.mixin.AccessorLevelStorage;
+//# 1.21.4
+//# def
 import com.minecrafttas.lotas_light.mixin.AccessorServerPlayer;
+//# end
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.DeletionRunnable;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.ErrorRunnable;
 import com.minecrafttas.lotas_light.savestates.SavestateIndexer.SavestatePaths;
@@ -165,7 +168,11 @@ public class SavestateHandler {
 		logger.trace("Copying folders");
 		SavestateIndexer.copyFolder(paths.getSourceFolder(), paths.getTargetFolder());
 
-		mc.createWorldOpenFlows().openWorld(worldname, () -> mc.setScreen(new TitleScreen()));
+		//# 1.20.6
+//$$		mc.createWorldOpenFlows().openWorld(worldname, () -> mc.setScreen(new TitleScreen()));
+		//# def
+		mc.createWorldOpenFlows().checkForBackupAndLoad(worldname, () -> mc.setScreen(new TitleScreen()));
+		//# end
 
 		for (ServerLevel level : server.getAllLevels()) {
 			level.noSave = false;
@@ -184,9 +191,13 @@ public class SavestateHandler {
 				level.noSave = false;
 			}
 
+			//# 1.21.4
+//$$			// Spawn invulnerability got removed in 1.21.4
+			//# def
 			this.server.getPlayerList().getPlayers().forEach(serverplayer -> {
 				((AccessorServerPlayer) serverplayer).setSpawnInvulnerableTime(0);
 			});
+			//# end
 
 			if (LoTASLight.startTickrate == 0f) {
 				mc.level.tickRateManager().setTickRate(0);
@@ -281,7 +292,13 @@ public class SavestateHandler {
 
 	public void setIndexer(MinecraftServer server) {
 		this.server = server;
-		Path savesDir = server.isSingleplayer() ? server.getServerDirectory().resolve("saves") : server.getServerDirectory();
+		Path savesDir = server.isSingleplayer() ?
+		//# 1.21.1
+//$$				server.getServerDirectory().resolve("saves") :
+//$$				server.getServerDirectory();
+		//# def
+				server.getServerDirectory().toPath().resolve("saves") : server.getServerDirectory().toPath();
+		//# end
 		Path savestateBaseDir = savesDir.resolve("savestates");
 		worldname = ((AccessorLevelStorage) server).getStorageSource().getLevelId();
 

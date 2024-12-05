@@ -34,3 +34,13 @@ hs_err_*.log
 replay_*.log
 *.hprof
 *.jfr
+
+/*/.gradle/
+/*/.settings
+/*/bin/
+/*/build/
+/*/run/
+/*/src/
+/*/build/
+/*/.classpath
+/*/.project

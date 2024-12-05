@@ -4,8 +4,22 @@ plugins {
 
 discombobulator {
 	versions = [
+		"1.21.4":"",
 		"1.21.3":"",
-		"1.21.1":""
+		"1.21.1":"",
+		"1.20.6":"",
+		"1.20.4":""
+	]
+	
+	patterns = [
+		GraphicsDelta: [
+			"def": "float",
+			"1.21.1": "DeltaTracker"
+		],
+		ResourceLocation: [
+			"def": "new ResourceLocation",
+			"1.21.1": "ResourceLocation.fromNamespaceAndPath"
+		]
 	]
 	
 	ignoredFileFormats = ["*.png"]

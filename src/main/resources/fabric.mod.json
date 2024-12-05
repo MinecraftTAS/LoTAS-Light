@@ -10,7 +10,8 @@
 	],
 	"contact": {
 		"homepage": "https://minecrafttas.com/",
-		"sources": "https://github.com/MinecraftTAS/LoTAS-Light"
+		"sources": "https://github.com/MinecraftTAS/LoTAS-Light",
+		"issues": "https://github.com/MinecraftTAS/LoTAS-Light/issues"
 	},
 	"license": "GPLv3",
 	"icon": "assets/lotaslight/potion.png",
@@ -30,7 +31,6 @@
 	"depends": {
 		"fabricloader": ">=0.15.11",
 		"minecraft": "*",
-		"java": ">=21",
 		"fabric-api": "*"
 	},
 	"breaks": {

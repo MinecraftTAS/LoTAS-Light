@@ -6,6 +6,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.minecrafttas.lotas_light.event.HudRenderEffectsCallback;
 import com.minecrafttas.lotas_light.event.HudRenderExperienceCallback;
 
 //# 1.21.1
@@ -29,4 +30,18 @@ public class MixinGui {
 		HudRenderExperienceCallback.EVENT.invoker().onRenderPre(guiGraphics, deltaTracker);
 	}
 	//# end
+
+	@Inject(at = @At(value = "RETURN"), method = "renderEffects")
+
+	//# 1.21.1
+//$$	public void onRenderEffects(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+//$$
+	//# 1.20.6
+//$$	public void onRenderEffects(GuiGraphics guiGraphics, float deltaTracker, CallbackInfo ci) {
+	//# def
+	public void onRenderEffects(GuiGraphics guiGraphics, CallbackInfo ci) {
+		float deltaTracker = 0f;
+		//# end
+		HudRenderEffectsCallback.EVENT.invoker().onRenderPre(guiGraphics, deltaTracker);
+	}
 }

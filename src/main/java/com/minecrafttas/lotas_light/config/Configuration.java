@@ -18,7 +18,10 @@ public class Configuration extends AbstractDataFile {
 
 		DEFAULT_TICKRATE("trcDefaultTickrate", "20.0"),
 		TICKRATE_SHOW_MESSAGES("trcShowMessages", "true"),
-		SAVESTATE_SHOW_CONTROLS("savestateShowControls", "true");
+		SAVESTATE_SHOW_CONTROLS("savestateShowControls", "true"),
+		TICKRATE_INDICATOR("trcTickIndicator", "true"),
+		TICKRATE_PAUSE_INDICATOR("trcPauseIndicator", "true"),
+		TICKRATE_INDICATOR_LOCATION("trcIndicatorLocation", "top_right");
 
 		private String key;
 		private String defaultValue;
@@ -106,5 +109,11 @@ public class Configuration extends AbstractDataFile {
 	public void delete(ConfigOptions configOption) {
 		properties.remove(configOption);
 		saveToXML();
+	}
+
+	public boolean toggle(ConfigOptions tickrateIndicator) {
+		boolean newVal = !getBoolean(tickrateIndicator);
+		set(tickrateIndicator, newVal);
+		return newVal;
 	}
 }

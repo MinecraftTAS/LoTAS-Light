@@ -15,12 +15,13 @@ import com.minecrafttas.lotas_light.duck.SoundPitchDuck;
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.ServerTickRateManager;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.world.TickRateManager;
 
 /**
  * Changes the vanilla tickrate manager to allow for lower tickrates,
- * better freeze and stepping funcitonality.
+ * better freeze and stepping functionality.
  * 
  * @author Scribble
  */
@@ -28,7 +29,6 @@ import net.minecraft.world.TickRateManager;
 public abstract class MixinTickRateManager implements Tickratechanger {
 	@Unique
 	private static float tickrateSaved = 20;
-	@Unique
 	private boolean advanceTickrate;
 	@Unique
 	private boolean isDisconnecting;
@@ -124,7 +124,7 @@ public abstract class MixinTickRateManager implements Tickratechanger {
 
 	@Inject(method = "tick", at = @At("RETURN"))
 	public void inject_Tick(CallbackInfo ci) {
-		if (advanceTickrate) {
+		if (advanceTickrate && !(((TickRateManager) (Object) this) instanceof ServerTickRateManager)) {
 			this.advanceTickrate = false;
 			setTickRate(0);
 		}

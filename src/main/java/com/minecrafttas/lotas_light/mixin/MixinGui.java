@@ -9,8 +9,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.minecrafttas.lotas_light.event.HudRenderExperienceCallback;
 
 //# 1.21.1
-//$$import com.minecrafttas.lotas_light.event.HudRenderExperienceCallback;
-//$$
 //$$import net.minecraft.client.DeltaTracker;
 //# end
 import net.minecraft.client.gui.Gui;

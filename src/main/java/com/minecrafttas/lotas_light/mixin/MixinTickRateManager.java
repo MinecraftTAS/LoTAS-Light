@@ -102,7 +102,6 @@ public abstract class MixinTickRateManager implements Tickratechanger {
 			if (tickrate == 0)
 				setTickRate(tickrateSaved);
 		}
-
 	}
 
 	@Override
@@ -132,7 +131,7 @@ public abstract class MixinTickRateManager implements Tickratechanger {
 
 	@Inject(method = "tick", at = @At("RETURN"))
 	public void inject_Tick(CallbackInfo ci) {
-		if (advanceTickrateServer) {
+		if (advanceTickrateServer || advanceTickrateClient) {
 			if (isServer())
 				this.advanceTickrateServer = false;
 			else

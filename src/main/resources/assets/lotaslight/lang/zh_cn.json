@@ -31,7 +31,7 @@
 	"msg.lotaslight.savestate.deleteMore.hover": "此操作无法撤销或中止！",
 	"msg.lotaslight.savestate.deleteMore.error.negative": "删除存档数量不可为负！（%s）",
 	"msg.lotaslight.savestate.reload": "正在重新加载存档编号。当您在Minecraft外部编辑存档时，这是必要的。",
-	"msg.lotaslight.savestate.dateformat": "MM/dd/yyyy hh:mm:ss a",
+	"msg.lotaslight.savestate.dateformat": "yyyy/MM/dd HH:mm:ss",
 	"msg.lotaslight.savestate.info.error": "存档失败：%s",
 	"msg.lotaslight.savestate.rename": "已将编号为“%s”的存档重命名为“%s”",
 	"msg.lotaslight.savestate.rename.clickable": "重命名",

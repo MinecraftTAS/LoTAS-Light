@@ -91,13 +91,12 @@ public class LoTASLightClient implements ClientModInitializer {
 		if (client.level == null) {
 			return;
 		}
-		TickRateManager clientTickrateChanger = client.level.tickRateManager();
 		IntegratedServer server = client.getSingleplayerServer();
 		if (server == null) {
 			return;
 		}
 		ServerTickRateManager serverTickrateChanger = server.tickRateManager();
-		rateIndex = findClosestRateIndex(clientTickrateChanger.tickrate());
+		rateIndex = findClosestRateIndex(serverTickrateChanger.tickrate());
 
 		rateIndex++;
 		//# 1.20.6
@@ -114,20 +113,18 @@ public class LoTASLightClient implements ClientModInitializer {
 			client.gui.getChat().addMessage(Component.translatable("msg.lotaslight.setTickrate", tickrate));
 		}
 		serverTickrateChanger.setTickRate(tickrate);
-		clientTickrateChanger.setTickRate(tickrate);
 	}
 
 	private void decreaseTickrate(Minecraft client) {
 		if (client.level == null) {
 			return;
 		}
-		TickRateManager clientTickrateChanger = client.level.tickRateManager();
 		IntegratedServer server = client.getSingleplayerServer();
 		if (server == null) {
 			return;
 		}
 		ServerTickRateManager serverTickrateChanger = server.tickRateManager();
-		rateIndex = findClosestRateIndex(clientTickrateChanger.tickrate());
+		rateIndex = findClosestRateIndex(serverTickrateChanger.tickrate());
 
 		rateIndex--;
 		//# 1.20.6
@@ -145,25 +142,21 @@ public class LoTASLightClient implements ClientModInitializer {
 			client.gui.getChat().addMessage(Component.translatable("msg.lotaslight.setTickrate", tickrate));
 		}
 		serverTickrateChanger.setTickRate(tickrate);
-		clientTickrateChanger.setTickRate(tickrate);
 	}
 
 	private void freezeTickrate(Minecraft client) {
 		if (client.level == null) {
 			return;
 		}
-		TickRateManager clientTickrateManager = client.level.tickRateManager();
 		IntegratedServer server = client.getSingleplayerServer();
 		if (server == null) {
 			return;
 		}
 		ServerTickRateManager serverTickrateManager = server.tickRateManager();
 
-		Tickratechanger clientTickrateChanger = (Tickratechanger) clientTickrateManager;
 		Tickratechanger serverTickrateChanger = (Tickratechanger) serverTickrateManager;
 
-		boolean enable = clientTickrateManager.tickrate() != 0;
-		clientTickrateChanger.enableTickrate0(enable);
+		boolean enable = serverTickrateManager.tickrate() != 0;
 		serverTickrateChanger.enableTickrate0(enable);
 	}
 

@@ -20,6 +20,7 @@ Help translate this mod with [Crowdin](https://crowdin.com/project/lotas-light)
 ### Contributions
 - Chinese Simplified
   - Blom
+  - BoredYukolin
   - JustaSqu1d
 - French
   - Elvee

@@ -1,6 +1,6 @@
 pluginManagement {
 	repositories {
-		//mavenLocal() // For development purposes
+		// mavenLocal() // For development purposes
 		mavenCentral()
 		maven {
 			url = "https://maven.mgnet.work/main"

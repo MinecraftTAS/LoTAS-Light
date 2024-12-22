@@ -15,13 +15,12 @@ import com.minecrafttas.lotas_light.duck.SoundPitchDuck;
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.server.ServerTickRateManager;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.world.TickRateManager;
 
 /**
- * Changes the vanilla tickrate manager to allow for lower tickrates,
- * better freeze and stepping functionality.
+ * Changes the vanilla tickrate manager to allow for lower tickrates, better
+ * freeze and stepping functionality.
  * 
  * @author Scribble
  */
@@ -30,9 +29,7 @@ public abstract class MixinTickRateManager implements Tickratechanger {
 	@Unique
 	private static float tickrateSaved = 20;
 	@Unique
-	private boolean advanceTickrateServer;
-	@Unique
-	private boolean advanceTickrateClient;
+	private boolean advanceTickrate;
 	@Unique
 	private boolean isDisconnecting;
 
@@ -82,8 +79,7 @@ public abstract class MixinTickRateManager implements Tickratechanger {
 
 	@Override
 	public void toggleTickrate0() {
-		advanceTickrateServer = false;
-		advanceTickrateClient = false;
+		advanceTickrate = false;
 		if (tickrate == 0) {
 			setTickRate(tickrateSaved);
 		} else {
@@ -93,8 +89,7 @@ public abstract class MixinTickRateManager implements Tickratechanger {
 
 	@Override
 	public void enableTickrate0(boolean enable) {
-		advanceTickrateServer = false;
-		advanceTickrateClient = false;
+		advanceTickrate = false;
 		if (enable) {
 			if (tickrate != 0)
 				setTickRate(0f);
@@ -107,17 +102,14 @@ public abstract class MixinTickRateManager implements Tickratechanger {
 	@Override
 	public void advanceTick() {
 		if (tickrate == 0) {
+			this.advanceTickrate = true;
 			setTickRate(tickrateSaved);
-			if (isServer())
-				this.advanceTickrateServer = true;
-			else
-				this.advanceTickrateClient = true;
 		}
 	}
 
 	@Override
 	public boolean isAdvanceTick() {
-		return advanceTickrateServer || advanceTickrateClient;
+		return advanceTickrate;
 	}
 
 	@Override
@@ -131,12 +123,9 @@ public abstract class MixinTickRateManager implements Tickratechanger {
 
 	@Inject(method = "tick", at = @At("RETURN"))
 	public void inject_Tick(CallbackInfo ci) {
-		if (advanceTickrateServer || advanceTickrateClient) {
-			if (isServer())
-				this.advanceTickrateServer = false;
-			else
-				this.advanceTickrateClient = false;
+		if (advanceTickrate) {
 			setTickRate(0);
+			this.advanceTickrate = false;
 		}
 	}
 
@@ -159,10 +148,6 @@ public abstract class MixinTickRateManager implements Tickratechanger {
 		long time = System.currentTimeMillis() - timeSinceTC - timeOffset;
 		time *= (tickrate / 20F);
 		return (long) (fakeTimeSinceTC + time);
-	}
-
-	private boolean isServer() {
-		return ((TickRateManager) (Object) this) instanceof ServerTickRateManager;
 	}
 
 	@Shadow

@@ -57,10 +57,10 @@ public class SavestateIndexer {
 
 		Path savestateDat = savesDir.resolve(worldname).resolve(savestateDatPath);
 		if (Files.exists(savestateDat)) {
-			currentSavestate = new Savestate(savestateDat);
+			currentSavestate = new Savestate(savestateDat, null);
 			currentSavestate.loadFromXML();
 		} else {
-			currentSavestate = new Savestate(savestateDat, 0, null, null, null);
+			currentSavestate = new Savestate(savestateDat, 0, null, null, null, null);
 		}
 		reload();
 	}
@@ -98,13 +98,15 @@ public class SavestateIndexer {
 		if (!changeIndex)
 			currentSavestate.index = savedIndex;
 
-		savestateList.put(index, currentSavestate.clone());
+		Path sourceDir = savesDir.resolve(worldname);
+		Path targetDir = currentSavestateDir.resolve(worldname + "-Savestate" + index);
+		
+		Savestate newSavestate = currentSavestate.clone(targetDir.resolve(savestateDatPath), targetDir);
+		
+		savestateList.put(index, newSavestate);
 		sortSavestateList();
 
-		Path sourceDir = savesDir.resolve(worldname);
-		Path targetDir = currentSavestateDir.resolve(worldname + index);
-
-		return SavestatePaths.of(currentSavestate.clone(), sourceDir, targetDir);
+		return SavestatePaths.of(newSavestate.clone(), sourceDir, targetDir);
 	}
 
 	public SavestatePaths loadSavestate(int index, boolean changeIndex) throws Exception {
@@ -126,10 +128,10 @@ public class SavestateIndexer {
 		int savedIndex = currentSavestate.index;
 		this.currentSavestate = savestateToLoad.clone();
 
-		Path sourceDir = currentSavestateDir.resolve(worldname + currentSavestate.index);
+		Path sourceDir = currentSavestate.getFolder();
 		Path targetDir = savesDir.resolve(worldname);
 
-		if (!Files.exists(sourceDir)) {
+		if (sourceDir != null && !Files.exists(sourceDir)) {
 			Path missingFile = savesDir.relativize(sourceDir);
 			throw new LoadstateException(I18n.get("msg.lotaslight.savestate.error.filenoexist", missingFile));
 		}
@@ -169,7 +171,7 @@ public class SavestateIndexer {
 		}
 
 		Savestate toDelete = savestateList.get(index);
-		Path targetDir = currentSavestateDir.resolve(worldname + toDelete.index);
+		Path targetDir = toDelete.getFolder();
 		SavestatePaths out = SavestatePaths.of(toDelete, null, targetDir);
 
 		savestateList.remove(index);
@@ -226,15 +228,20 @@ public class SavestateIndexer {
 
 				stream.close();
 
-				Pattern pattern = Pattern.compile(worldname + "(\\d+)$");
+				Pattern backupIndexPattern = Pattern.compile("-Savestate(\\d+)$");
 
 				pathSet.forEach(path -> {
 					Path savestateDat = path.resolve(savestateDatPath);
 
 					Savestate savestate = null;
+					
+					/*
+					 * Read the index from the folder if the savestate file
+					 * doesn't exist
+					 */
 					if (!Files.exists(savestateDat)) {
 						String filename = path.getFileName().toString();
-						Matcher matcher = pattern.matcher(filename);
+						Matcher matcher = backupIndexPattern.matcher(filename);
 						int backupIndex = -1;
 						if (matcher.find()) {
 							backupIndex = Integer.parseInt(matcher.group(1));
@@ -244,7 +251,7 @@ public class SavestateIndexer {
 						Throwable error = new SavestateException("Savestate.xml data file not found in " + savestateBaseDirectory.relativize(savestateDat));
 						savestate = new FailedSavestate(path, backupIndex, null, null, error);
 					} else {
-						savestate = new Savestate(savestateDat);
+						savestate = new Savestate(savestateDat, path);
 						savestate.loadFromXML();
 					}
 					savestateList.put(savestate.getIndex(), savestate.clone());
@@ -289,6 +296,10 @@ public class SavestateIndexer {
 		}
 		return out;
 	}
+	
+	public int size() {
+		return savestateList.size();
+	}
 
 	public int findLatestIndex(int start) throws Exception {
 		if (savestateList.containsKey(start))
@@ -312,21 +323,23 @@ public class SavestateIndexer {
 		protected String name;
 		protected Date date;
 		protected Vec3 motion;
+		protected Path folder;
 
-		private Savestate(Path file) {
-			this(file, -1, null, null, null);
+		private Savestate(Path datFile, Path folder) {
+			this(datFile, -1, null, null, null, folder);
 		}
 
-		private Savestate(Path file, Integer index, String name, Date date, Vec3 motion) {
+		private Savestate(Path file, Integer index, String name, Date date, Vec3 motion, Path folder) {
 			super(LoTASLight.LOGGER, file, "Savestate", "Stores savestate related data");
 			this.index = index;
 			this.name = name;
 			this.date = date;
 			this.motion = motion;
+			this.folder = folder;
 		}
 
-		private Savestate(Path file, Properties properties, Integer index, String name, Date date, Vec3 motion) {
-			this(file, index, name, date, motion);
+		private Savestate(Path file, Properties properties, Integer index, String name, Date date, Vec3 motion, Path folder) {
+			this(file, index, name, date, motion, folder);
 			this.properties = properties;
 		}
 
@@ -358,6 +371,10 @@ public class SavestateIndexer {
 
 		public Vec3 getMotion() {
 			return motion;
+		}
+		
+		public Path getFolder() {
+			return folder;
 		}
 
 		@Override
@@ -412,7 +429,16 @@ public class SavestateIndexer {
 
 		@Override
 		protected Savestate clone() {
-			return new Savestate(file, properties, index, name, date, motion);
+			return new Savestate(file, properties, index, name, date, motion, folder);
+		}
+		
+		/**
+		 * Clone with a new file
+		 * @param newFile The new file to point to
+		 * @return The new savestate
+		 */
+		protected Savestate clone(Path newFile, Path newFolder) {
+			return new Savestate(newFile, properties, index, name, date, motion, newFolder);
 		}
 
 		private static Date parseDate(String dateString) throws Exception {
@@ -430,12 +456,12 @@ public class SavestateIndexer {
 		}
 
 		public FailedSavestate(Path file, Integer index, String name, Date date, Throwable t) {
-			super(file, index, name, date, null);
+			super(file, index, name, date, null, null);
 			this.t = t;
 		}
 
 		public FailedSavestate(Path file, Properties properties, Integer index, String name, Date date, Throwable t) {
-			super(file, index, name, date, null);
+			super(file, index, name, date, null, null);
 			this.t = t;
 		}
 

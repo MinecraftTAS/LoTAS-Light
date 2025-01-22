@@ -31,6 +31,8 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerLevel;
 
 public class SavestateCommand {
+	
+	public static boolean once = true;
 
 	public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
 		//@formatter:off
@@ -354,6 +356,7 @@ public class SavestateCommand {
 	}
 
 	private static int reload(CommandContext<CommandSourceStack> context) {
+		once = true;
 		context.getSource().sendSuccess(() -> Component.translatable("msg.lotaslight.savestate.reload").withStyle(ChatFormatting.GREEN), true);
 		LoTASLight.savestateHandler.reload();
 		return 0;
@@ -425,6 +428,7 @@ public class SavestateCommand {
 	private static void showInfo(CommandContext<CommandSourceStack> context, Integer indexToDisplay, Integer amount) {
 
 		int currentIndex = LoTASLight.savestateHandler.getCurrentIndex();
+		int size = LoTASLight.savestateHandler.size();
 		if (indexToDisplay == null) {
 			indexToDisplay = currentIndex;
 		}
@@ -433,10 +437,17 @@ public class SavestateCommand {
 		}
 
 		context.getSource().sendSystemMessage(Component.literal("")); // Print an empty line
+
 		String format = I18n.get("msg.lotaslight.savestate.dateformat");
 		SimpleDateFormat dateFormat = new SimpleDateFormat(format);
-
+		
 		List<Savestate> savestateList = LoTASLight.savestateHandler.getSavestateInfo(indexToDisplay, amount);
+		
+		if(savestateList.size() < size && once) {
+			context.getSource().sendSystemMessage(Component.translatable("gui.lotaslight.savestate.omitted", "/savestate info all").withStyle(ChatFormatting.RED, ChatFormatting.ITALIC));
+			once = false;
+		}
+		
 		for (Savestate savestate : savestateList) {
 
 			String index = savestate.getIndex() == null ? "" : Integer.toString(savestate.getIndex());

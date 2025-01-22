@@ -262,6 +262,10 @@ public class SavestateHandler {
 	public List<SavestateIndexer.Savestate> getSavestateInfo(int index, int amount) {
 		return indexer.getSavestateList(index, amount);
 	}
+	
+	public int size() {
+		return indexer.size();
+	}
 
 	@FunctionalInterface
 	public interface SavestateCallback {

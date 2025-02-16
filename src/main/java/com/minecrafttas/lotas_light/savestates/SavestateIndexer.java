@@ -92,6 +92,7 @@ public class SavestateIndexer {
 		currentSavestate.index = index;
 		currentSavestate.name = name;
 		currentSavestate.date = new Date();
+		currentSavestate.motion = motion;
 
 		currentSavestate.saveToXML();
 
@@ -126,9 +127,9 @@ public class SavestateIndexer {
 		}
 
 		int savedIndex = currentSavestate.index;
-		this.currentSavestate = savestateToLoad.clone();
+		this.currentSavestate = savestateToLoad.clone(savesDir.resolve(worldname).resolve(savestateDatPath), savesDir.resolve(worldname));
 
-		Path sourceDir = currentSavestate.getFolder();
+		Path sourceDir = savestateToLoad.getFolder();
 		Path targetDir = savesDir.resolve(worldname);
 
 		if (sourceDir != null && !Files.exists(sourceDir)) {

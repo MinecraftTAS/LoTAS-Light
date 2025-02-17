@@ -45,5 +45,6 @@
 	"gui.lotaslight.savestate.load.name": "Loadstate screen",
 	"gui.lotaslight.savestate.load.start": "正在加载存档，请稍候",
 	"gui.lotaslight.savestate.load.end": "已加载编号为“%2$s”的存档“%1$s”",
-	"gui.lotaslight.savestate.button.closegui": "关闭"
+	"gui.lotaslight.savestate.button.closegui": "关闭",
+	"gui.lotaslight.savestate.omitted": "Some savestates are omitted. \"%s\" to show them all"
 }

@@ -45,5 +45,6 @@
 	"gui.lotaslight.savestate.load.name": "Loadstate screen",
 	"gui.lotaslight.savestate.load.start": "セーブステートを読み込んでいます。お待ちください。",
 	"gui.lotaslight.savestate.load.end": "セーブステート%sを%s番目から読み込みました。",
-	"gui.lotaslight.savestate.button.closegui": "閉じる"
+	"gui.lotaslight.savestate.button.closegui": "閉じる",
+	"gui.lotaslight.savestate.omitted": "Some savestates are omitted. \"%s\" to show them all"
 }

@@ -45,5 +45,6 @@
 	"gui.lotaslight.savestate.load.name":"Loadstate screen",
 	"gui.lotaslight.savestate.load.start":"Loading a savestate, please wait",
 	"gui.lotaslight.savestate.load.end":"Loaded savestate %s from index %s",
-	"gui.lotaslight.savestate.button.closegui":"Close"
+	"gui.lotaslight.savestate.button.closegui":"Close",
+	"gui.lotaslight.savestate.omitted":"Some savestates are omitted. \"%s\" to show them all"
 }

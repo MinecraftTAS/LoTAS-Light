@@ -31,7 +31,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerLevel;
 
 public class SavestateCommand {
-	
+
 	public static boolean once = true;
 
 	public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
@@ -407,7 +407,9 @@ public class SavestateCommand {
 	}
 
 	private static void onFailure(CommandContext<CommandSourceStack> context, Throwable e) {
-		Minecraft.getInstance().setScreen(null);
+		Minecraft.getInstance().schedule(() -> {
+			Minecraft.getInstance().setScreen(null);
+		});
 		context.getSource().sendFailure(Component.literal(e.getMessage()));
 		LoTASLight.LOGGER.catching(e);
 		LoTASLight.savestateHandler.resetState();
@@ -440,14 +442,14 @@ public class SavestateCommand {
 
 		String format = I18n.get("msg.lotaslight.savestate.dateformat");
 		SimpleDateFormat dateFormat = new SimpleDateFormat(format);
-		
+
 		List<Savestate> savestateList = LoTASLight.savestateHandler.getSavestateInfo(indexToDisplay, amount);
-		
-		if(savestateList.size() < size && once) {
+
+		if (savestateList.size() < size && once) {
 			context.getSource().sendSystemMessage(Component.translatable("gui.lotaslight.savestate.omitted", "/savestate info all").withStyle(ChatFormatting.RED, ChatFormatting.ITALIC));
 			once = false;
 		}
-		
+
 		for (Savestate savestate : savestateList) {
 
 			String index = savestate.getIndex() == null ? "" : Integer.toString(savestate.getIndex());

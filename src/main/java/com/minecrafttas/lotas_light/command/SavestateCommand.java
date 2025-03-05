@@ -407,7 +407,11 @@ public class SavestateCommand {
 	}
 
 	private static void onFailure(CommandContext<CommandSourceStack> context, Throwable e) {
-		Minecraft.getInstance().schedule(() -> {
+		//# 1.21.3
+//$$		Minecraft.getInstance().schedule(() -> {
+		//# def
+		Minecraft.getInstance().doRunTask(() -> {
+		//# end
 			Minecraft.getInstance().setScreen(null);
 		});
 		context.getSource().sendFailure(Component.literal(e.getMessage()));

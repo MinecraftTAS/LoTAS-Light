@@ -15,7 +15,7 @@ Needs Fabric API
   - Loading (<kbd>K</kbd>)
 
 ## Translations
-Help translate this mod with [Crowdin](https://crowdin.com/project/lotas-light)
+Help translate this mod with [Weblate](https://weblate.minecrafttas.com/projects/lotas-light/main/)
 
 ### Contributions
 - Chinese Simplified
@@ -34,3 +34,4 @@ Help translate this mod with [Crowdin](https://crowdin.com/project/lotas-light)
   - ScribbleTAS
 - Polish
   - 4NTJ
+  - NULLderef

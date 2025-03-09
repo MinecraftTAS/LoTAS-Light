@@ -177,7 +177,6 @@ public class SavestateHandler {
 		for (ServerLevel level : server.getAllLevels()) {
 			level.noSave = false;
 		}
-
 		applyMotion = () -> {
 			Vec3 motion = indexer.getCurrentSavestate().motion;
 			if (motion != null)
@@ -262,7 +261,7 @@ public class SavestateHandler {
 	public List<SavestateIndexer.Savestate> getSavestateInfo(int index, int amount) {
 		return indexer.getSavestateList(index, amount);
 	}
-	
+
 	public int size() {
 		return indexer.size();
 	}

@@ -36,6 +36,17 @@ loom {
 	if(log4jFile.exists()) {
 		log4jConfigs.from(log4jFile)
 	}
+	
+	runs {
+		client {
+			ideConfigGenerated = true
+			vmArgs "-Dlotaslight.log.level=debug"
+		}
+		server {
+			ideConfigGenerated = true
+			vmArgs "-Dlotaslight.log.level=debug"
+		}
+	}
 }
 
 processResources {

@@ -82,9 +82,9 @@ Then click finish and wait for it to set up
 You have to run the gradle task `genSources`. You can do that from within your IDE or run `./gradlew genSources` in the console. This will decompile all Minecraft versions
 
 #### Eclipse
-Additionally you need to run the task `eclipse` as well
+Additionally you need to run the task `eclipse` as well, which will generate .launch configs in each subproject which you can use to start Minecraft from withing your IDE
 
 ## Building
 After you have set up and preprocessed the versions, you can run either `./gradlew :1.21.4:build` to build only one version (built jar can be found in `LoTAS-Light/1.21.4/build/libs`), or run the task `collectBuilds`. This will build all versions and collect all versions in `LoTAS-Light/build`
 
-For more information on how to work with Discombobulator, check the [Wiki](https://github.com/MinecraftTAS/Discombobulator/wiki) (once it's available) or ask us on [Discord](https://discord.gg/jGhNxpd)
+For more information on how to work with Discombobulator, check the [Wiki](https://github.com/MinecraftTAS/Discombobulator/wiki) or ask us on [Discord](https://discord.gg/jGhNxpd)

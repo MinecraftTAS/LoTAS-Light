@@ -329,12 +329,7 @@ public class SavestateCommand {
 									createClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/savestate delete %s %s force", index, indexTo))
 							)
 							.withHoverEvent(
-									//# 1.21.5
-//$$									new HoverEvent.ShowText(
-									//# def
-									new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-									//# end
-									Component.translatable("msg.lotaslight.savestate.deleteMore.hover").withStyle(ChatFormatting.DARK_RED)))
+									createHoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("msg.lotaslight.savestate.deleteMore.hover").withStyle(ChatFormatting.DARK_RED)))
 				)).withStyle(ChatFormatting.GREEN);
 		
 		

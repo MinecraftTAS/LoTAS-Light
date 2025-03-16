@@ -36,5 +36,5 @@ Help translate this mod with [Weblate](https://weblate.minecrafttas.com/projects
   - 4NTJ
   - NULLderef
 
-## Installation
-To set up this mod in your IDE, check [INSTALLATION.md](https://github.com/MinecraftTAS/LoTAS-Light/blob/develop/INSTALLATION.md)
+## Setup
+To set up this mod in your IDE, check [CONTRIBUTING.md](https://github.com/MinecraftTAS/LoTAS-Light/blob/develop/CONTRIBUTING.md)

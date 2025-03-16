@@ -35,3 +35,6 @@ Help translate this mod with [Weblate](https://weblate.minecrafttas.com/projects
 - Polish
   - 4NTJ
   - NULLderef
+
+## Setup
+To set up this mod in your IDE, check [CONTRIBUTING.md](https://github.com/MinecraftTAS/LoTAS-Light/blob/develop/CONTRIBUTING.md)

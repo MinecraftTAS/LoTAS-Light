@@ -5,9 +5,9 @@ pluginManagement {
 		maven {
 			url = "https://maven.minecrafttas.com/main"
 		}
-		maven {
-			url = "https://maven.minecrafttas.com/snapshots"
-		}
+		// maven {
+		//	url = "https://maven.minecrafttas.com/snapshots"
+		// }
 		maven {
 			name = 'Fabric'
 			url = 'https://maven.fabricmc.net/'

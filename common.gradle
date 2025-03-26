@@ -1,9 +1,10 @@
 java {
 	sourceCompatibility = targetCompatibility = 21
-	withSourcesJar()
+	//withSourcesJar()
 }
 
-version = project.mod_version
+def snapshot = project.release=="true" ? "" : "-SNAPSHOT"
+version = project.mod_version + snapshot
 group = project.maven_group
 
 base { 

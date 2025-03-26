@@ -326,9 +326,10 @@ public class SavestateCommand {
 				.withStyle(
 						style -> style
 							.withClickEvent(
-										new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/savestate delete %s %s force", index, indexTo))
+									createClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/savestate delete %s %s force", index, indexTo))
 							)
-							.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("msg.lotaslight.savestate.deleteMore.hover").withStyle(ChatFormatting.DARK_RED)))
+							.withHoverEvent(
+									createHoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("msg.lotaslight.savestate.deleteMore.hover").withStyle(ChatFormatting.DARK_RED)))
 				)).withStyle(ChatFormatting.GREEN);
 		
 		
@@ -471,7 +472,9 @@ public class SavestateCommand {
 
 			//@formatter:off
 			UnaryOperator<Style> hover = t -> 
-							t.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(date).withStyle(dateColor)));
+							t.withHoverEvent(
+									createHoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(date).withStyle(dateColor))
+									);
 			
 			Component msg = null;
 					
@@ -483,8 +486,8 @@ public class SavestateCommand {
 						Component.translatable("msg.lotaslight.savestate.info.error", failedSavestate.getError().getMessage())
 					.withStyle(ChatFormatting.RED))
 					.withStyle(t -> 
-						t.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-							Component.literal(date).withStyle(ChatFormatting.GOLD)
+						t.withHoverEvent(
+								createHoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(date).withStyle(ChatFormatting.GOLD)
 						)));
 			} else {
 				if(!LoTASLightClient.config.getBoolean(ConfigOptions.SAVESTATE_SHOW_CONTROLS)) {
@@ -497,34 +500,36 @@ public class SavestateCommand {
 				else {
 					Component saveComponent = Component.translatable("msg.lotaslight.savestate.save.clickable").withStyle(saveColor)
 							.withStyle(t->
-								t.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/savestate save %s", index)))
+								t.withClickEvent(
+										createClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/savestate save %s", index)))
 							)
 							.withStyle(t->
-								t.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("msg.lotaslight.savestate.save.hover", name).withStyle(saveColor)))
+								t.withHoverEvent(
+										createHoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("msg.lotaslight.savestate.save.hover", name).withStyle(saveColor)))
 							);
 					
 					Component deleteComponent = Component.translatable("msg.lotaslight.savestate.delete.clickable").withStyle(deleteColor)
 							.withStyle(t->
-								t.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/savestate delete %s", index)))
+								t.withClickEvent(createClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/savestate delete %s", index)))
 							)
 							.withStyle(t->
-								t.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("msg.lotaslight.savestate.delete.hover", name).withStyle(deleteColor)))
+								t.withHoverEvent(createHoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("msg.lotaslight.savestate.delete.hover", name).withStyle(deleteColor)))
 							);
 					
 					Component renameComponent = Component.translatable("msg.lotaslight.savestate.rename.clickable").withStyle(renameColor)
 							.withStyle(t->
-								t.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/savestate rename %s ", index)))
+								t.withClickEvent(createClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/savestate rename %s ", index)))
 							)
 							.withStyle(t->
-								t.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("msg.lotaslight.savestate.rename.hover", name).withStyle(renameColor)))
+								t.withHoverEvent(createHoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("msg.lotaslight.savestate.rename.hover", name).withStyle(renameColor)))
 							);
 					
 					Component loadComponent = Component.translatable("msg.lotaslight.savestate.load.clickable").withStyle(loadColor)
 							.withStyle(t->
-								t.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/savestate load %s", index)))
+								t.withClickEvent(createClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/savestate load %s", index)))
 							)
 							.withStyle(t->
-								t.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("msg.lotaslight.savestate.load.hover", name).withStyle(loadColor)))
+								t.withHoverEvent(createHoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("msg.lotaslight.savestate.load.hover", name).withStyle(loadColor)))
 							);
 					
 					msg = Component.translatable("%s: %s     %s %s %s %s",
@@ -541,6 +546,46 @@ public class SavestateCommand {
 			//@formatter:on
 			context.getSource().sendSystemMessage(msg);
 		}
+	}
+	
+	private static ClickEvent createClickEvent(ClickEvent.Action action, String command) {
+		//# 1.21.5
+//$$			return switch (action) {
+//$$				case COPY_TO_CLIPBOARD: {
+//$$					yield new ClickEvent.CopyToClipboard(command);
+//$$				}
+//$$				case RUN_COMMAND: {
+//$$					yield new ClickEvent.RunCommand(command);
+//$$				}
+//$$				case SUGGEST_COMMAND: {
+//$$					yield new ClickEvent.SuggestCommand(command);
+//$$				}
+//$$				default:
+//$$					throw new IllegalArgumentException("Unexpected value: " + action);
+//$$			};
+		//# def
+		return new ClickEvent(action, command);
+		//# end
+	}
+	
+	private static HoverEvent createHoverEvent(
+			//# 1.21.5
+//$$			HoverEvent.Action action,
+			//# def
+			HoverEvent.Action<Component> action,
+			//# end
+			Component component) {
+		//# 1.21.5
+//$$			return switch (action) {
+//$$				case SHOW_TEXT: {
+//$$					yield new HoverEvent.ShowText(component);
+//$$				}
+//$$				default:
+//$$					throw new IllegalArgumentException("Unexpected value: " + action);
+//$$			};
+		//# def
+		return new HoverEvent(action, component);
+		//# end
 	}
 
 	private static Component wrap(Component component, ChatFormatting color) {

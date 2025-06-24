@@ -13,8 +13,13 @@ import net.minecraft.client.gui.screens.PauseScreen;
 @Mixin(PauseScreen.class)
 public class MixinPauseScreen {
 
+	//# 1.21.6
+//$$	@Inject(method = "disconnectFromWorld", at = @At("HEAD"))
+//$$	private static void inject_onDisconnect(CallbackInfo ci) {
+	//# def
 	@Inject(method = "onDisconnect", at = @At("HEAD"))
 	public void inject_onDisconnect(CallbackInfo ci) {
+	//# end
 		Minecraft mc = Minecraft.getInstance();
 		Tickratechanger client = (Tickratechanger) mc.level.tickRateManager();
 		Tickratechanger server = (Tickratechanger) mc.getSingleplayerServer().tickRateManager();

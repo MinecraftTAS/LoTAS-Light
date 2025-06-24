@@ -1,11 +1,14 @@
 package com.minecrafttas.lotas_light.mixin;
 
+//# 1.21.6
+//$$import org.joml.Matrix3x2fStack;
+//# def
+import com.mojang.blaze3d.vertex.PoseStack;
+//# end
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import com.mojang.blaze3d.vertex.PoseStack;
 
 //# 1.21.1
 //$$import net.minecraft.client.DeltaTracker;
@@ -18,9 +21,13 @@ import net.minecraft.client.gui.GuiGraphics;
 public class MixinPlayerList {
 
 	//# 1.20.6
+	//## 1.21.6
+//$$	@Inject(method = "renderHotbarAndDecorations", at = @At("HEAD"))
+	//## def
 //$$	@Inject(method = "renderExperienceLevel", at = @At("HEAD"))
+	//## end
 //$$	private void onRenderExperienceLevel(GuiGraphics guiGraphics, float deltaTracker, CallbackInfo ci) { //@GraphicsDelta;
-	//# def
+		//# def
 	@Inject(method = "renderExperienceBar", at = @At("HEAD"))
 	private void onRenderExperienceLevel(GuiGraphics guiGraphics, int deltaTracker, CallbackInfo ci) {
 		//# end
@@ -33,12 +40,21 @@ public class MixinPlayerList {
 		memOffsetY += -.7;
 		flip += 0.26;
 
+		//# 1.21.6
+//$$		Matrix3x2fStack memstack = guiGraphics.pose();
+//$$
+//$$		memstack.pushMatrix();
+//$$		memstack.translate(memOffsetX, memOffsetY);
+//$$		memstack.scale(flip, flip);
+//$$		memstack.rotate(flipOffset);
+		//# def
 		PoseStack memstack = guiGraphics.pose();
+
 		memstack.pushPose();
 		memstack.translate(memOffsetX, memOffsetY, 0);
 		memstack.scale(flip, flip, flip);
 		memstack.mulPose(fromYXZ(0F, 0F, (float) flipOffset));
-
+		//# end
 		int oB = 0xE35720;
 		int o = 0xC24218;
 		int oD = 0x9A3212;
@@ -131,10 +147,17 @@ public class MixinPlayerList {
 		setRegistryState(guiGraphics, 6, y, w);
 		setRegistryState(guiGraphics, 7, y, w);
 
+		//# 1.21.6
+//$$		memstack.rotate(-(float) flipOffset);
+//$$		memstack.scale(1 / flip, 1 / flip);
+//$$		memstack.translate(-memOffsetX, -memOffsetY);
+//$$		memstack.popMatrix();
+		//# def
 		memstack.mulPose(fromYXZ(0F, 0F, -(float) flipOffset));
 		memstack.scale(1 / flip, 1 / flip, 1 / flip);
 		memstack.translate(-memOffsetX, -memOffsetY, 0);
 		memstack.popPose();
+		//# end
 	}
 
 	public void setRegistryState(GuiGraphics guiGraphics, int x, int y, int color) {

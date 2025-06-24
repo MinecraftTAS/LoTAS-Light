@@ -19,7 +19,11 @@ import net.minecraft.client.gui.GuiGraphics;
 public class MixinGui {
 
 	//# 1.20.6
+	//## 1.21.6
+//$$	@Inject(method = "renderHotbarAndDecorations", at = @At("HEAD"))
+	//## def
 //$$	@Inject(method = "renderExperienceLevel", at = @At("HEAD"))
+	//## end
 //$$	private void onRenderExperienceLevel(GuiGraphics guiGraphics, float deltaTracker, CallbackInfo ci) { //@GraphicsDelta;
 //$$		HudRenderExperienceCallback.EVENT.invoker().onRenderPre(guiGraphics, deltaTracker);
 //$$	}

@@ -26,6 +26,8 @@ Help translate this mod with [Weblate](https://weblate.minecrafttas.com/projects
   - Elvee
 - German
   - ScribbleTAS
+- Italian
+  - LeoAnimates
 - Japanese
   - Naruyoko
 - Korean

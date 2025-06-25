@@ -25,6 +25,9 @@ import com.minecrafttas.lotas_light.savestates.exceptions.SavestateException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.resources.language.I18n;
+//# 1.21.6
+//$$import net.minecraft.network.chat.Component;
+//# end
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
@@ -157,8 +160,13 @@ public class SavestateHandler {
 		SavestatePaths paths = indexer.loadSavestate(index, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX));
 		logger.debug("Source: {}, Target: {}", paths.getSourceFolder(), paths.getTargetFolder());
 
+		//# 1.21.6
+//$$		mc.level.disconnect(Component.literal(""));
+//$$//		mc.disconnect();
+		//# def
 		mc.level.disconnect();
 		mc.disconnect();
+		//# end
 
 		while (server.isCurrentlySaving() || server.isRunning()) {
 		}
@@ -297,8 +305,7 @@ public class SavestateHandler {
 		this.server = server;
 		Path savesDir = server.isSingleplayer() ?
 		//# 1.21.1
-//$$				server.getServerDirectory().resolve("saves") :
-//$$				server.getServerDirectory();
+//$$				server.getServerDirectory().resolve("saves") : server.getServerDirectory();
 		//# def
 				server.getServerDirectory().toPath().resolve("saves") : server.getServerDirectory().toPath();
 		//# end

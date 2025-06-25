@@ -17,7 +17,7 @@ public class SavestateGui extends Screen {
 	public void render(GuiGraphics guiGraphics, int i, int j, float f) {
 		super.render(guiGraphics, i, j, f);
 
-		guiGraphics.drawCenteredString(font, text, width / 2, 90, 0xFFFFFF);
+		guiGraphics.drawCenteredString(font, text, width / 2, 90, 0xFFFFFFFF);
 	}
 
 	@Override

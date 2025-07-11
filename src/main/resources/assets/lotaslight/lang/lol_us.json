@@ -47,6 +47,6 @@
     "gui.lotaslight.savestate.load.end": "Loded Déjà-vu-point %s @ paw %s",
     "gui.lotaslight.savestate.button.closegui": "BYE",
     "gui.lotaslight.savestate.omitted": "Cat hidez Déjà-vu-points. \"%s\" 2 find all",
-    "key.lotaslight.duping": "Duplicate Items",
-    "gui.lotaslight.duping.quitmsg": "Duping your items!"
+    "key.lotaslight.duping": "I See Double™",
+    "gui.lotaslight.duping.quitmsg": "I See Double™!"
 }

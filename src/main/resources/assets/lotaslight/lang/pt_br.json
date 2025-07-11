@@ -46,5 +46,7 @@
     "gui.lotaslight.savestate.load.start": "Carregando um savestate, por favor aguarde",
     "gui.lotaslight.savestate.load.end": "Savestate %s carregado do índice %s",
     "gui.lotaslight.savestate.button.closegui": "Fechar",
-    "gui.lotaslight.savestate.omitted": "Alguns savestates não estão exibidos. \"%s\" para mostrar todos"
+    "gui.lotaslight.savestate.omitted": "Alguns savestates não estão exibidos. \"%s\" para mostrar todos",
+    "key.lotaslight.duping": "Duplicate Items",
+    "gui.lotaslight.duping.quitmsg": "Duping your items!"
 }

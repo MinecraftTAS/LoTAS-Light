@@ -47,6 +47,6 @@
     "gui.lotaslight.savestate.load.end": "Lade Sicherungspunkt %s vom Index %s",
     "gui.lotaslight.savestate.button.closegui": "Schließen",
     "gui.lotaslight.savestate.omitted": "Manche Sicherungspunkte werden nicht angezeigt. \"%s\" um alle zu zeigen",
-    "key.lotaslight.duping": "Duplicate Items",
-    "gui.lotaslight.duping.quitmsg": "Duping your items!"
+    "key.lotaslight.duping": "Items Duplizieren",
+    "gui.lotaslight.duping.quitmsg": "Dupliziere deine items!"
 }

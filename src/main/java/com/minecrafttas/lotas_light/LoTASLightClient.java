@@ -26,6 +26,12 @@ import net.minecraft.ChatFormatting;
 //# end
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+//# 1.20.6
+//$$import net.minecraft.client.gui.screens.GenericMessageScreen;
+//# def
+import net.minecraft.client.gui.screens.GenericDirtMessageScreen;
+//# end
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.server.IntegratedServer;
@@ -57,6 +63,7 @@ public class LoTASLightClient implements ClientModInitializer {
 	public static Configuration config;
 	private boolean showHint = true;
 	private boolean showTickIndicator;
+	public static boolean dupe;
 
 	@Override
 	public void onInitializeClient() {
@@ -88,6 +95,7 @@ public class LoTASLightClient implements ClientModInitializer {
 		keybindManager.registerKeybind(new Keybind("key.lotaslight.advanceTickrate", "keycategory.lotaslight.lotaslight", GLFW.GLFW_KEY_F9, this::advanceTickrate, KeybindManager::isKeyDown));
 		keybindManager.registerKeybind(new Keybind("key.lotaslight.savestate", "keycategory.lotaslight.lotaslight", GLFW.GLFW_KEY_J, this::savestate));
 		keybindManager.registerKeybind(new Keybind("key.lotaslight.loadstate", "keycategory.lotaslight.lotaslight", GLFW.GLFW_KEY_K, this::loadstate));
+		keybindManager.registerKeybind(new Keybind("key.lotaslight.duping", "keycategory.lotaslight.lotaslight", GLFW.GLFW_KEY_O, this::dupe));
 
 		EventClientGameLoop.EVENT.register(keybindManager::onRunClientGameLoop);
 	}
@@ -349,6 +357,22 @@ public class LoTASLightClient implements ClientModInitializer {
 			LoTASLight.savestateHandler.resetState();
 			Minecraft.getInstance().setScreen(null);
 		}
+	}
+
+	private void dupe(Minecraft mc) {
+		dupe = true;
+		//# 1.21.7
+//$$		mc.level.disconnect(Component.translatable("gui.lotaslight.dupe.quitmsg"));
+		//# def
+		mc.level.disconnect();
+		//# end
+
+		//# 1.20.6
+//$$		mc.disconnect(new GenericMessageScreen(Component.translatable("gui.lotaslight.duping.quitmsg")), false);
+		//# def
+		mc.disconnect(new GenericDirtMessageScreen(Component.translatable("gui.lotaslight.duping.quitmsg")));
+		//# end
+		mc.setScreen(new TitleScreen());
 	}
 
 	private short findClosestRateIndex(float tickrate) {

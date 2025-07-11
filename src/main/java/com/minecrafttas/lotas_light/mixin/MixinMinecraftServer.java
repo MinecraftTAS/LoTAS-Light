@@ -9,11 +9,19 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.minecrafttas.lotas_light.LoTASLightClient;
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 
 import net.minecraft.Util;
+import net.minecraft.client.server.IntegratedServer;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTickRateManager;
+import net.minecraft.world.level.storage.LevelStorageSource;
+import net.minecraft.world.level.storage.WorldData;
 
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {
@@ -74,5 +82,14 @@ public class MixinMinecraftServer {
 	public void inject_stopServer(CallbackInfo ci) {
 		Tickratechanger tickrateManager = (Tickratechanger) ((MinecraftServer) (Object) this).tickRateManager();
 		tickrateManager.disconnect();
+	}
+	
+	@WrapOperation(method = "saveAllChunks", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/storage/LevelStorageSource$LevelStorageAccess;saveDataTag(Lnet/minecraft/core/RegistryAccess;Lnet/minecraft/world/level/storage/WorldData;Lnet/minecraft/nbt/CompoundTag;)V"))
+	public void wrap_saveDataTag(LevelStorageSource.LevelStorageAccess instance, RegistryAccess access, WorldData data, CompoundTag singlePlayerTag, Operation<Void> original) {
+		if((MinecraftServer)(Object)this instanceof IntegratedServer && LoTASLightClient.dupe) {
+			LoTASLightClient.dupe = false;
+		} else {
+			original.call(instance, access, data, singlePlayerTag);
+		}
 	}
 }

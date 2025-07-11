@@ -19,7 +19,7 @@ import net.minecraft.client.gui.GuiGraphics;
 public class MixinGui {
 
 	//# 1.20.6
-	//## 1.21.6
+	//## 1.21.7
 //$$	@Inject(method = "renderHotbarAndDecorations", at = @At("HEAD"))
 	//## def
 //$$	@Inject(method = "renderExperienceLevel", at = @At("HEAD"))

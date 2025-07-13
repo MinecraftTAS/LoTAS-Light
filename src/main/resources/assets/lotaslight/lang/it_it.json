@@ -1,5 +1,5 @@
 {
-    "keycategory.lotaslight.lotaslight": "",
+    "keycategory.lotaslight.lotaslight": "LoTAS-Light",
     "key.lotaslight.increaseTickrate": "Aumenta Tickrate",
     "key.lotaslight.decreaseTickrate": "Diminuisci Tickrate",
     "key.lotaslight.freezeTickrate": "Immobilizza Tickrate",
@@ -46,5 +46,7 @@
     "gui.lotaslight.savestate.load.start": "Stiamo caricando un savestate, aspetta",
     "gui.lotaslight.savestate.load.end": "E' stato caricato il savestate %s da index %s",
     "gui.lotaslight.savestate.button.closegui": "Chiudi",
-    "gui.lotaslight.savestate.omitted": "Alcuni savestate sono omessi. \"%s\" per mostrarli tutti"
+    "gui.lotaslight.savestate.omitted": "Alcuni savestate sono omessi. \"%s\" per mostrarli tutti",
+    "key.lotaslight.duping": "Duplicate Items",
+    "gui.lotaslight.duping.quitmsg": "Duping your items!"
 }

@@ -46,5 +46,7 @@
     "gui.lotaslight.savestate.load.start": "Lode Déjà-vu-point, b3 patient kitty",
     "gui.lotaslight.savestate.load.end": "Loded Déjà-vu-point %s @ paw %s",
     "gui.lotaslight.savestate.button.closegui": "BYE",
-    "gui.lotaslight.savestate.omitted": "Cat hidez Déjà-vu-points. \"%s\" 2 find all"
+    "gui.lotaslight.savestate.omitted": "Cat hidez Déjà-vu-points. \"%s\" 2 find all",
+    "key.lotaslight.duping": "I See Double™",
+    "gui.lotaslight.duping.quitmsg": "I See Double™!"
 }

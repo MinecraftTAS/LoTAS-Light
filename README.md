@@ -13,6 +13,11 @@ Needs Fabric API
 - Savestates
   - Saving (<kbd>J</kbd>)
   - Loading (<kbd>K</kbd>)
+- Item Duplication
+  1. Press Pause to save the game with the item in your inventory
+  2. Throw out the item out of your inventory or put it in a chest
+  3. Press <kbd>O</kbd>
+  4. Rejoin the world
 
 ## Translations
 Help translate this mod with [Weblate](https://weblate.minecrafttas.com/projects/lotas-light/main/)

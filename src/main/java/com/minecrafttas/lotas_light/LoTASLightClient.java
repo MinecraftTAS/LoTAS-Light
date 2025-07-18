@@ -41,7 +41,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTickRateManager;
 import net.minecraft.server.level.ServerLevel;
 //# 1.21.3
-//## 1.21.7
+//## 1.21.8
 //$$import net.minecraft.client.renderer.RenderPipelines;
 //## def
 //$$import net.minecraft.client.renderer.RenderType;
@@ -192,7 +192,7 @@ public class LoTASLightClient implements ClientModInitializer {
 	}
 
 	private void drawHud(GuiGraphics context, float deltaTicks) { //@GraphicsDelta;
-		//# 1.21.7
+		//# 1.21.8
 //$$		int i = ARGB.colorFromFloat(.2F, 1f, 1f, 1f);
 //$$		context.blit(RenderPipelines.GUI_TEXTURED, ResourceLocation.fromNamespaceAndPath("lotaslight", "potion.png"), Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2
 //$$				- 10, Minecraft.getInstance().getWindow().getGuiScaledHeight()
@@ -259,7 +259,7 @@ public class LoTASLightClient implements ClientModInitializer {
 				break;
 		}
 
-		//# 1.21.7
+		//# 1.21.8
 //$$		context.blit(RenderPipelines.GUI_TEXTURED, streamIcons, x, y, uvCoordinate, uvCoordinate, 16, 16, 16, 64);
 		//# 1.21.3
 //$$		context.blit(RenderType::guiTexturedOverlay, streamIcons, x, y, uvCoordinate, uvCoordinate, 16, 16, 16, 64);
@@ -361,7 +361,7 @@ public class LoTASLightClient implements ClientModInitializer {
 
 	private void dupe(Minecraft mc) {
 		dupe = true;
-		//# 1.21.7
+		//# 1.21.8
 //$$		mc.level.disconnect(Component.translatable("gui.lotaslight.dupe.quitmsg"));
 		//# def
 		mc.level.disconnect();

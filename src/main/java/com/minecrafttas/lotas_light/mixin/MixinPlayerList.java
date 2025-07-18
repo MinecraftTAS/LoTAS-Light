@@ -1,6 +1,6 @@
 package com.minecrafttas.lotas_light.mixin;
 
-//# 1.21.7
+//# 1.21.8
 //$$import org.joml.Matrix3x2fStack;
 //# def
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -21,7 +21,7 @@ import net.minecraft.client.gui.GuiGraphics;
 public class MixinPlayerList {
 
 	//# 1.20.6
-	//## 1.21.7
+	//## 1.21.8
 //$$	@Inject(method = "renderHotbarAndDecorations", at = @At("HEAD"))
 	//## def
 //$$	@Inject(method = "renderExperienceLevel", at = @At("HEAD"))
@@ -40,7 +40,7 @@ public class MixinPlayerList {
 		memOffsetY += -.7;
 		flip += 0.26;
 
-		//# 1.21.7
+		//# 1.21.8
 //$$		Matrix3x2fStack memstack = guiGraphics.pose();
 //$$
 //$$		memstack.pushMatrix();
@@ -147,7 +147,7 @@ public class MixinPlayerList {
 		setRegistryState(guiGraphics, 6, y, w);
 		setRegistryState(guiGraphics, 7, y, w);
 
-		//# 1.21.7
+		//# 1.21.8
 //$$		memstack.rotate(-(float) flipOffset);
 //$$		memstack.scale(1 / flip, 1 / flip);
 //$$		memstack.translate(-memOffsetX, -memOffsetY);

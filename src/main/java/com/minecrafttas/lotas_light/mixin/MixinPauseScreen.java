@@ -13,7 +13,7 @@ import net.minecraft.client.gui.screens.PauseScreen;
 @Mixin(PauseScreen.class)
 public class MixinPauseScreen {
 
-	//# 1.21.7
+	//# 1.21.8
 //$$	@Inject(method = "disconnectFromWorld", at = @At("HEAD"))
 //$$	private static void inject_onDisconnect(CallbackInfo ci) {
 	//# def

@@ -25,7 +25,7 @@ import com.minecrafttas.lotas_light.savestates.exceptions.SavestateException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.resources.language.I18n;
-//# 1.21.7
+//# 1.21.8
 //$$import net.minecraft.network.chat.Component;
 //# end
 import net.minecraft.server.MinecraftServer;
@@ -160,7 +160,7 @@ public class SavestateHandler {
 		SavestatePaths paths = indexer.loadSavestate(index, !shouldBlock(flagList, SavestateFlags.BLOCK_CHANGE_INDEX));
 		logger.debug("Source: {}, Target: {}", paths.getSourceFolder(), paths.getTargetFolder());
 
-		//# 1.21.7
+		//# 1.21.8
 //$$		mc.level.disconnect(Component.literal(""));
 //$$//		mc.disconnect();
 		//# def

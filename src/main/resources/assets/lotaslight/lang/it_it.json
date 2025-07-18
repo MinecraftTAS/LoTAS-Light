@@ -47,6 +47,6 @@
     "gui.lotaslight.savestate.load.end": "E' stato caricato il savestate %s da index %s",
     "gui.lotaslight.savestate.button.closegui": "Chiudi",
     "gui.lotaslight.savestate.omitted": "Alcuni savestate sono omessi. \"%s\" per mostrarli tutti",
-    "key.lotaslight.duping": "Duplicate Items",
-    "gui.lotaslight.duping.quitmsg": "Duping your items!"
+    "key.lotaslight.duping": "Duplica oggetti",
+    "gui.lotaslight.duping.quitmsg": "Eseguendo il duping degli oggetti!"
 }

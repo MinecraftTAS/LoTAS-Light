@@ -21,49 +21,31 @@ jobs:
         run: gradle preprocessBase
       - name: Build
         run: gradle collectBuilds -Prelease=true
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: LoTAS-Light-Builds
+          path: build/*.jar
+          if-no-files-found: error
       - name: Upload assets
         uses: softprops/action-gh-release@v2
         with:
           files: 'build/!(-@(dev|sources|javadoc|all)).jar'
-      - name: Publish 1.20.4
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: ["1.20.4", "1.20.6", "1.21.1", "1.21.3", "1.21.4", "1.21.5", "1.21.8"]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: build/
+          merge-multiple: true
+      - name: Publish ${{ matrix.version }}
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          files: 'build/*-1.20.4-*!(*-@(dev|sources|javadoc|all)).jar'
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-      - name: Publish 1.20.6
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          files: 'build/*-1.20.6-*!(*-@(dev|sources|javadoc|all)).jar'
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-      - name: Publish 1.21.1
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          files: 'build/*-1.21.1-*!(*-@(dev|sources|javadoc|all)).jar'
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-      - name: Publish 1.21.3
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          files: 'build/*-1.21.3-*!(*-@(dev|sources|javadoc|all)).jar'
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-      - name: Publish 1.21.4
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          files: 'build/*-1.21.4-*!(*-@(dev|sources|javadoc|all)).jar'
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-      - name: Publish 1.21.5
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          files: 'build/*-1.21.5-*!(*-@(dev|sources|javadoc|all)).jar'
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-      - name: Publish 1.21.8
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          files: 'build/*-1.21.8-*!(*-@(dev|sources|javadoc|all)).jar'
+          files: 'build/*-${{ matrix.version }}-*!(*-@(dev|sources|javadoc|all)).jar'
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}

@@ -47,6 +47,6 @@
     "gui.lotaslight.savestate.load.end": "Savestate %s carregado do índice %s",
     "gui.lotaslight.savestate.button.closegui": "Fechar",
     "gui.lotaslight.savestate.omitted": "Alguns savestates não estão exibidos. \"%s\" para mostrar todos",
-    "key.lotaslight.duping": "Duplicate Items",
-    "gui.lotaslight.duping.quitmsg": "Duping your items!"
+    "key.lotaslight.duping": "Duplicar Itens",
+    "gui.lotaslight.duping.quitmsg": "Duplicando seus itens!"
 }

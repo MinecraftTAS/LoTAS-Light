@@ -10,6 +10,10 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+//# 1.21.9
+//$$import net.minecraft.client.input.KeyEvent;
+//$$import net.minecraft.client.input.MouseButtonEvent;
+//# end
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 
@@ -40,13 +44,33 @@ public class SavestateRenameGui extends SavestateGui {
 	}
 
 	@Override
+	//# 1.21.9
+//$$	public boolean keyPressed(KeyEvent event) {
+//$$		if (event.getDigit() == GLFW.GLFW_KEY_ENTER) {
+//$$			return renameAndExit();
+//$$		}
+//$$		return super.keyPressed(event);
+//$$	}
+//$$
+	//# def
 	public boolean keyPressed(int i, int j, int k) {
 		if (i == GLFW.GLFW_KEY_ENTER) {
 			return renameAndExit();
 		}
 		return super.keyPressed(i, j, k);
 	}
+	//# end
 
+	//# 1.21.9
+//$$	@Override
+//$$	public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean bl) {
+//$$		if (!editBox.isMouseOver(mouseButtonEvent.x(), mouseButtonEvent.y())) {
+//$$			editBox.setFocused(false);
+//$$		}
+//$$		return super.mouseClicked(mouseButtonEvent, bl);
+//$$	}
+//$$
+	//# def
 	@Override
 	public boolean mouseClicked(double d, double e, int i) {
 		if (!editBox.isMouseOver(d, e)) {
@@ -54,6 +78,7 @@ public class SavestateRenameGui extends SavestateGui {
 		}
 		return super.mouseClicked(d, e, i);
 	}
+	//# end
 
 	//# 1.21.3
 //$$	@Override

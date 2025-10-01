@@ -40,6 +40,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTickRateManager;
 import net.minecraft.server.level.ServerLevel;
+//# 1.21.9
+//$$import net.minecraft.client.KeyMapping;
+//#end
 //# 1.21.3
 //## 1.21.8
 //$$import net.minecraft.client.renderer.RenderPipelines;
@@ -55,6 +58,9 @@ import net.minecraft.world.TickRateManager;
 public class LoTASLightClient implements ClientModInitializer {
 
 	private KeybindManager keybindManager = new KeybindManager(KeybindManager::isKeyDownExceptTextField);
+	// # 1.21.9
+//$$	private static final KeyMapping.Category LOTASLIGHT_CATEGORY = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath("lotaslight", "lotaslight"));
+	//# end
 
 	private float[] rates = new float[] { .1f, .2f, .5f, 1f, 2f, 5f, 10f, 20f, 40f, 100f };
 	private short rateIndex = 7;
@@ -89,13 +95,18 @@ public class LoTASLightClient implements ClientModInitializer {
 	}
 
 	private void registerKeybindings() {
-		keybindManager.registerKeybind(new Keybind("key.lotaslight.increaseTickrate", "keycategory.lotaslight.lotaslight", GLFW.GLFW_KEY_PERIOD, this::increaseTickrate));
-		keybindManager.registerKeybind(new Keybind("key.lotaslight.decreaseTickrate", "keycategory.lotaslight.lotaslight", GLFW.GLFW_KEY_COMMA, this::decreaseTickrate));
-		keybindManager.registerKeybind(new Keybind("key.lotaslight.freezeTickrate", "keycategory.lotaslight.lotaslight", GLFW.GLFW_KEY_F8, this::freezeTickrate, KeybindManager::isKeyDown));
-		keybindManager.registerKeybind(new Keybind("key.lotaslight.advanceTickrate", "keycategory.lotaslight.lotaslight", GLFW.GLFW_KEY_F9, this::advanceTickrate, KeybindManager::isKeyDown));
-		keybindManager.registerKeybind(new Keybind("key.lotaslight.savestate", "keycategory.lotaslight.lotaslight", GLFW.GLFW_KEY_J, this::savestate));
-		keybindManager.registerKeybind(new Keybind("key.lotaslight.loadstate", "keycategory.lotaslight.lotaslight", GLFW.GLFW_KEY_K, this::loadstate));
-		keybindManager.registerKeybind(new Keybind("key.lotaslight.duping", "keycategory.lotaslight.lotaslight", GLFW.GLFW_KEY_O, this::dupe));
+		//# 1.21.9
+//$$		KeyMapping.Category category = LOTASLIGHT_CATEGORY;
+		//# def
+		String category = "key.category.lotaslight.lotaslight";
+		//# end
+		keybindManager.registerKeybind(new Keybind("key.lotaslight.increaseTickrate", category, GLFW.GLFW_KEY_PERIOD, this::increaseTickrate));
+		keybindManager.registerKeybind(new Keybind("key.lotaslight.decreaseTickrate", category, GLFW.GLFW_KEY_COMMA, this::decreaseTickrate));
+		keybindManager.registerKeybind(new Keybind("key.lotaslight.freezeTickrate", category, GLFW.GLFW_KEY_F8, this::freezeTickrate, KeybindManager::isKeyDown));
+		keybindManager.registerKeybind(new Keybind("key.lotaslight.advanceTickrate", category, GLFW.GLFW_KEY_F9, this::advanceTickrate, KeybindManager::isKeyDown));
+		keybindManager.registerKeybind(new Keybind("key.lotaslight.savestate", category, GLFW.GLFW_KEY_J, this::savestate));
+		keybindManager.registerKeybind(new Keybind("key.lotaslight.loadstate", category, GLFW.GLFW_KEY_K, this::loadstate));
+		keybindManager.registerKeybind(new Keybind("key.lotaslight.duping", category, GLFW.GLFW_KEY_O, this::dupe));
 
 		EventClientGameLoop.EVENT.register(keybindManager::onRunClientGameLoop);
 	}

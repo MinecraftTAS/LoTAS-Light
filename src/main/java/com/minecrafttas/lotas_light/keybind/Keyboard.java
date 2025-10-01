@@ -10,6 +10,10 @@ import net.minecraft.client.Minecraft;
  */
 public class Keyboard {
 	public static boolean isKeyDown(int keyCode) {
+		//# 1.21.9
+//$$		return GLFW.glfwGetKey(Minecraft.getInstance().getWindow().handle(), keyCode) == GLFW.GLFW_PRESS;
+		//# def
 		return GLFW.glfwGetKey(Minecraft.getInstance().getWindow().getWindow(), keyCode) == GLFW.GLFW_PRESS;
+		//# end
 	}
 }

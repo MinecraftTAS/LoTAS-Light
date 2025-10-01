@@ -44,7 +44,13 @@ public class KeybindManager {
 		 * @param defaultKey Default key of keybind
 		 * @param onKeyDown  Will be run when the keybind is pressed
 		 */
+		//@formatter:off
+		//# 1.21.9
+//$$		public Keybind(String name, KeyMapping.Category category, int defaultKey, Consumer<Minecraft> onKeyDown) {
+		//# def
 		public Keybind(String name, String category, int defaultKey, Consumer<Minecraft> onKeyDown) {
+		//# end
+		//@formatter:on
 			this(name, category, defaultKey, onKeyDown, null);
 		}
 
@@ -56,7 +62,13 @@ public class KeybindManager {
 		 * @param defaultKey Default key of keybind
 		 * @param onKeyDown  Will be run when the keybind is pressed
 		 */
+		//@formatter:off
+		//# 1.21.9
+//$$		public Keybind(String name, KeyMapping.Category category, int defaultKey, Consumer<Minecraft> onKeyDown, IsKeyDownFunc func) {
+		//# def
 		public Keybind(String name, String category, int defaultKey, Consumer<Minecraft> onKeyDown, IsKeyDownFunc func) {
+		//# end
+		//@formatter:on
 			this.vanillaKeyBinding = new KeyMapping(name, defaultKey, category);
 			this.onKeyDown = onKeyDown;
 			this.isKeyDownFunc = func;

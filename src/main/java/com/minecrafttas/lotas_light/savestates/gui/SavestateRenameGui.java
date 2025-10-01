@@ -46,7 +46,7 @@ public class SavestateRenameGui extends SavestateGui {
 	@Override
 	//# 1.21.9
 //$$	public boolean keyPressed(KeyEvent event) {
-//$$		if (event.getDigit() == GLFW.GLFW_KEY_ENTER) {
+//$$		if (event.key() == GLFW.GLFW_KEY_ENTER) {
 //$$			return renameAndExit();
 //$$		}
 //$$		return super.keyPressed(event);

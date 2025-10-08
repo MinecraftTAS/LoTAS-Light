@@ -45,7 +45,7 @@ public class KeybindManager {
 		 * @param onKeyDown  Will be run when the keybind is pressed
 		 */
 		//@formatter:off
-		//# 1.21.9
+		//# 1.21.10
 //$$		public Keybind(String name, KeyMapping.Category category, int defaultKey, Consumer<Minecraft> onKeyDown) {
 		//# def
 		public Keybind(String name, String category, int defaultKey, Consumer<Minecraft> onKeyDown) {
@@ -63,7 +63,7 @@ public class KeybindManager {
 		 * @param onKeyDown  Will be run when the keybind is pressed
 		 */
 		//@formatter:off
-		//# 1.21.9
+		//# 1.21.10
 //$$		public Keybind(String name, KeyMapping.Category category, int defaultKey, Consumer<Minecraft> onKeyDown, IsKeyDownFunc func) {
 		//# def
 		public Keybind(String name, String category, int defaultKey, Consumer<Minecraft> onKeyDown, IsKeyDownFunc func) {

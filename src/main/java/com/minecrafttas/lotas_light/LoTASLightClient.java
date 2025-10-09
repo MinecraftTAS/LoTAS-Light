@@ -40,7 +40,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTickRateManager;
 import net.minecraft.server.level.ServerLevel;
-//# 1.21.9
+//# 1.21.10
 //$$import net.minecraft.client.KeyMapping;
 //#end
 //# 1.21.3
@@ -58,7 +58,7 @@ import net.minecraft.world.TickRateManager;
 public class LoTASLightClient implements ClientModInitializer {
 
 	private KeybindManager keybindManager = new KeybindManager(KeybindManager::isKeyDownExceptTextField);
-	// # 1.21.9
+	// # 1.21.10
 //$$	private static final KeyMapping.Category LOTASLIGHT_CATEGORY = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath("lotaslight", "lotaslight"));
 	//# end
 
@@ -95,7 +95,7 @@ public class LoTASLightClient implements ClientModInitializer {
 	}
 
 	private void registerKeybindings() {
-		//# 1.21.9
+		//# 1.21.10
 //$$		KeyMapping.Category category = LOTASLIGHT_CATEGORY;
 		//# def
 		String category = "key.category.lotaslight.lotaslight";

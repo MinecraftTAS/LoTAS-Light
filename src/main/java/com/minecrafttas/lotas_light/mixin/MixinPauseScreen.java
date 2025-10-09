@@ -8,12 +8,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 
 import net.minecraft.client.Minecraft;
-//# 1.21.9
+//# 1.21.10
 //# def
 import net.minecraft.client.gui.screens.PauseScreen;
 //# end
 
-//# 1.21.9
+//# 1.21.10
 //$$// Oddly Mojang moved this exact method to Minecraft
 //$$@Mixin(Minecraft.class)
 //# def

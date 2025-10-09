@@ -1,7 +1,13 @@
 package com.minecrafttas.lotas_light.savestates.gui;
 
+import org.lwjgl.glfw.GLFW;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+//# 1.21.10
+//$$import net.minecraft.client.input.KeyEvent;
+//# def
+//# end
 import net.minecraft.network.chat.Component;
 
 public class SavestateDoneGui extends SavestateGui {
@@ -20,4 +26,23 @@ public class SavestateDoneGui extends SavestateGui {
 	@Override
 	public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
 	}
+
+	//# 1.21.10
+//$$	public boolean keyPressed(KeyEvent event) {
+//$$		if (event.key() == GLFW.GLFW_KEY_ENTER) {
+//$$			onClose();
+//$$			return true;
+//$$		}
+//$$		return super.keyPressed(event);
+//$$	}
+//$$
+	//# def
+	public boolean keyPressed(int i, int j, int k) {
+		if (i == GLFW.GLFW_KEY_ENTER) {
+			onClose();
+			return true;
+		}
+		return super.keyPressed(i, j, k);
+	}
+	//# end
 }

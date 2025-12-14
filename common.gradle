@@ -4,7 +4,9 @@ java {
 }
 
 def snapshot = project.release=="true" ? "" : "-SNAPSHOT"
-version = project.mod_version + snapshot
+def mod_version = project.mod_version + snapshot
+def allowed_mc_version = project.allowed_mc_version
+version = mod_version
 group = project.maven_group
 
 base { 
@@ -51,13 +53,13 @@ loom {
 }
 
 processResources {
-	inputs.property "version", project.version
-	inputs.property "allowedMcVersion", project.allowed_mc_version
+	inputs.property "version", mod_version
+	inputs.property "allowedMcVersion", allowed_mc_version
 
 	filesMatching("fabric.mod.json") { file -> 
-		expand "version": project.version
+		expand "version": mod_version
         filter { String line ->
-            line.replace('"minecraft": "*",', '"minecraft": "' + project.allowed_mc_version + '",')
+            line.replace('"minecraft": "*",', '"minecraft": "' + allowed_mc_version + '",')
         };
 	}
 }

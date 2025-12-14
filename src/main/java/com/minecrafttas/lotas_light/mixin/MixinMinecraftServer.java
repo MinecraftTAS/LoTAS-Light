@@ -14,7 +14,11 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.minecrafttas.lotas_light.LoTASLightClient;
 import com.minecrafttas.lotas_light.duck.Tickratechanger;
 
+//# 1.21.11
+//$$import net.minecraft.util.Util;
+//# def
 import net.minecraft.Util;
+//# end
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -43,13 +47,21 @@ public class MixinMinecraftServer {
 		else
 			return original;
 	}
-
+	
+	//# 1.21.11
+//$$	@Redirect(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;getNanos()J"))
+	//# def
 	@Redirect(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/Util;getNanos()J"))
+	//# end
 	public long redirectGetMeasuringTimeMsInRun() {
 		return getCurrentTime();
 	}
 
+	//# 1.21.11
+//$$	@Redirect(method = "haveTime", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;getNanos()J"))
+	//# def
 	@Redirect(method = "haveTime", at = @At(value = "INVOKE", target = "Lnet/minecraft/Util;getNanos()J"))
+	//# end
 	public long redirectGetMeasuringTimeMsInShouldKeepTicking() {
 		return getCurrentTime();
 	}

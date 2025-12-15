@@ -36,7 +36,11 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.chat.Component;
+//# 1.21.11
+//$$import net.minecraft.resources.Identifier;
+//# def
 import net.minecraft.resources.ResourceLocation;
+//# end
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTickRateManager;
 import net.minecraft.server.level.ServerLevel;
@@ -58,6 +62,8 @@ import net.minecraft.world.TickRateManager;
 public class LoTASLightClient implements ClientModInitializer {
 
 	private KeybindManager keybindManager = new KeybindManager(KeybindManager::isKeyDownExceptTextField);
+	// # 1.21.11
+//$$	private static final KeyMapping.Category LOTASLIGHT_CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("lotaslight", "lotaslight"));
 	// # 1.21.10
 //$$	private static final KeyMapping.Category LOTASLIGHT_CATEGORY = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath("lotaslight", "lotaslight"));
 	//# end
@@ -203,6 +209,11 @@ public class LoTASLightClient implements ClientModInitializer {
 	}
 
 	private void drawHud(GuiGraphics context, float deltaTicks) { //@GraphicsDelta;
+		//# 1.21.11
+//$$		int i = ARGB.colorFromFloat(.2F, 1f, 1f, 1f);
+//$$		context.blit(RenderPipelines.GUI_TEXTURED, Identifier.fromNamespaceAndPath("lotaslight", "potion.png"), Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2
+//$$				- 10, Minecraft.getInstance().getWindow().getGuiScaledHeight()
+//$$						- 50, 0, 0, 20, 20, 20, 20, i);
 		//# 1.21.8
 //$$		int i = ARGB.colorFromFloat(.2F, 1f, 1f, 1f);
 //$$		context.blit(RenderPipelines.GUI_TEXTURED, ResourceLocation.fromNamespaceAndPath("lotaslight", "potion.png"), Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2
@@ -245,7 +256,13 @@ public class LoTASLightClient implements ClientModInitializer {
 	}
 
 	private void renderIcon(IndicatorLocation location, float uvCoordinate, GuiGraphics context) {
-		ResourceLocation streamIcons = new ResourceLocation("lotaslight", "stream_indicator.png"); //@ResourceLocation;
+		//# 1.21.11
+//$$		Identifier streamIcons = Identifier.fromNamespaceAndPath("lotaslight", "stream_indicator.png");
+		//# 1.21.1
+//$$		ResourceLocation streamIcons = ResourceLocation.fromNamespaceAndPath("lotaslight", "stream_indicator.png");
+		//# def
+		ResourceLocation streamIcons = new ResourceLocation("lotaslight", "stream_indicator.png");
+		//# end
 
 		int x = 0;
 		int y = 0;

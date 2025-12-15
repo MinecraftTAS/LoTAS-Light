@@ -23,12 +23,14 @@ import net.minecraft.client.renderer.LevelRenderer;
 @Mixin(LevelRenderer.class)
 //#end
 public class MixinTickrateChangerWorldborder {
-	//#1.21.3
-//$$	@ModifyExpressionValue(method = "render",
-	//#def
-	@ModifyExpressionValue(method = "renderWorldBorder",
-			//#end
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/Util;getMillis()J"))
+	//# 1.21.11
+//$$	@ModifyExpressionValue(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;getMillis()J"))
+	//# 1.21.3
+//$$	@ModifyExpressionValue(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/Util;getMillis()J"))
+	//# def
+	@ModifyExpressionValue(method = "renderWorldBorder", at = @At(value = "INVOKE", target = "Lnet/minecraft/Util;getMillis()J"))
+	//# end
+			
 	public long modifyAnimationTimeWorldBorder(long millis) {
 		Minecraft mc = Minecraft.getInstance();
 		if (mc.level != null)

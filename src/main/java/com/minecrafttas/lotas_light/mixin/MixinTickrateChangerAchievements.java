@@ -20,11 +20,13 @@ import net.minecraft.client.Minecraft;
 //#end
 public class MixinTickrateChangerAchievements {
 
-	//#1.21.3
+	//# 1.21.11
+//$$	@ModifyExpressionValue(method = "Lnet/minecraft/client/gui/components/toasts/ToastManager$ToastInstance;update()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;getMillis()J"))
+	//# 1.21.3
 //$$	@ModifyExpressionValue(method = "Lnet/minecraft/client/gui/components/toasts/ToastManager$ToastInstance;update()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/Util;getMillis()J"))
-	//#def
+	//# def
 	@ModifyExpressionValue(method = "Lnet/minecraft/client/gui/components/toasts/ToastComponent$ToastInstance;render(ILnet/minecraft/client/gui/GuiGraphics;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/Util;getMillis()J"))
-	//#end
+	//# end
 	public long modifyAnimationTimeAdvancements(long millis) {
 		Minecraft mc = Minecraft.getInstance();
 		if (mc.level != null)

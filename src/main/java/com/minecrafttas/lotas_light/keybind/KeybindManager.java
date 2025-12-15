@@ -11,7 +11,11 @@ import com.mojang.blaze3d.platform.InputConstants.Key;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+//# 1.21.11
+//$$import net.minecraft.util.Util;
+//# def
 import net.minecraft.Util;
+//# end
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;

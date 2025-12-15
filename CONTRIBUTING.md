@@ -32,7 +32,7 @@ You only need to open the build.gradle file in LoTAS-Light (not in sub projects 
 1. Set your workspace folder to the parent folder of the LoTAS-Light folder, so if you have something like `workspace/LoTAS-Light`, set the workspace folder to "workspace".
 2. Click `File>Import` then search for "Existing Gradle project" and click next
 3. Select the "LoTAS-Light" folder as a project root directory then click next
-4. (optional) In this step you can set up a specific JDK and gradle version if you haven't set that up yet, but currently this project needs JDK 23 and a Gradle version greater than 8.12.1. 
+4. (optional) In this step you can set up a specific JDK and gradle version if you haven't set that up yet, but currently this project needs at least JDK 21 and a Gradle version greater than 9.2.1. 
 5. Then click finish and wait for it to set up
 
 ### 5. Decompile source and download assets

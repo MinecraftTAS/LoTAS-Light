@@ -1,5 +1,9 @@
 package com.minecrafttas.lotas_light.mixin;
 
+//# 26.1
+//$$import java.util.UUID;
+//# end
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -20,8 +24,11 @@ import com.minecrafttas.lotas_light.duck.Tickratechanger;
 import net.minecraft.Util;
 //# end
 import net.minecraft.client.server.IntegratedServer;
+//# 26.1
+//# def
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+//# end
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTickRateManager;
 import net.minecraft.world.level.storage.LevelStorageSource;
@@ -47,7 +54,7 @@ public class MixinMinecraftServer {
 		else
 			return original;
 	}
-	
+
 	//# 1.21.11
 //$$	@Redirect(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;getNanos()J"))
 	//# def
@@ -95,13 +102,22 @@ public class MixinMinecraftServer {
 		Tickratechanger tickrateManager = (Tickratechanger) ((MinecraftServer) (Object) this).tickRateManager();
 		tickrateManager.disconnect();
 	}
-	
+
+	//# 26.1
+//$$	@WrapOperation(method = "saveAllChunks", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/storage/LevelStorageSource$LevelStorageAccess;saveDataTag(Lnet/minecraft/world/level/storage/WorldData;Ljava/util/UUID;)V"))
+//$$	public void wrap_saveDataTag(LevelStorageSource.LevelStorageAccess instance, WorldData data, UUID singlePlayerTag, Operation<Void> original) {
+	//# def
 	@WrapOperation(method = "saveAllChunks", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/storage/LevelStorageSource$LevelStorageAccess;saveDataTag(Lnet/minecraft/core/RegistryAccess;Lnet/minecraft/world/level/storage/WorldData;Lnet/minecraft/nbt/CompoundTag;)V"))
 	public void wrap_saveDataTag(LevelStorageSource.LevelStorageAccess instance, RegistryAccess access, WorldData data, CompoundTag singlePlayerTag, Operation<Void> original) {
-		if((MinecraftServer)(Object)this instanceof IntegratedServer && LoTASLightClient.dupe) {
+		//# end
+		if ((MinecraftServer) (Object) this instanceof IntegratedServer && LoTASLightClient.dupe) {
 			LoTASLightClient.dupe = false;
 		} else {
+			//# 26.1
+//$$			original.call(instance, data, singlePlayerTag);
+			//# def
 			original.call(instance, access, data, singlePlayerTag);
+			//# end
 		}
 	}
 }

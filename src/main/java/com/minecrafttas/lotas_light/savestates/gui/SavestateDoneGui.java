@@ -2,13 +2,17 @@ package com.minecrafttas.lotas_light.savestates.gui;
 
 import org.lwjgl.glfw.GLFW;
 
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 //# 1.21.10
 //$$import net.minecraft.client.input.KeyEvent;
 //# def
 //# end
 import net.minecraft.network.chat.Component;
+//# 26.1
+//$$import net.minecraft.client.gui.GuiGraphicsExtractor;
+//# def
+import net.minecraft.client.gui.GuiGraphics;
+//# end
 
 public class SavestateDoneGui extends SavestateGui {
 
@@ -16,6 +20,7 @@ public class SavestateDoneGui extends SavestateGui {
 		super(component, text);
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	protected void init() {
 		int boxWidth = 200;
@@ -23,9 +28,15 @@ public class SavestateDoneGui extends SavestateGui {
 		addRenderableWidget(exitButton);
 	}
 
+	//# 26.1
+//$$	@Override
+//$$	public void extractBackground(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
+//$$	}
+	//# def
 	@Override
 	public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
 	}
+	//# end
 
 	//# 1.21.10
 //$$	public boolean keyPressed(KeyEvent event) {

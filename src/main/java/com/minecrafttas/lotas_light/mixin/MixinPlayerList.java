@@ -15,21 +15,33 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 //# end
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+//# 26.1
+//$$import net.minecraft.client.gui.GuiGraphicsExtractor;
+//# def
 import net.minecraft.client.gui.GuiGraphics;
+//# end
 
 @Mixin(Gui.class)
 public class MixinPlayerList {
 
 	//# 1.20.6
+	//## 26.1
+//$$	@Inject(method = "extractHotbarAndDecorations", at = @At("HEAD"))
 	//## 1.21.8
 //$$	@Inject(method = "renderHotbarAndDecorations", at = @At("HEAD"))
 	//## def
 //$$	@Inject(method = "renderExperienceLevel", at = @At("HEAD"))
 	//## end
-//$$	private void onRenderExperienceLevel(GuiGraphics guiGraphics, float deltaTracker, CallbackInfo ci) { //@GraphicsDelta;
-		//# def
+//$$	private void onRenderExperienceLevel(
+	//## 26.1
+//$$			GuiGraphicsExtractor memPose,
+	//## def
+//$$			GuiGraphics memPose,
+	//## end
+//$$			float deltaTracker, CallbackInfo ci) { //@GraphicsDelta;
+	//# def
 	@Inject(method = "renderExperienceBar", at = @At("HEAD"))
-	private void onRenderExperienceLevel(GuiGraphics guiGraphics, int deltaTracker, CallbackInfo ci) {
+	private void onRenderExperienceLevel(GuiGraphics memPose, int deltaTracker, CallbackInfo ci) {
 		//# end
 		float memOffsetX = (Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2) - 6;
 		float memOffsetY = Minecraft.getInstance().getWindow().getGuiScaledHeight() - 31 - 19;
@@ -41,14 +53,18 @@ public class MixinPlayerList {
 		flip += 0.26;
 
 		//# 1.21.8
-//$$		Matrix3x2fStack memstack = guiGraphics.pose();
+		//## 26.1
+//$$		Matrix3x2fStack memstack = memPose.pose();
+		//## def
+//$$		Matrix3x2fStack memstack = memPose.pose();
+		//## end
 //$$
 //$$		memstack.pushMatrix();
 //$$		memstack.translate(memOffsetX, memOffsetY);
 //$$		memstack.scale(flip, flip);
 //$$		memstack.rotate(flipOffset);
 		//# def
-		PoseStack memstack = guiGraphics.pose();
+		PoseStack memstack = memPose.pose();
 
 		memstack.pushPose();
 		memstack.translate(memOffsetX, memOffsetY, 0);
@@ -63,89 +79,89 @@ public class MixinPlayerList {
 		int c = 0x546980;
 
 		int y = 0;
-		setRegistryState(guiGraphics, 8, y, oB);
-		setRegistryState(guiGraphics, 9, y, oB);
+		setRegistryState(memPose, 8, y, oB);
+		setRegistryState(memPose, 9, y, oB);
 
 		y = 1;
-		setRegistryState(guiGraphics, 7, y, o);
-		setRegistryState(guiGraphics, 8, y, o);
-		setRegistryState(guiGraphics, 9, y, oB);
+		setRegistryState(memPose, 7, y, o);
+		setRegistryState(memPose, 8, y, o);
+		setRegistryState(memPose, 9, y, oB);
 
 		y = 2;
-		setRegistryState(guiGraphics, 6, y, o);
-		setRegistryState(guiGraphics, 7, y, o);
-		setRegistryState(guiGraphics, 8, y, o);
-		setRegistryState(guiGraphics, 9, y, o);
+		setRegistryState(memPose, 6, y, o);
+		setRegistryState(memPose, 7, y, o);
+		setRegistryState(memPose, 8, y, o);
+		setRegistryState(memPose, 9, y, o);
 
 		y = 3;
-		setRegistryState(guiGraphics, 5, y, w);
-		setRegistryState(guiGraphics, 8, y, oD);
-		setRegistryState(guiGraphics, 9, y, o);
+		setRegistryState(memPose, 5, y, w);
+		setRegistryState(memPose, 8, y, oD);
+		setRegistryState(memPose, 9, y, o);
 
 		y = 4;
-		setRegistryState(guiGraphics, 4, y, w);
-		setRegistryState(guiGraphics, 7, y, w);
-		setRegistryState(guiGraphics, 8, y, oD);
-		setRegistryState(guiGraphics, 9, y, oD);
+		setRegistryState(memPose, 4, y, w);
+		setRegistryState(memPose, 7, y, w);
+		setRegistryState(memPose, 8, y, oD);
+		setRegistryState(memPose, 9, y, oD);
 
 		y = 5;
-		setRegistryState(guiGraphics, 3, y, w);
-		setRegistryState(guiGraphics, 7, y, w);
+		setRegistryState(memPose, 3, y, w);
+		setRegistryState(memPose, 7, y, w);
 
 		y = 6;
-		setRegistryState(guiGraphics, 2, y, w);
-		setRegistryState(guiGraphics, 4, y, w);
-		setRegistryState(guiGraphics, 8, y, w);
+		setRegistryState(memPose, 2, y, w);
+		setRegistryState(memPose, 4, y, w);
+		setRegistryState(memPose, 8, y, w);
 
 		y = 7;
-		setRegistryState(guiGraphics, 1, y, w);
-		setRegistryState(guiGraphics, 3, y, w);
-		setRegistryState(guiGraphics, 9, y, w);
+		setRegistryState(memPose, 1, y, w);
+		setRegistryState(memPose, 3, y, w);
+		setRegistryState(memPose, 9, y, w);
 
 		y = 8;
-		setRegistryState(guiGraphics, 1, y, w);
-		setRegistryState(guiGraphics, 3, y, w);
-		setRegistryState(guiGraphics, 9, y, w);
+		setRegistryState(memPose, 1, y, w);
+		setRegistryState(memPose, 3, y, w);
+		setRegistryState(memPose, 9, y, w);
 
 		y = 9;
-		setRegistryState(guiGraphics, 1, y, w);
-		setRegistryState(guiGraphics, 2, y, c);
-		setRegistryState(guiGraphics, 3, y, c);
-		setRegistryState(guiGraphics, 4, y, c);
-		setRegistryState(guiGraphics, 5, y, c);
-		setRegistryState(guiGraphics, 6, y, c);
-		setRegistryState(guiGraphics, 7, y, w);
-		setRegistryState(guiGraphics, 8, y, c);
-		setRegistryState(guiGraphics, 9, y, w);
+		setRegistryState(memPose, 1, y, w);
+		setRegistryState(memPose, 2, y, c);
+		setRegistryState(memPose, 3, y, c);
+		setRegistryState(memPose, 4, y, c);
+		setRegistryState(memPose, 5, y, c);
+		setRegistryState(memPose, 6, y, c);
+		setRegistryState(memPose, 7, y, w);
+		setRegistryState(memPose, 8, y, c);
+		setRegistryState(memPose, 9, y, w);
 
 		y = 10;
-		setRegistryState(guiGraphics, 1, y, w);
-		setRegistryState(guiGraphics, 2, y, c);
-		setRegistryState(guiGraphics, 3, y, c);
-		setRegistryState(guiGraphics, 4, y, c);
-		setRegistryState(guiGraphics, 5, y, c);
-		setRegistryState(guiGraphics, 6, y, c);
-		setRegistryState(guiGraphics, 7, y, w);
-		setRegistryState(guiGraphics, 8, y, c);
-		setRegistryState(guiGraphics, 9, y, w);
+		setRegistryState(memPose, 1, y, w);
+		setRegistryState(memPose, 2, y, c);
+		setRegistryState(memPose, 3, y, c);
+		setRegistryState(memPose, 4, y, c);
+		setRegistryState(memPose, 5, y, c);
+		setRegistryState(memPose, 6, y, c);
+		setRegistryState(memPose, 7, y, w);
+		setRegistryState(memPose, 8, y, c);
+		setRegistryState(memPose, 9, y, w);
 
 		y = 11;
-		setRegistryState(guiGraphics, 1, y, w);
-		setRegistryState(guiGraphics, 2, y, w);
-		setRegistryState(guiGraphics, 3, y, c);
-		setRegistryState(guiGraphics, 4, y, c);
-		setRegistryState(guiGraphics, 5, y, c);
-		setRegistryState(guiGraphics, 6, y, w);
-		setRegistryState(guiGraphics, 7, y, c);
-		setRegistryState(guiGraphics, 8, y, w);
-		setRegistryState(guiGraphics, 9, y, w);
+		setRegistryState(memPose, 1, y, w);
+		setRegistryState(memPose, 2, y, w);
+		setRegistryState(memPose, 3, y, c);
+		setRegistryState(memPose, 4, y, c);
+		setRegistryState(memPose, 5, y, c);
+		setRegistryState(memPose, 6, y, w);
+		setRegistryState(memPose, 7, y, c);
+		setRegistryState(memPose, 8, y, w);
+		setRegistryState(memPose, 9, y, w);
 
 		y = 12;
-		setRegistryState(guiGraphics, 3, y, w);
-		setRegistryState(guiGraphics, 4, y, w);
-		setRegistryState(guiGraphics, 5, y, w);
-		setRegistryState(guiGraphics, 6, y, w);
-		setRegistryState(guiGraphics, 7, y, w);
+		setRegistryState(memPose, 3, y, w);
+		setRegistryState(memPose, 4, y, w);
+		setRegistryState(memPose, 5, y, w);
+		setRegistryState(memPose, 6, y, w);
+		setRegistryState(memPose, 7, y, w);
 
 		//# 1.21.8
 //$$		memstack.rotate(-(float) flipOffset);
@@ -160,7 +176,13 @@ public class MixinPlayerList {
 		//# end
 	}
 
-	public void setRegistryState(GuiGraphics guiGraphics, int x, int y, int color) {
+	public void setRegistryState(
+	//# 26.1
+//$$			GuiGraphicsExtractor guiGraphics,
+			//# def
+			GuiGraphics guiGraphics,
+			//# end
+			int x, int y, int color) {
 		int alpha = 0x60000000;
 		guiGraphics.fill(x, y, x + 1, y + 1, alpha + color);
 	}

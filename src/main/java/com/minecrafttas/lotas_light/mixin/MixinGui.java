@@ -13,18 +13,30 @@ import com.minecrafttas.lotas_light.event.HudRenderExperienceCallback;
 //$$import net.minecraft.client.DeltaTracker;
 //# end
 import net.minecraft.client.gui.Gui;
+//# 26.1
+//$$import net.minecraft.client.gui.GuiGraphicsExtractor;
+//# def
 import net.minecraft.client.gui.GuiGraphics;
+//# end
 
 @Mixin(Gui.class)
 public class MixinGui {
 
 	//# 1.20.6
+	//## 26.1
+//$$	@Inject(method = "extractHotbarAndDecorations", at = @At("HEAD"))
 	//## 1.21.8
 //$$	@Inject(method = "renderHotbarAndDecorations", at = @At("HEAD"))
 	//## def
 //$$	@Inject(method = "renderExperienceLevel", at = @At("HEAD"))
 	//## end
-//$$	private void onRenderExperienceLevel(GuiGraphics guiGraphics, float deltaTracker, CallbackInfo ci) { //@GraphicsDelta;
+//$$	private void onRenderExperienceLevel(
+			//## 26.1
+//$$			GuiGraphicsExtractor guiGraphics,
+			//## def
+//$$			GuiGraphics guiGraphics,
+			//## end
+//$$			float deltaTracker, CallbackInfo ci) { //@GraphicsDelta;
 //$$		HudRenderExperienceCallback.EVENT.invoker().onRenderPre(guiGraphics, deltaTracker);
 //$$	}
 //$$
@@ -34,11 +46,20 @@ public class MixinGui {
 		HudRenderExperienceCallback.EVENT.invoker().onRenderPre(guiGraphics, deltaTracker);
 	}
 	//# end
-
+	
+	//# 26.1
+//$$	@Inject(at = @At(value = "RETURN"), method = "extractEffects")
+	//# def
 	@Inject(at = @At(value = "RETURN"), method = "renderEffects")
-
+	//# end
 	//# 1.21.1
-//$$	public void onRenderEffects(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+//$$	public void onRenderEffects(
+			//## 26.1
+//$$			GuiGraphicsExtractor guiGraphics,
+			//## def
+//$$			GuiGraphics guiGraphics,
+			//## end
+//$$			DeltaTracker deltaTracker, CallbackInfo ci) {
 //$$
 	//# 1.20.6
 //$$	public void onRenderEffects(GuiGraphics guiGraphics, float deltaTracker, CallbackInfo ci) {

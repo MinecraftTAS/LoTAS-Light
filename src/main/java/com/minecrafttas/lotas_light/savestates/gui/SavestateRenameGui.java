@@ -7,7 +7,11 @@ import com.minecrafttas.lotas_light.LoTASLight;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+//# 26.1
+//$$import net.minecraft.client.gui.GuiGraphicsExtractor;
+//# def
 import net.minecraft.client.gui.GuiGraphics;
+//# end
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 //# 1.21.10
@@ -80,6 +84,12 @@ public class SavestateRenameGui extends SavestateGui {
 	}
 	//# end
 
+	
+	//# 26.1
+//$$	@Override
+//$$	public void extractBackground(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
+//$$	}
+//$$	
 	//# 1.21.3
 //$$	@Override
 //$$	public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
@@ -108,7 +118,12 @@ public class SavestateRenameGui extends SavestateGui {
 			if (message == null || message.isEmpty()) {
 				message = I18n.get("msg.lotaslight.savestate.failure", e.toString());
 			}
+			
+			//# 26.1
+//$$			mc.gui.getChat().addPlayerMessage(Component.literal(message), null, null);
+			//# def
 			mc.gui.getChat().addMessage(Component.literal(message));
+			//# end
 		}
 		onClose();
 		return true;
@@ -121,8 +136,13 @@ public class SavestateRenameGui extends SavestateGui {
 		}
 
 		@Override
+		//# 26.1
+//$$		public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
+//$$			super.extractWidgetRenderState(guiGraphics, i, j, f);
+		//# def
 		public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
 			super.renderWidget(guiGraphics, i, j, f);
+		//# end
 
 			String string = font.plainSubstrByWidth(this.value.substring(this.displayPos), this.getInnerWidth());
 
@@ -132,7 +152,11 @@ public class SavestateRenameGui extends SavestateGui {
 			int o = m;
 
 			if (this.hint != null && string.isEmpty() && this.isFocused()) {
+				//# 26.1
+//$$				guiGraphics.text(this.font, this.hint, o, n, k);
+				//# def
 				guiGraphics.drawString(this.font, this.hint, o, n, k);
+				//# end
 			}
 		}
 	}

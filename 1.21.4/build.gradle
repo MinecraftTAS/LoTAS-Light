@@ -3,3 +3,19 @@ plugins {
 }
 
 apply from: "../common.gradle"
+
+java {
+	sourceCompatibility = targetCompatibility = 21
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 21
+}
+
+dependencies {
+	mappings loom.officialMojangMappings()
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	// Fabric API. This is technically optional, but you probably want it anyway.
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+}

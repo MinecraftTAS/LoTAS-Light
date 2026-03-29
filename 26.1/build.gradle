@@ -1,0 +1,9 @@
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+apply from: "../common.gradle"
+
+java {
+	sourceCompatibility = targetCompatibility = 25
+}

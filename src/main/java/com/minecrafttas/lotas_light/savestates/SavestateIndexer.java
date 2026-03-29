@@ -280,6 +280,7 @@ public class SavestateIndexer {
 		return getSavestateList(center, 10);
 	}
 
+	@SuppressWarnings("unused")
 	public List<Savestate> getSavestateList(int center, int amount) {
 		List<Savestate> out = new LinkedList<>();
 		if (center < 0) {

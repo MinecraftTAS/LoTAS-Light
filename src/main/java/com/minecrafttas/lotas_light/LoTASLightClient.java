@@ -30,12 +30,12 @@ import net.minecraft.client.Minecraft;
 //# def
 import net.minecraft.client.gui.GuiGraphics;
 //# end
+//# 26.1
 //# 1.20.6
 //$$import net.minecraft.client.gui.screens.GenericMessageScreen;
 //# def
 import net.minecraft.client.gui.screens.GenericDirtMessageScreen;
 //# end
-import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.server.IntegratedServer;
@@ -62,6 +62,10 @@ import net.minecraft.server.level.ServerLevel;
 import com.mojang.blaze3d.systems.RenderSystem;
 //# end
 import net.minecraft.world.TickRateManager;
+//# 26.1
+//# def
+import net.minecraft.client.gui.screens.TitleScreen;
+//# end
 
 public class LoTASLightClient implements ClientModInitializer {
 
@@ -437,19 +441,32 @@ public class LoTASLightClient implements ClientModInitializer {
 	}
 
 	private void dupe(Minecraft mc) {
+		//# 26.1
+//$$		mc.gui.getChat().addPlayerMessage(Component.literal("Duplication feature disabled: 26.1 changed how the world is saved, which affects the duplication glitch... At the time of writing, this glitch could not be reproduced in vanilla.").withStyle(ChatFormatting.RED), null, null);
+		//# def
 		dupe = true;
-		//# 1.21.8
+		//# end
+		
+		//# 26.1
+//$$		//mc.disconnectFromWorld(Component.translatable("gui.lotaslight.dupe.quitmsg"));
+		//# def
+		//## 1.21.8
 //$$		mc.level.disconnect(Component.translatable("gui.lotaslight.dupe.quitmsg"));
-		//# def
+		//## def
 		mc.level.disconnect();
-		//# end
+		//## end
 
-		//# 1.20.6
+		//## 1.20.6
 //$$		mc.disconnect(new GenericMessageScreen(Component.translatable("gui.lotaslight.duping.quitmsg")), false);
-		//# def
+		//## def
 		mc.disconnect(new GenericDirtMessageScreen(Component.translatable("gui.lotaslight.duping.quitmsg")));
+		//## end
 		//# end
+		
+		//# 26.1
+		//# def
 		mc.setScreen(new TitleScreen());
+		//# end
 	}
 
 	private short findClosestRateIndex(float tickrate) {

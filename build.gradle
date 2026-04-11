@@ -4,7 +4,7 @@ plugins {
 
 discombobulator {
 	versions = [
-		"26.1":"",
+		"26.1.2":"",
 		"1.21.11":"",
 		"1.21.10":"",
 		"1.21.8":"",
@@ -23,7 +23,7 @@ discombobulator {
 		],
 		GraphicsExtractor: [
 			"def": "GuiGraphics",
-			"26.1": "GuiGraphicsExtractor"
+			"26.1.2": "GuiGraphicsExtractor"
 		],
 		ResourceLocation: [
 			"def": "new ResourceLocation",
@@ -35,5 +35,5 @@ discombobulator {
 	
 	defaultLineFeed = "\n"
 	
-	accessWidenerOfficial = [ "26.1" ]
+	accessWidenerOfficial = [ "26.1.2" ]
 }

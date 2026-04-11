@@ -8,7 +8,7 @@ import net.minecraft.client.gui.components.Button;
 //# def
 //# end
 import net.minecraft.network.chat.Component;
-//# 26.1
+//# 26.1.2
 //$$import net.minecraft.client.gui.GuiGraphicsExtractor;
 //# def
 import net.minecraft.client.gui.GuiGraphics;
@@ -28,7 +28,7 @@ public class SavestateDoneGui extends SavestateGui {
 		addRenderableWidget(exitButton);
 	}
 
-	//# 26.1
+	//# 26.1.2
 //$$	@Override
 //$$	public void extractBackground(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
 //$$	}

@@ -17,7 +17,7 @@ import net.minecraft.world.TickRateManager;
 @Mixin(SubtitleOverlay.class)
 public class MixinTickrateChangerSubtitleOverlay {
 
-	//# 26.1
+	//# 26.1.2
 //$$	@ModifyConstant(method = "extractRenderState", constant = @Constant(doubleValue = 3000D))
 	//# def
 	@ModifyConstant(method = "render", constant = @Constant(doubleValue = 3000D))

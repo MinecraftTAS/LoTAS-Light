@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 //# 1.21.1
 //$$import net.minecraft.client.DeltaTracker;
 //# end
-//# 26.1
+//# 26.1.2
 //$$import net.minecraft.client.gui.GuiGraphicsExtractor;
 //# def
 import net.minecraft.client.gui.GuiGraphics;
@@ -18,7 +18,7 @@ public interface HudRenderEffectsCallback {
 	});
 
 	public void onRenderPre(
-			//# 26.1
+			//# 26.1.2
 //$$			GuiGraphicsExtractor drawContext,
 			//# def
 			GuiGraphics drawContext,

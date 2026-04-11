@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 //# end
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-//# 26.1
+//# 26.1.2
 //$$import net.minecraft.client.gui.GuiGraphicsExtractor;
 //# def
 import net.minecraft.client.gui.GuiGraphics;
@@ -25,7 +25,7 @@ import net.minecraft.client.gui.GuiGraphics;
 public class MixinPlayerList {
 
 	//# 1.20.6
-	//## 26.1
+	//## 26.1.2
 //$$	@Inject(method = "extractHotbarAndDecorations", at = @At("HEAD"))
 	//## 1.21.8
 //$$	@Inject(method = "renderHotbarAndDecorations", at = @At("HEAD"))
@@ -33,7 +33,7 @@ public class MixinPlayerList {
 //$$	@Inject(method = "renderExperienceLevel", at = @At("HEAD"))
 	//## end
 //$$	private void onRenderExperienceLevel(
-	//## 26.1
+	//## 26.1.2
 //$$			GuiGraphicsExtractor memPose,
 	//## def
 //$$			GuiGraphics memPose,
@@ -53,7 +53,7 @@ public class MixinPlayerList {
 		flip += 0.26;
 
 		//# 1.21.8
-		//## 26.1
+		//## 26.1.2
 //$$		Matrix3x2fStack memstack = memPose.pose();
 		//## def
 //$$		Matrix3x2fStack memstack = memPose.pose();
@@ -177,7 +177,7 @@ public class MixinPlayerList {
 	}
 
 	public void setRegistryState(
-	//# 26.1
+	//# 26.1.2
 //$$			GuiGraphicsExtractor guiGraphics,
 			//# def
 			GuiGraphics guiGraphics,

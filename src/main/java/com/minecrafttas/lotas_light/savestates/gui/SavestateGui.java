@@ -1,6 +1,6 @@
 package com.minecrafttas.lotas_light.savestates.gui;
 
-//# 26.1
+//# 26.1.2
 //$$import net.minecraft.client.gui.GuiGraphicsExtractor;
 //# def
 import net.minecraft.client.gui.GuiGraphics;
@@ -18,7 +18,7 @@ public class SavestateGui extends Screen {
 	}
 
 	@Override
-	//# 26.1
+	//# 26.1.2
 //$$	public void extractRenderState(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
 //$$		super.extractRenderState(guiGraphics, i, j, f);
 //$$

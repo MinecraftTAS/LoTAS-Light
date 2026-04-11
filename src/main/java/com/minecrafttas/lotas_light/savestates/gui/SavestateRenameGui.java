@@ -7,7 +7,7 @@ import com.minecrafttas.lotas_light.LoTASLight;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-//# 26.1
+//# 26.1.2
 //$$import net.minecraft.client.gui.GuiGraphicsExtractor;
 //# def
 import net.minecraft.client.gui.GuiGraphics;
@@ -85,7 +85,7 @@ public class SavestateRenameGui extends SavestateGui {
 	//# end
 
 	
-	//# 26.1
+	//# 26.1.2
 //$$	@Override
 //$$	public void extractBackground(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
 //$$	}
@@ -119,7 +119,7 @@ public class SavestateRenameGui extends SavestateGui {
 				message = I18n.get("msg.lotaslight.savestate.failure", e.toString());
 			}
 			
-			//# 26.1
+			//# 26.1.2
 //$$			mc.gui.getChat().addPlayerMessage(Component.literal(message), null, null);
 			//# def
 			mc.gui.getChat().addMessage(Component.literal(message));
@@ -136,7 +136,7 @@ public class SavestateRenameGui extends SavestateGui {
 		}
 
 		@Override
-		//# 26.1
+		//# 26.1.2
 //$$		public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
 //$$			super.extractWidgetRenderState(guiGraphics, i, j, f);
 		//# def
@@ -152,7 +152,7 @@ public class SavestateRenameGui extends SavestateGui {
 			int o = m;
 
 			if (this.hint != null && string.isEmpty() && this.isFocused()) {
-				//# 26.1
+				//# 26.1.2
 //$$				guiGraphics.text(this.font, this.hint, o, n, k);
 				//# def
 				guiGraphics.drawString(this.font, this.hint, o, n, k);

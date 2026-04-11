@@ -10,7 +10,7 @@ import com.minecrafttas.lotas_light.mixin.AccessorKeyMapping;
 import com.mojang.blaze3d.platform.InputConstants.Key;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 
-//# 26.1
+//# 26.1.2
 //$$import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 //# def
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -121,7 +121,7 @@ public class KeybindManager {
 	public void registerKeybind(Keybind keybind) {
 		this.keybindings.add(keybind);
 		KeyMapping keyBinding = keybind.vanillaKeyBinding;
-		//# 26.1
+		//# 26.1.2
 //$$		KeyMappingHelper.registerKeyMapping(keyBinding);
 		//# def
 		KeyBindingHelper.registerKeyBinding(keyBinding);

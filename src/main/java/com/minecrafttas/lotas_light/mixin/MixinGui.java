@@ -13,7 +13,7 @@ import com.minecrafttas.lotas_light.event.HudRenderExperienceCallback;
 //$$import net.minecraft.client.DeltaTracker;
 //# end
 import net.minecraft.client.gui.Gui;
-//# 26.1
+//# 26.1.2
 //$$import net.minecraft.client.gui.GuiGraphicsExtractor;
 //# def
 import net.minecraft.client.gui.GuiGraphics;
@@ -23,7 +23,7 @@ import net.minecraft.client.gui.GuiGraphics;
 public class MixinGui {
 
 	//# 1.20.6
-	//## 26.1
+	//## 26.1.2
 //$$	@Inject(method = "extractHotbarAndDecorations", at = @At("HEAD"))
 	//## 1.21.8
 //$$	@Inject(method = "renderHotbarAndDecorations", at = @At("HEAD"))
@@ -31,7 +31,7 @@ public class MixinGui {
 //$$	@Inject(method = "renderExperienceLevel", at = @At("HEAD"))
 	//## end
 //$$	private void onRenderExperienceLevel(
-			//## 26.1
+			//## 26.1.2
 //$$			GuiGraphicsExtractor guiGraphics,
 			//## def
 //$$			GuiGraphics guiGraphics,
@@ -47,14 +47,14 @@ public class MixinGui {
 	}
 	//# end
 	
-	//# 26.1
+	//# 26.1.2
 //$$	@Inject(at = @At(value = "RETURN"), method = "extractEffects")
 	//# def
 	@Inject(at = @At(value = "RETURN"), method = "renderEffects")
 	//# end
 	//# 1.21.1
 //$$	public void onRenderEffects(
-			//## 26.1
+			//## 26.1.2
 //$$			GuiGraphicsExtractor guiGraphics,
 			//## def
 //$$			GuiGraphics guiGraphics,

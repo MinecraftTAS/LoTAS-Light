@@ -4,6 +4,7 @@ plugins {
 
 discombobulator {
 	versions = [
+		"26.1.2":"",
 		"1.21.11":"",
 		"1.21.10":"",
 		"1.21.8":"",
@@ -18,7 +19,11 @@ discombobulator {
 	patterns = [
 		GraphicsDelta: [
 			"def": "float",
-			"1.21.1": "DeltaTracker"
+			"1.21.1": "DeltaTracker",
+		],
+		GraphicsExtractor: [
+			"def": "GuiGraphics",
+			"26.1.2": "GuiGraphicsExtractor"
 		],
 		ResourceLocation: [
 			"def": "new ResourceLocation",
@@ -29,4 +34,6 @@ discombobulator {
 	ignoredFileFormats = ["*.png"]
 	
 	defaultLineFeed = "\n"
+	
+	accessWidenerOfficial = [ "26.1.2" ]
 }

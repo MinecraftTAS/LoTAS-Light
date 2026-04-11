@@ -20,6 +20,7 @@ public class LoTASLight implements ModInitializer {
 
 	public static Float startTickrate = null;
 
+	@SuppressWarnings("unused")
 	@Override
 	public void onInitialize() {
 		LOGGER.debug("Initializing LoTAS-Light");

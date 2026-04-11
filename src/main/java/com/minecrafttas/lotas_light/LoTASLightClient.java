@@ -25,13 +25,19 @@ import net.minecraft.ChatFormatting;
 //$$import net.minecraft.client.DeltaTracker;
 //# end
 import net.minecraft.client.Minecraft;
+//# 26.1.2
+//$$import net.minecraft.client.gui.GuiGraphicsExtractor;
+//# def
 import net.minecraft.client.gui.GuiGraphics;
+//# end
+
+//# 26.1.2
 //# 1.20.6
 //$$import net.minecraft.client.gui.screens.GenericMessageScreen;
 //# def
 import net.minecraft.client.gui.screens.GenericDirtMessageScreen;
 //# end
-import net.minecraft.client.gui.screens.TitleScreen;
+
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.server.IntegratedServer;
@@ -58,6 +64,10 @@ import net.minecraft.server.level.ServerLevel;
 import com.mojang.blaze3d.systems.RenderSystem;
 //# end
 import net.minecraft.world.TickRateManager;
+//# 26.1.2
+//# def
+import net.minecraft.client.gui.screens.TitleScreen;
+//# end
 
 public class LoTASLightClient implements ClientModInitializer {
 
@@ -77,6 +87,7 @@ public class LoTASLightClient implements ClientModInitializer {
 	private boolean showTickIndicator;
 	public static boolean dupe;
 
+	@SuppressWarnings("unused")
 	@Override
 	public void onInitializeClient() {
 		Minecraft mc = Minecraft.getInstance();
@@ -138,9 +149,17 @@ public class LoTASLightClient implements ClientModInitializer {
 		if (config.getBoolean(ConfigOptions.TICKRATE_SHOW_MESSAGES)) {
 			if (showHint) {
 				showHint = false;
-				client.gui.getChat().addMessage(Component.translatable("msg.lotaslight.turnOff", tickrate).withStyle(ChatFormatting.YELLOW));
+				//# 26.1.2
+//$$				client.gui.getChat().addPlayerMessage(Component.translatable("msg.lotaslight.turnOff", tickrate).withStyle(ChatFormatting.YELLOW), null, null);
+				//# def
+					client.gui.getChat().addMessage(Component.translatable("msg.lotaslight.turnOff", tickrate).withStyle(ChatFormatting.YELLOW));
+				//# end
 			}
+			//# 26.1.2
+//$$			client.gui.getChat().addPlayerMessage(Component.translatable("msg.lotaslight.setTickrate", tickrate), null, null);
+			//# def
 			client.gui.getChat().addMessage(Component.translatable("msg.lotaslight.setTickrate", tickrate));
+			//# end
 		}
 		serverTickrateChanger.setTickRate(tickrate);
 	}
@@ -167,9 +186,17 @@ public class LoTASLightClient implements ClientModInitializer {
 		if (config.getBoolean(ConfigOptions.TICKRATE_SHOW_MESSAGES)) {
 			if (showHint) {
 				showHint = false;
-				client.gui.getChat().addMessage(Component.translatable("msg.lotaslight.turnOff", tickrate).withStyle(ChatFormatting.YELLOW));
+				//# 26.1.2
+//$$				client.gui.getChat().addPlayerMessage(Component.translatable("msg.lotaslight.turnOff", tickrate).withStyle(ChatFormatting.YELLOW), null, null);
+				//# def
+					client.gui.getChat().addMessage(Component.translatable("msg.lotaslight.turnOff", tickrate).withStyle(ChatFormatting.YELLOW));
+				//# end
 			}
+			//# 26.1.2
+//$$			client.gui.getChat().addPlayerMessage(Component.translatable("msg.lotaslight.setTickrate", tickrate), null, null);
+			//# def
 			client.gui.getChat().addMessage(Component.translatable("msg.lotaslight.setTickrate", tickrate));
+			//# end
 		}
 		serverTickrateChanger.setTickRate(tickrate);
 	}
@@ -208,7 +235,14 @@ public class LoTASLightClient implements ClientModInitializer {
 		serverTickrateChanger.advanceTick();
 	}
 
-	private void drawHud(GuiGraphics context, float deltaTicks) { //@GraphicsDelta;
+	private void drawHud(
+			//# 26.1.2
+//$$			GuiGraphicsExtractor context,
+			//# def
+			GuiGraphics context,
+			//# end
+			float deltaTicks	//@GraphicsDelta;
+			) { 
 		//# 1.21.11
 //$$		int i = ARGB.colorFromFloat(.2F, 1f, 1f, 1f);
 //$$		context.blit(RenderPipelines.GUI_TEXTURED, Identifier.fromNamespaceAndPath("lotaslight", "potion.png"), Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2
@@ -234,7 +268,13 @@ public class LoTASLightClient implements ClientModInitializer {
 		//# end
 	}
 
-	private void afterDrawEffects(GuiGraphics context, float deltaTicks) { //@GraphicsDelta;
+	private void afterDrawEffects(
+			//# 26.1.2
+//$$			GuiGraphicsExtractor context,
+			//# def
+			GuiGraphics context,
+			//# end
+			float deltaTicks) { //@GraphicsDelta;
 		Minecraft mc = Minecraft.getInstance();
 		ClientLevel level = mc.level;
 
@@ -255,7 +295,13 @@ public class LoTASLightClient implements ClientModInitializer {
 		}
 	}
 
-	private void renderIcon(IndicatorLocation location, float uvCoordinate, GuiGraphics context) {
+	private void renderIcon(IndicatorLocation location, float uvCoordinate,
+			//# 26.1.2
+//$$			GuiGraphicsExtractor context
+			//# def
+			GuiGraphics context
+			//# end
+			) {
 		//# 1.21.11
 //$$		Identifier streamIcons = Identifier.fromNamespaceAndPath("lotaslight", "stream_indicator.png");
 		//# 1.21.1
@@ -341,7 +387,12 @@ public class LoTASLightClient implements ClientModInitializer {
 					if (message == null || message.isEmpty()) {
 						message = I18n.get("msg.lotaslight.savestate.failure", e.toString());
 					}
+					//# 26.1.2
+//$$					mc.gui.getChat().addPlayerMessage(Component.literal(message).withStyle(ChatFormatting.RED), null, null);
+					//# def
 					mc.gui.getChat().addMessage(Component.literal(message).withStyle(ChatFormatting.RED));
+					//# end
+							
 					Minecraft.getInstance().setScreen(null);
 				});
 				LoTASLight.savestateHandler.resetState();
@@ -381,7 +432,11 @@ public class LoTASLightClient implements ClientModInitializer {
 			if (message == null || message.isEmpty()) {
 				message = I18n.get("msg.lotaslight.savestate.failure", e.toString());
 			}
+			//# 26.1.2
+//$$			mc.gui.getChat().addPlayerMessage(Component.literal(message).withStyle(ChatFormatting.RED), null, null);
+			//# def
 			mc.gui.getChat().addMessage(Component.literal(message).withStyle(ChatFormatting.RED));
+			//# end
 			LoTASLight.savestateHandler.resetState();
 			Minecraft.getInstance().setScreen(null);
 		}
@@ -389,18 +444,26 @@ public class LoTASLightClient implements ClientModInitializer {
 
 	private void dupe(Minecraft mc) {
 		dupe = true;
+		
+		//# 26.1.2
+//$$		mc.disconnectFromWorld(Component.translatable("gui.lotaslight.dupe.quitmsg"));
 		//# 1.21.8
 //$$		mc.level.disconnect(Component.translatable("gui.lotaslight.dupe.quitmsg"));
 		//# def
 		mc.level.disconnect();
 		//# end
-
+		
+		//# 26.1.2
 		//# 1.20.6
 //$$		mc.disconnect(new GenericMessageScreen(Component.translatable("gui.lotaslight.duping.quitmsg")), false);
 		//# def
 		mc.disconnect(new GenericDirtMessageScreen(Component.translatable("gui.lotaslight.duping.quitmsg")));
 		//# end
+		
+		//# 26.1.2
+		//# def
 		mc.setScreen(new TitleScreen());
+		//# end
 	}
 
 	private short findClosestRateIndex(float tickrate) {

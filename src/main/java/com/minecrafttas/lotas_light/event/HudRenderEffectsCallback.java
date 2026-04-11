@@ -5,7 +5,11 @@ import net.fabricmc.fabric.api.event.EventFactory;
 //# 1.21.1
 //$$import net.minecraft.client.DeltaTracker;
 //# end
+//# 26.1.2
+//$$import net.minecraft.client.gui.GuiGraphicsExtractor;
+//# def
 import net.minecraft.client.gui.GuiGraphics;
+//# end
 
 public interface HudRenderEffectsCallback {
 	public static Event<HudRenderEffectsCallback> EVENT = EventFactory.createArrayBacked(HudRenderEffectsCallback.class, (listeners) -> (matrixStack, delta) -> {
@@ -13,5 +17,11 @@ public interface HudRenderEffectsCallback {
 			listener.onRenderPre(matrixStack, delta);
 	});
 
-	public void onRenderPre(GuiGraphics drawContext, float tickCounter); //@GraphicsDelta;
+	public void onRenderPre(
+			//# 26.1.2
+//$$			GuiGraphicsExtractor drawContext,
+			//# def
+			GuiGraphics drawContext,
+			//# end
+			float tickCounter); //@GraphicsDelta;
 }

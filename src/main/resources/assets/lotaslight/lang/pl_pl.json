@@ -30,7 +30,7 @@
     "msg.lotaslight.savestate.deleteMore.clickable": "TAK",
     "msg.lotaslight.savestate.deleteMore.hover": "Ta operacja nie może być wycofana lub zatrzymana!",
     "msg.lotaslight.savestate.deleteMore.error.negative": "Usunięcie ujemnej ilości zapisów stanu świata jest niemożliwe! (%s)",
-    "msg.lotaslight.savestate.reload": "Przeładowywanie slotów zapisów stanów świata. Jest to konieczne przy zmianie ich plików z poza Minecraft.",
+    "msg.lotaslight.savestate.reload": "Przeładowywanie slotów zapisów stanów świata. Jest to konieczne przy zmianie ich plików z poza Minecraft",
     "msg.lotaslight.savestate.dateformat": "dd.MM.yyyy r. HH:mm:ss",
     "msg.lotaslight.savestate.info.error": "Zapis stanu świata nie powiódł się: %s",
     "msg.lotaslight.savestate.rename": "Zmieniono nazwę zapisu stanu świata z %s na %s",

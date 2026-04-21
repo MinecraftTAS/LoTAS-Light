@@ -47,6 +47,6 @@
     "gui.lotaslight.savestate.load.end": "Wczytano zapis stanu świata %s ze slotu %s",
     "gui.lotaslight.savestate.button.closegui": "Zamknij",
     "gui.lotaslight.savestate.omitted": "Niektóre zapisy stanu świata zostały pominięte. \"%s\" by pokazać je wszystkie",
-    "gui.lotaslight.duping.quitmsg": "Duping your items!",
-    "key.lotaslight.duping": "Duplicate Items"
+    "gui.lotaslight.duping.quitmsg": "Powielanie twoich przedmiotów!",
+    "key.lotaslight.duping": "Powiel Przedmioty"
 }

@@ -7,9 +7,9 @@
     "key.lotaslight.savestate": "Zapisz stan świata",
     "key.lotaslight.loadstate": "Załaduj zapisany stan świata",
     "msg.lotaslight.setTickrate": "Ustawiono tickrate gry na %s",
-    "msg.lotaslight.turnOff": "Aby wyłączyć te wiadomości, użyj /lotaslight trc_showMessage false",
-    "msg.lotaslight.showmsg.true": "Włączono wiadomości o tempie gry",
-    "msg.lotaslight.showmsg.false": "Wyłączono wiadomości o tempie gry",
+    "msg.lotaslight.turnOff": "Aby wyłączyć te powiadomienia, użyj /lotaslight trc_showMessage false",
+    "msg.lotaslight.showmsg.true": "Włączono wiadomości o tickrate",
+    "msg.lotaslight.showmsg.false": "Wyłączono wiadomości o tickrate",
     "msg.lotaslight.showctrls.true": "Kontrola zapisu stanu świata włączona",
     "msg.lotaslight.showctrls.false": "Kontrola zapisu stanu świata wyłączona",
     "msg.lotaslight.savestate.save.clickable": "Zapisz",
@@ -30,7 +30,7 @@
     "msg.lotaslight.savestate.deleteMore.clickable": "TAK",
     "msg.lotaslight.savestate.deleteMore.hover": "Ta operacja nie może być wycofana lub zatrzymana!",
     "msg.lotaslight.savestate.deleteMore.error.negative": "Usunięcie ujemnej ilości zapisów stanu świata jest niemożliwe! (%s)",
-    "msg.lotaslight.savestate.reload": "Przeładowywanie slotów zapisów stanów świata. Jest to konieczne przy zmianie ich plików z poza Minecraft.",
+    "msg.lotaslight.savestate.reload": "Przeładowywanie slotów zapisów stanów świata. Jest to konieczne przy zmianie ich plików z poza Minecraft",
     "msg.lotaslight.savestate.dateformat": "dd.MM.yyyy r. HH:mm:ss",
     "msg.lotaslight.savestate.info.error": "Zapis stanu świata nie powiódł się: %s",
     "msg.lotaslight.savestate.rename": "Zmieniono nazwę zapisu stanu świata z %s na %s",
@@ -47,6 +47,6 @@
     "gui.lotaslight.savestate.load.end": "Wczytano zapis stanu świata %s ze slotu %s",
     "gui.lotaslight.savestate.button.closegui": "Zamknij",
     "gui.lotaslight.savestate.omitted": "Niektóre zapisy stanu świata zostały pominięte. \"%s\" by pokazać je wszystkie",
-    "gui.lotaslight.duping.quitmsg": "Duping your items!",
-    "key.lotaslight.duping": "Duplicate Items"
+    "gui.lotaslight.duping.quitmsg": "Powielanie twoich przedmiotów!",
+    "key.lotaslight.duping": "Powiel Przedmioty"
 }

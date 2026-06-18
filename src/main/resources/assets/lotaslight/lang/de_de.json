@@ -40,7 +40,7 @@
     "gui.lotaslight.savestate.save.name": "Sicherungspunkt Bildschirm",
     "gui.lotaslight.savestate.save.start": "Speichere Sicherungspunkt, bitte warten",
     "gui.lotaslight.savestate.save.end": "Sicherungspunkt %s unter Index %s gespeichert",
-    "gui.lotaslight.savestate.save.rename": "SIcherungspunkt unter dem Index %s gespeichert",
+    "gui.lotaslight.savestate.save.rename": "Sicherungspunkt unter dem Index %s gespeichert",
     "gui.lotaslight.savestate.save.rename.button": "Umbenennen und schließen",
     "gui.lotaslight.savestate.load.name": "Sicherungspunkt laden Bildschirm",
     "gui.lotaslight.savestate.load.start": "Lade einen Sicherungspunkt, bitte warten",

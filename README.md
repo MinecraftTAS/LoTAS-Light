@@ -41,6 +41,7 @@ Help translate this mod with [Weblate](https://weblate.minecrafttas.com/projects
   - ScribbleTAS
 - Polish
   - 4NTJ
+  - mamelao
   - NULLderef
 - Portuguese (Brazil)
   - xnqlb

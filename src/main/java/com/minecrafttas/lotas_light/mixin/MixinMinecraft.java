@@ -32,7 +32,11 @@ public class MixinMinecraft {
 		return this.level.tickRateManager().millisecondsPerTick();
 	}
 
+	//# 26.2
+//$$	@Inject(method = "setScreenAndShow", at = @At(value = "HEAD"), cancellable = true)
+	//# def
 	@Inject(method = "setScreen", at = @At(value = "HEAD"), cancellable = true)
+	//# end
 	public void injectdisplayGuiScreen(Screen guiScreenIn, CallbackInfo ci) {
 		KeybindManager.focused = false;
 		if (guiScreenIn == null && (((Minecraft) (Object) this).player != null)) {

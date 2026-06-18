@@ -119,6 +119,8 @@ public class SavestateRenameGui extends SavestateGui {
 				message = I18n.get("msg.lotaslight.savestate.failure", e.toString());
 			}
 			
+			//# 26.2
+//$$			mc.gui.hud.getChat().addPlayerMessage(Component.literal(message), null, null);
 			//# 26.1.2
 //$$			mc.gui.getChat().addPlayerMessage(Component.literal(message), null, null);
 			//# def

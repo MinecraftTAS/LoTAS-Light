@@ -23,6 +23,7 @@ import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.SignEditScreen;
 
 /**
@@ -167,7 +168,12 @@ public class KeybindManager {
 
 	public static boolean isKeyDownExceptTextField(KeyMapping keybind) {
 		Minecraft mc = Minecraft.getInstance();
-		if (mc.screen instanceof ChatScreen || mc.screen instanceof SignEditScreen || (focused && mc.screen != null)) {
+		//# 26.2
+//$$		Screen screen = mc.gui.screen();
+		//# def
+		Screen screen = mc.screen;
+		//# end
+		if (screen instanceof ChatScreen || screen instanceof SignEditScreen || (focused && screen != null)) {
 			return false;
 		}
 		return isKeyDown(keybind);

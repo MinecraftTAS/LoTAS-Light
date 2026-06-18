@@ -14,14 +14,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 //$$import net.minecraft.client.DeltaTracker;
 //# end
 import net.minecraft.client.Minecraft;
+//# 26.2
+//$$import net.minecraft.client.gui.Hud;
+//# def
 import net.minecraft.client.gui.Gui;
+//# end
 //# 26.1.2
 //$$import net.minecraft.client.gui.GuiGraphicsExtractor;
 //# def
 import net.minecraft.client.gui.GuiGraphics;
 //# end
 
+//# 26.2
+//$$@Mixin(Hud.class)
+//# def
 @Mixin(Gui.class)
+//# end
 public class MixinPlayerList {
 
 	//# 1.20.6

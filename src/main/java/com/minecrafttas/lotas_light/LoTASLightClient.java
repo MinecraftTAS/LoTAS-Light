@@ -149,12 +149,16 @@ public class LoTASLightClient implements ClientModInitializer {
 		if (config.getBoolean(ConfigOptions.TICKRATE_SHOW_MESSAGES)) {
 			if (showHint) {
 				showHint = false;
+				//# 26.2
+//$$				client.gui.hud.getChat().addPlayerMessage(Component.translatable("msg.lotaslight.turnOff", tickrate).withStyle(ChatFormatting.YELLOW), null, null);
 				//# 26.1.2
 //$$				client.gui.getChat().addPlayerMessage(Component.translatable("msg.lotaslight.turnOff", tickrate).withStyle(ChatFormatting.YELLOW), null, null);
 				//# def
 					client.gui.getChat().addMessage(Component.translatable("msg.lotaslight.turnOff", tickrate).withStyle(ChatFormatting.YELLOW));
 				//# end
 			}
+			//# 26.2
+//$$			client.gui.hud.getChat().addPlayerMessage(Component.translatable("msg.lotaslight.setTickrate", tickrate), null, null);
 			//# 26.1.2
 //$$			client.gui.getChat().addPlayerMessage(Component.translatable("msg.lotaslight.setTickrate", tickrate), null, null);
 			//# def
@@ -186,12 +190,16 @@ public class LoTASLightClient implements ClientModInitializer {
 		if (config.getBoolean(ConfigOptions.TICKRATE_SHOW_MESSAGES)) {
 			if (showHint) {
 				showHint = false;
+				//# 26.2
+//$$				client.gui.hud.getChat().addPlayerMessage(Component.translatable("msg.lotaslight.turnOff", tickrate).withStyle(ChatFormatting.YELLOW), null, null);
 				//# 26.1.2
 //$$				client.gui.getChat().addPlayerMessage(Component.translatable("msg.lotaslight.turnOff", tickrate).withStyle(ChatFormatting.YELLOW), null, null);
 				//# def
 					client.gui.getChat().addMessage(Component.translatable("msg.lotaslight.turnOff", tickrate).withStyle(ChatFormatting.YELLOW));
 				//# end
 			}
+			//# 26.2
+//$$			client.gui.hud.getChat().addPlayerMessage(Component.translatable("msg.lotaslight.setTickrate", tickrate), null, null);
 			//# 26.1.2
 //$$			client.gui.getChat().addPlayerMessage(Component.translatable("msg.lotaslight.setTickrate", tickrate), null, null);
 			//# def
@@ -362,7 +370,11 @@ public class LoTASLightClient implements ClientModInitializer {
 			int index = paths.getSavestate().getIndex();
 			//@formatter:off
 			mc.execute(() -> {
+				//# 26.2
+//$$				mc.setScreenAndShow(
+				//# def
 				mc.setScreen(
+				//# end
 						new SavestateRenameGui(
 								Component.translatable("gui.lotaslight.savestate.save.name"),
 								Component.translatable("gui.lotaslight.savestate.save.rename", 
@@ -375,7 +387,12 @@ public class LoTASLightClient implements ClientModInitializer {
 			//@formatter:on
 		};
 
-		mc.setScreen(new SavestateGui(Component.translatable("gui.lotaslight.savestate.save.name"), Component.translatable("gui.lotaslight.savestate.save.start").withStyle(ChatFormatting.YELLOW)));
+		//# 26.2
+//$$		mc.setScreenAndShow(
+		//# def
+			mc.setScreen(
+		//# end
+				new SavestateGui(Component.translatable("gui.lotaslight.savestate.save.name"), Component.translatable("gui.lotaslight.savestate.save.start").withStyle(ChatFormatting.YELLOW)));
 
 		mc.getSingleplayerServer().executeBlocking(() -> {
 			try {
@@ -387,13 +404,19 @@ public class LoTASLightClient implements ClientModInitializer {
 					if (message == null || message.isEmpty()) {
 						message = I18n.get("msg.lotaslight.savestate.failure", e.toString());
 					}
+					//# 26.2
+//$$					mc.gui.hud.getChat().addPlayerMessage(Component.literal(message).withStyle(ChatFormatting.RED), null, null);
 					//# 26.1.2
 //$$					mc.gui.getChat().addPlayerMessage(Component.literal(message).withStyle(ChatFormatting.RED), null, null);
 					//# def
 					mc.gui.getChat().addMessage(Component.literal(message).withStyle(ChatFormatting.RED));
 					//# end
 							
+					//# 26.2
+//$$					Minecraft.getInstance().setScreenAndShow(null);
+					//# def
 					Minecraft.getInstance().setScreen(null);
+					//# end
 				});
 				LoTASLight.savestateHandler.resetState();
 			}
@@ -408,7 +431,11 @@ public class LoTASLightClient implements ClientModInitializer {
 		}
 		SavestateCallback doneLoadingCallback = (paths -> {
 			//@formatter:off
+			//# 26.2
+//$$			mc.setScreenAndShow(
+			//# def
 			mc.setScreen(
+			//# end
 					new SavestateDoneGui(
 							Component.translatable("gui.lotaslight.savestate.load.name"), 
 							Component.translatable("gui.lotaslight.savestate.load.end", 
@@ -424,7 +451,12 @@ public class LoTASLightClient implements ClientModInitializer {
 			for (ServerLevel level : server.getAllLevels()) {
 				level.noSave = true;
 			}
-			mc.setScreen(new SavestateGui(Component.translatable("gui.lotaslight.savestate.load.name"), Component.translatable("gui.lotaslight.savestate.load.start").withStyle(ChatFormatting.YELLOW)));
+			//# 26.2
+//$$			mc.setScreenAndShow(
+			//# def
+			mc.setScreen(
+			//# end
+					new SavestateGui(Component.translatable("gui.lotaslight.savestate.load.name"), Component.translatable("gui.lotaslight.savestate.load.start").withStyle(ChatFormatting.YELLOW)));
 			LoTASLight.savestateHandler.loadState(doneLoadingCallback);
 		} catch (Exception e) {
 			LoTASLight.LOGGER.catching(e);
@@ -432,13 +464,19 @@ public class LoTASLightClient implements ClientModInitializer {
 			if (message == null || message.isEmpty()) {
 				message = I18n.get("msg.lotaslight.savestate.failure", e.toString());
 			}
+			//# 26.2
+//$$			mc.gui.hud.getChat().addPlayerMessage(Component.literal(message).withStyle(ChatFormatting.RED), null, null);
 			//# 26.1.2
 //$$			mc.gui.getChat().addPlayerMessage(Component.literal(message).withStyle(ChatFormatting.RED), null, null);
 			//# def
 			mc.gui.getChat().addMessage(Component.literal(message).withStyle(ChatFormatting.RED));
 			//# end
 			LoTASLight.savestateHandler.resetState();
+			//# 26.2
+//$$			Minecraft.getInstance().setScreenAndShow(null);
+			//# def
 			Minecraft.getInstance().setScreen(null);
+			//# end
 		}
 	}
 

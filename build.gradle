@@ -4,6 +4,7 @@ plugins {
 
 discombobulator {
 	versions = [
+		"26.2":"",
 		"26.1.2":"",
 		"1.21.11":"",
 		"1.21.10":"",
@@ -35,5 +36,5 @@ discombobulator {
 	
 	defaultLineFeed = "\n"
 	
-	accessWidenerOfficial = [ "26.1.2" ]
+	accessWidenerOfficial = [ "26.1.2", "26.2" ]
 }

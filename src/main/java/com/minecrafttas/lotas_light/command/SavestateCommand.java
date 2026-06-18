@@ -102,7 +102,11 @@ public class SavestateCommand {
 
 		SavestateCallback doneSavingCallback = (paths -> {
 			//@formatter:off
+			//# 26.2
+//$$			mc.setScreenAndShow(
+			//# def
 			mc.setScreen(
+			//# end
 					new SavestateDoneGui(
 							Component.translatable("gui.lotaslight.savestate.save.name"), 
 							Component.translatable("gui.lotaslight.savestate.save.end", 
@@ -134,7 +138,11 @@ public class SavestateCommand {
 
 		SavestateCallback doneSavingCallback = (paths -> {
 			//@formatter:off
+			//# 26.2
+//$$			mc.setScreenAndShow(
+			//# def
 			mc.setScreen(
+			//# end
 					new SavestateDoneGui(
 							Component.translatable("gui.lotaslight.savestate.save.name"), 
 							Component.translatable("gui.lotaslight.savestate.save.end", 
@@ -171,7 +179,11 @@ public class SavestateCommand {
 
 		SavestateCallback doneSavingCallback = (paths -> {
 			//@formatter:off
+			//# 26.2
+//$$			mc.setScreenAndShow(
+			//# def
 			mc.setScreen(
+			//# end
 					new SavestateDoneGui(
 							Component.translatable("gui.lotaslight.savestate.save.name"), 
 							Component.translatable("gui.lotaslight.savestate.save.end", 
@@ -204,7 +216,11 @@ public class SavestateCommand {
 
 		SavestateCallback doneSavingCallback = (paths -> {
 			//@formatter:off
+			//# 26.2
+//$$			mc.setScreenAndShow(
+			//# def
 			mc.setScreen(
+			//# end
 					new SavestateDoneGui(
 							Component.translatable("gui.lotaslight.savestate.save.name"), 
 							Component.translatable("gui.lotaslight.savestate.save.end", 
@@ -236,7 +252,11 @@ public class SavestateCommand {
 
 		SavestateCallback doneLoadingCallback = (paths -> {
 			//@formatter:off
+			//# 26.2
+//$$			mc.setScreenAndShow(
+			//# def
 			mc.setScreen(
+			//# end
 					new SavestateDoneGui(
 							Component.translatable("gui.lotaslight.savestate.load.name"), 
 							Component.translatable("gui.lotaslight.savestate.load.end", 
@@ -269,7 +289,11 @@ public class SavestateCommand {
 
 		SavestateCallback doneLoadingCallback = (paths -> {
 			//@formatter:off
+			//# 26.2
+//$$			mc.setScreenAndShow(
+			//# def
 			mc.setScreen(
+			//# end
 					new SavestateDoneGui(
 							Component.translatable("gui.lotaslight.savestate.load.name"), 
 							Component.translatable("gui.lotaslight.savestate.load.end", 
@@ -413,7 +437,11 @@ public class SavestateCommand {
 		//# def
 		Minecraft.getInstance().doRunTask(() -> {
 		//# end
+			//# 26.2
+//$$			Minecraft.getInstance().setScreenAndShow(null);
+			//# def
 			Minecraft.getInstance().setScreen(null);
+			//# end
 		});
 		context.getSource().sendFailure(Component.literal(e.getMessage()));
 		LoTASLight.LOGGER.catching(e);
@@ -421,11 +449,21 @@ public class SavestateCommand {
 	}
 
 	private static void setSavestateScreen() {
-		Minecraft.getInstance().setScreen(new SavestateGui(Component.translatable("gui.lotaslight.savestate.save.name"), Component.translatable("gui.lotaslight.savestate.save.start").withStyle(ChatFormatting.YELLOW)));
+		//# 26.2
+//$$		Minecraft.getInstance().setScreenAndShow(
+		//# def
+		Minecraft.getInstance().setScreen(
+		//# end
+				new SavestateGui(Component.translatable("gui.lotaslight.savestate.save.name"), Component.translatable("gui.lotaslight.savestate.save.start").withStyle(ChatFormatting.YELLOW)));
 	}
 
 	private static void setLoadstateScreen() {
-		Minecraft.getInstance().setScreen(new SavestateGui(Component.translatable("gui.lotaslight.savestate.load.name"), Component.translatable("gui.lotaslight.savestate.load.start").withStyle(ChatFormatting.YELLOW)));
+		//# 26.2
+//$$		Minecraft.getInstance().setScreenAndShow(
+		//# def
+		Minecraft.getInstance().setScreen(
+		//# end
+				new SavestateGui(Component.translatable("gui.lotaslight.savestate.load.name"), Component.translatable("gui.lotaslight.savestate.load.start").withStyle(ChatFormatting.YELLOW)));
 	}
 
 	private static void showInfo(CommandContext<CommandSourceStack> context) {

@@ -179,6 +179,8 @@ public class SavestateHandler {
 		logger.trace("Copying folders");
 		SavestateIndexer.copyFolder(paths.getSourceFolder(), paths.getTargetFolder());
 
+		//# 26.2
+//$$		mc.createWorldOpenFlows().openWorld(worldname, () -> mc.setScreenAndShow(new TitleScreen()));
 		//# 1.20.6
 //$$		mc.createWorldOpenFlows().openWorld(worldname, () -> mc.setScreen(new TitleScreen()));
 		//# def
@@ -213,7 +215,11 @@ public class SavestateHandler {
 				mc.level.tickRateManager().setTickRate(0);
 				mc.getSingleplayerServer().tickRateManager().setTickRate(0);
 			}
+			//# 26.2
+//$$			mc.gui.hud.getChat().clearMessages(true);
+			//# def
 			mc.gui.getChat().clearMessages(true);
+			//# end
 
 			if (cb != null) {
 				cb.invoke(paths);

@@ -37,16 +37,16 @@
     "msg.lotaslight.savestate.rename.clickable": "名前を変更",
     "msg.lotaslight.savestate.rename.hover": "セーブステート%sの名前を変更",
     "msg.lotaslight.savestate.rename.error": "このセーブステートの名前を変更できません。",
-    "gui.lotaslight.savestate.save.name": "Savestate screen",
+    "gui.lotaslight.savestate.save.name": "セーブステート画面",
     "gui.lotaslight.savestate.save.start": "セーブステートを保存しています。お待ちください。",
     "gui.lotaslight.savestate.save.end": "セーブステート%sを%s番目に保存しました。",
     "gui.lotaslight.savestate.save.rename": "セーブステートを%s番目に保存しました。",
     "gui.lotaslight.savestate.save.rename.button": "名前を変更して戻る",
-    "gui.lotaslight.savestate.load.name": "Loadstate screen",
+    "gui.lotaslight.savestate.load.name": "ロードステート画面",
     "gui.lotaslight.savestate.load.start": "セーブステートを読み込んでいます。お待ちください。",
     "gui.lotaslight.savestate.load.end": "セーブステート%sを%s番目から読み込みました。",
     "gui.lotaslight.savestate.button.closegui": "閉じる",
-    "gui.lotaslight.savestate.omitted": "Some savestates are omitted. \"%s\" to show them all",
-    "gui.lotaslight.duping.quitmsg": "Duping your items!",
-    "key.lotaslight.duping": "Duplicate Items"
+    "gui.lotaslight.savestate.omitted": "一部のセーブステートが非表示です。%sで全てを表示できます。",
+    "gui.lotaslight.duping.quitmsg": "アイテムを複製しています！",
+    "key.lotaslight.duping": "アイテムの複製"
 }

@@ -23,6 +23,8 @@ import net.minecraft.client.renderer.LevelRenderer;
 @Mixin(LevelRenderer.class)
 //#end
 public class MixinTickrateChangerWorldborder {
+	//# 26.3
+//$$	@ModifyExpressionValue(method = "prepareDynamicTransforms", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;getMillis()J"))
 	//# 1.21.11
 //$$	@ModifyExpressionValue(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;getMillis()J"))
 	//# 1.21.3
